@@ -34,6 +34,12 @@
 		7C418CB017A084F40084330C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CAF17A084F40084330C /* QuartzCore.framework */; };
 		7C418CB217A084FE0084330C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB117A084FE0084330C /* StoreKit.framework */; };
 		7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB317A085070084330C /* SystemConfiguration.framework */; };
+		7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9A17A09AD500834B6F /* LoginViewController.m */; };
+		7CE2DA9D17A09AD500834B6F /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */; };
+		7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */; };
+		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
+		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
+		7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +84,13 @@
 		7C418CAF17A084F40084330C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7C418CB117A084FE0084330C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7C418CB317A085070084330C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		7CE2DA9917A09AD500834B6F /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		7CE2DA9A17A09AD500834B6F /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
+		7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed.png"; sourceTree = "<group>"; };
+		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
+		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
+		7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +182,9 @@
 			children = (
 				7C418C7517A082030084330C /* AppDelegate.h */,
 				7C418C7617A082030084330C /* AppDelegate.m */,
+				7CE2DA9917A09AD500834B6F /* LoginViewController.h */,
+				7CE2DA9A17A09AD500834B6F /* LoginViewController.m */,
+				7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */,
 				7C418C7817A082030084330C /* Images.xcassets */,
 				7C418C6D17A082030084330C /* Supporting Files */,
 			);
@@ -178,6 +194,10 @@
 		7C418C6D17A082030084330C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */,
+				7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */,
+				7CE2DAA017A09BC500834B6F /* login-button-small.png */,
+				7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */,
 				7C418C6E17A082030084330C /* EventsPlanner-Info.plist */,
 				7C418C6F17A082030084330C /* InfoPlist.strings */,
 				7C418C7217A082030084330C /* main.m */,
@@ -279,8 +299,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
+				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
+				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
+				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
+				7CE2DA9D17A09AD500834B6F /* LoginViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +326,7 @@
 			files = (
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
+				7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,6 +449,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -441,6 +468,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -505,6 +533,7 @@
 				7C418C9117A082040084330C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7C418C9217A082040084330C /* Build configuration list for PBXNativeTarget "EventsPlannerTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +542,7 @@
 				7C418C9417A082040084330C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

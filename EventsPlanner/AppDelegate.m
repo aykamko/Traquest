@@ -8,8 +8,15 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import "LoginViewController.h"
 
 @implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [PFFacebookUtils handleOpenURL:url];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -17,9 +24,12 @@
     [Parse setApplicationId:@"Xz7dF37SCpQkd2evgR4IeLUhhiMBTOMLTrKU06GE"
                   clientKey:@"oorBErIwapu2EDFwbJIkpOZVAEQUhuPV3azWbD0m"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    [PFFacebookUtils initializeFacebook];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor brownColor];
+    
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[LoginViewController alloc] init]];
     [self.window makeKeyAndVisible];
     return YES;
 }
