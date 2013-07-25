@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
 		7C418C6917A082030084330C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6817A082030084330C /* CoreGraphics.framework */; };
 		7C418C6B17A082030084330C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6A17A082030084330C /* UIKit.framework */; };
@@ -53,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		7C418C6317A082030084330C /* EventsPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C418C6617A082030084330C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7C418C6817A082030084330C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -194,6 +196,7 @@
 		7C418C6D17A082030084330C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				60D520AC17A18EE9009CD642 /* Icon.png */,
 				7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */,
 				7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */,
 				7CE2DAA017A09BC500834B6F /* login-button-small.png */,
@@ -303,6 +306,7 @@
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
+				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
 				7CE2DA9D17A09AD500834B6F /* LoginViewController.xib in Resources */,
