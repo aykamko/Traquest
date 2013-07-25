@@ -47,8 +47,7 @@
                 [alert show];
             }
         } else {
-
-            [self setEventsListView];
+        [self setEventsListView];
 
         }
     }];

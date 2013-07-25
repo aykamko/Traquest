@@ -27,7 +27,6 @@
         [[_tableViewController tableView]setDelegate:self];
         [[_tableViewController tableView]setDataSource:_tableViewDataSource];
         [self setTableViewController:_tableViewController];
-       // _tableViewController = tableViewController;
         
     }
     return self;

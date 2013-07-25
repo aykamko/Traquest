@@ -62,8 +62,8 @@
                 [guestEvents addObject:event];
             }
             
-            completionBlock(hostEvents, guestEvents);
 
+        completionBlock(hostEvents, guestEvents);
         }
     }];
 }

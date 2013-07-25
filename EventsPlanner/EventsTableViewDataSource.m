@@ -29,6 +29,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 
+<<<<<<< HEAD
 //    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"EventCell"];
 //    
 //    if (!cell) {
@@ -45,8 +46,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     return 0;
-
-   
 
 }
 
