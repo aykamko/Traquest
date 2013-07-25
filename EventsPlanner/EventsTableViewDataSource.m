@@ -30,7 +30,6 @@
     }
     
     NSString *cellLabel=_eventsList[indexPath.row][@"name"];
-    NSLog(@"%@", _eventsList[indexPath.row][@"name"]);
     cell.textLabel.text=cellLabel;
     return cell;
     
@@ -38,8 +37,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    NSLog(@"lalalala");
-    //NSLog(@"%d",_eventsList.count);
     return _eventsList.count;
 }
 

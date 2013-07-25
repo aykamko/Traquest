@@ -37,7 +37,6 @@
     FBRequest *request = [FBRequest requestForGraphPath:@"me/events"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
-            NSLog(@"Error for events request!");
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
                                                             message:error.localizedDescription
                                                            delegate:nil
@@ -55,7 +54,6 @@
                 [eventsArray addObject:userDict];
             }
             
-            NSLog(@"%@", eventsArray);
             completionBlock(eventsArray);
         }
     }];
