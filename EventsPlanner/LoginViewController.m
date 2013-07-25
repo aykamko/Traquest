@@ -3,8 +3,14 @@
 #import "LoginViewController.h"
 #import <Parse/Parse.h>
 #import "FBDataStore.h"
+#import "EventsListController.h"
+
+@interface LoginViewController ()
+@property (nonatomic, strong) EventsListController *eventsListController;
+@end
 
 @implementation LoginViewController
+
 
 
 #pragma mark - UIViewController
@@ -15,7 +21,7 @@
     
     // Check if user is cached and linked to Facebook, if so, bypass login    
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-        //TODO: Push new View
+         [self setEventsListView];
     }
 }
 
@@ -40,11 +46,23 @@
                 [alert show];
             }
         } else {
-            //TODO: Push new View
+            [self setEventsListView];
         }
     }];
     
     [_activityIndicator startAnimating]; // Show loading indicator until login is finished
 }
 
+
+-(void)setEventsListView{
+    [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *eventData) {
+        _eventsListController = [[EventsListController alloc] initWithEventsList:eventData];
+        [self.navigationController pushViewController:[_eventsListController presentableViewController]
+                                             animated:YES];
+        
+        
+        
+    }];
+    
+}
 @end

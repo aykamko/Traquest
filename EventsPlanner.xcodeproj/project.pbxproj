@@ -46,6 +46,11 @@
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
 		7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */; };
+		90C01FBF17A0E817004D2134 /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C01FBE17A0E817004D2134 /* ActiveEventsStatsViewController.m */; };
+		90C01FC217A0E835004D2134 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C01FC117A0E835004D2134 /* ActiveEventMapViewController.m */; };
+		90C01FC417A18779004D2134 /* EventsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90C01FC317A18779004D2134 /* EventsCell.xib */; };
+		90E9726F17A1BA59000EC59B /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9726E17A1BA59000EC59B /* EventsListController.m */; };
+		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +111,15 @@
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
 		7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small@2x.png"; sourceTree = "<group>"; };
+		90C01FBD17A0E817004D2134 /* ActiveEventsStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveEventsStatsViewController.h; sourceTree = "<group>"; };
+		90C01FBE17A0E817004D2134 /* ActiveEventsStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventsStatsViewController.m; sourceTree = "<group>"; };
+		90C01FC017A0E835004D2134 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
+		90C01FC117A0E835004D2134 /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
+		90C01FC317A18779004D2134 /* EventsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventsCell.xib; sourceTree = "<group>"; };
+		90E9726D17A1BA59000EC59B /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventsListController.h; path = ../EventsListController.h; sourceTree = "<group>"; };
+		90E9726E17A1BA59000EC59B /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventsListController.m; path = ../EventsListController.m; sourceTree = "<group>"; };
+		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
+		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +165,10 @@
 		7C418C5A17A082030084330C = {
 			isa = PBXGroup;
 			children = (
+				90C01FBD17A0E817004D2134 /* ActiveEventsStatsViewController.h */,
+				90C01FBE17A0E817004D2134 /* ActiveEventsStatsViewController.m */,
+				90C01FC017A0E835004D2134 /* ActiveEventMapViewController.h */,
+				90C01FC117A0E835004D2134 /* ActiveEventMapViewController.m */,
 				7C418C6C17A082030084330C /* EventsPlanner */,
 				7C418C8517A082030084330C /* EventsPlannerTests */,
 				7C418C6517A082030084330C /* Frameworks */,
@@ -209,7 +227,12 @@
 				60D520B417A1C12D009CD642 /* FBEventDetailsViewController.xib */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
 				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,
+				90E9726D17A1BA59000EC59B /* EventsListController.h */,
+				90E9726E17A1BA59000EC59B /* EventsListController.m */,
+				90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */,
+				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
 				7C418C7817A082030084330C /* Images.xcassets */,
+				90C01FC317A18779004D2134 /* EventsCell.xib */,
 				7C418C6D17A082030084330C /* Supporting Files */,
 			);
 			path = EventsPlanner;
@@ -327,6 +350,7 @@
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
+				90C01FC417A18779004D2134 /* EventsCell.xib in Resources */,
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
 				60D520B517A1C12D009CD642 /* FBEventDetailsViewController.xib in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
@@ -352,9 +376,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				60D520BA17A1E3F1009CD642 /* MapPoint.m in Sources */,
+				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
 				7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */,
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
+				90C01FBF17A0E817004D2134 /* ActiveEventsStatsViewController.m in Sources */,
+				90C01FC217A0E835004D2134 /* ActiveEventMapViewController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
+				90E9726F17A1BA59000EC59B /* EventsListController.m in Sources */,
 				7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */,
 				60D520B317A1A84E009CD642 /* FBEventDetailsViewController.m in Sources */,
 			);

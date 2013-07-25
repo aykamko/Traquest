@@ -8,7 +8,11 @@
 
 #import <FacebookSDK/FacebookSDK.h>
 #import "FBDataStore.h"
+@interface FBDataStore(){
+    NSMutableArray *_array;
+}
 
+@end
 @implementation FBDataStore
 
 + (id)allocWithZone:(struct _NSZone *)zone
@@ -27,6 +31,9 @@
 
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *eventData))completionBlock
 {
+
+    _array = [NSMutableArray array];
+   
     FBRequest *request = [FBRequest requestForGraphPath:@"me/events"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
@@ -38,11 +45,21 @@
                                                   otherButtonTitles:nil];
             [alert show];
         } else {
-            NSDictionary *eventsDict = result;
-            NSArray *eventsArray = eventsDict[@"data"];
+            
+            FBGraphObject *fbGraphObj=(FBGraphObject *)result;
+            NSArray *graphArray=fbGraphObj[@"data"];
+            NSMutableArray *eventsArray = [[NSMutableArray alloc] init];
+            
+            for (FBGraphObject *user in graphArray) {
+                NSMutableDictionary *userDict = user;
+                [eventsArray addObject:userDict];
+            }
+            
+            NSLog(@"%@", eventsArray);
             completionBlock(eventsArray);
         }
     }];
 }
+
 
 @end
