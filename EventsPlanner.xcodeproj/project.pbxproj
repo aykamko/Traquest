@@ -19,8 +19,6 @@
 		7C418C8217A082030084330C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6A17A082030084330C /* UIKit.framework */; };
 		7C418C8A17A082030084330C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7C418C8817A082030084330C /* InfoPlist.strings */; };
 		7C418C8C17A082030084330C /* EventsPlannerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C418C8B17A082030084330C /* EventsPlannerTests.m */; };
-		7C418C9817A084380084330C /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C9617A084380084330C /* Parse.framework */; };
-		7C418C9A17A084470084330C /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C9917A084470084330C /* FacebookSDK.framework */; };
 		7C418C9C17A084590084330C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C9B17A084590084330C /* libsqlite3.0.dylib */; };
 		7C418C9E17A0845E0084330C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C9D17A0845E0084330C /* Security.framework */; };
 		7C418CA017A0846C0084330C /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C9F17A0846C0084330C /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -34,6 +32,8 @@
 		7C418CB017A084F40084330C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CAF17A084F40084330C /* QuartzCore.framework */; };
 		7C418CB217A084FE0084330C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB117A084FE0084330C /* StoreKit.framework */; };
 		7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB317A085070084330C /* SystemConfiguration.framework */; };
+		7C5DE41617A0A6B400A6D635 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C5DE41517A0A6B400A6D635 /* FacebookSDK.framework */; };
+		7C5DE41817A0A6BE00A6D635 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C5DE41717A0A6BE00A6D635 /* Parse.framework */; };
 		7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9A17A09AD500834B6F /* LoginViewController.m */; };
 		7CE2DA9D17A09AD500834B6F /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */; };
 		7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */; };
@@ -84,6 +84,8 @@
 		7C418CAF17A084F40084330C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7C418CB117A084FE0084330C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7C418CB317A085070084330C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		7C5DE41517A0A6B400A6D635 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		7C5DE41717A0A6BE00A6D635 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		7CE2DA9917A09AD500834B6F /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		7CE2DA9A17A09AD500834B6F /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
@@ -98,6 +100,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C5DE41817A0A6BE00A6D635 /* Parse.framework in Frameworks */,
+				7C5DE41617A0A6B400A6D635 /* FacebookSDK.framework in Frameworks */,
 				7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */,
 				7C418CB217A084FE0084330C /* StoreKit.framework in Frameworks */,
 				7C418CB017A084F40084330C /* QuartzCore.framework in Frameworks */,
@@ -108,8 +112,6 @@
 				7C418CA817A084DA0084330C /* CFNetwork.framework in Frameworks */,
 				7C418CA617A084D30084330C /* AudioToolbox.framework in Frameworks */,
 				7C418C9C17A084590084330C /* libsqlite3.0.dylib in Frameworks */,
-				7C418C9817A084380084330C /* Parse.framework in Frameworks */,
-				7C418C9A17A084470084330C /* FacebookSDK.framework in Frameworks */,
 				7C418C9E17A0845E0084330C /* Security.framework in Frameworks */,
 				7C418CA017A0846C0084330C /* Social.framework in Frameworks */,
 				7C418CA217A084760084330C /* AdSupport.framework in Frameworks */,
@@ -154,6 +156,8 @@
 		7C418C6517A082030084330C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7C5DE41717A0A6BE00A6D635 /* Parse.framework */,
+				7C5DE41517A0A6B400A6D635 /* FacebookSDK.framework */,
 				7C418CB317A085070084330C /* SystemConfiguration.framework */,
 				7C418CB117A084FE0084330C /* StoreKit.framework */,
 				7C418CAF17A084F40084330C /* QuartzCore.framework */,
@@ -443,8 +447,9 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../Documents/iOS\\ Frameworks",
-					"$(SRCROOT)/../../Documents/iOS\\ Frameworks/FacebookSDK",
+					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks",
+					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks/FacebookSDK",
+					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
@@ -462,8 +467,9 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../Documents/iOS\\ Frameworks",
-					"$(SRCROOT)/../../Documents/iOS\\ Frameworks/FacebookSDK",
+					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks",
+					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks/FacebookSDK",
+					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
