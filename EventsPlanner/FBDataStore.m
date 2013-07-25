@@ -33,8 +33,7 @@
 {
 
     _array = [NSMutableArray array];
-   
-    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location),"
+       FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location),"
                                                         @"id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
@@ -45,7 +44,6 @@
                                                   otherButtonTitles:nil];
             [alert show];
         } else {
-            
             NSString *myID = result[@"id"];
             
             FBGraphObject *fbGraphObj = (FBGraphObject *)result;
@@ -65,6 +63,7 @@
             }
             
             completionBlock(hostEvents, guestEvents);
+
         }
     }];
 }

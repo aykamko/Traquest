@@ -22,6 +22,7 @@
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
     }
+
     return self;
 }
 
@@ -38,12 +39,15 @@
 //    cell.textLabel.text=cellLabel;
 //    return cell;
     return 0;
+
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-//    return _eventsList.count;
     return 0;
+
+   
+
 }
 
 @end
