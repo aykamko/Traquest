@@ -25,6 +25,7 @@
         _eventDetails = details;
     }
     return self;
+    // test
 }
 
 - (void)viewWillAppear:(BOOL)animated
