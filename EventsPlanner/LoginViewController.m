@@ -2,7 +2,6 @@
 
 #import "LoginViewController.h"
 #import <Parse/Parse.h>
-#import "_test_DetailsViewController.h"
 #import "FBDataStore.h"
 
 @implementation LoginViewController
@@ -16,17 +15,7 @@
     
     // Check if user is cached and linked to Facebook, if so, bypass login    
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-        NSLog(@"already logged in");
-        __block _test_DetailsViewController *viewController = [[_test_DetailsViewController alloc] init];
-        [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *eventData) {
-            NSData *jsonArray = [NSJSONSerialization dataWithJSONObject:eventData
-                                                                options:NSJSONWritingPrettyPrinted
-                                                                  error:nil];
-            NSString *eventDataString = [[NSString alloc] initWithData:jsonArray encoding:NSUTF8StringEncoding];
-            [viewController setText:eventDataString];
-            [self.navigationController pushViewController:viewController
-                                                 animated:YES];
-        }];
+        //TODO: Push new View
     }
 }
 
@@ -44,30 +33,14 @@
         
         if (!user) {
             if (!error) {
-                NSLog(@"Uh oh. The user cancelled the Facebook login.");
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:@"Uh oh. The user cancelled the Facebook login." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
                 [alert show];
             } else {
-                NSLog(@"Uh oh. An error occurred: %@", error);
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:[error description] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
                 [alert show];
             }
         } else {
-            if (user.isNew) {
-                NSLog(@"User with facebook signed up and logged in!");
-            } else {
-                NSLog(@"User with facebook logged in!");
-            }
-            __block _test_DetailsViewController *viewController = [[_test_DetailsViewController alloc] init];
-            [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *eventData) {
-                NSData *jsonArray = [NSJSONSerialization dataWithJSONObject:eventData
-                                                                    options:NSJSONWritingPrettyPrinted
-                                                                      error:nil];
-                NSString *eventDataString = [[NSString alloc] initWithData:jsonArray encoding:NSUTF8StringEncoding];
-                [viewController setText:eventDataString];
-                [self.navigationController pushViewController:viewController
-                                                     animated:YES];
-            }];
+            //TODO: Push new View
         }
     }];
     

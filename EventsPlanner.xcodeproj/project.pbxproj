@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
+		60D520B317A1A84E009CD642 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B217A1A84E009CD642 /* FBEventDetailsViewController.m */; };
+		60D520B517A1C12D009CD642 /* FBEventDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 60D520B417A1C12D009CD642 /* FBEventDetailsViewController.xib */; };
+		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
+		60D520BA17A1E3F1009CD642 /* MapPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B917A1E3F1009CD642 /* MapPoint.m */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
 		7C418C6917A082030084330C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6817A082030084330C /* CoreGraphics.framework */; };
 		7C418C6B17A082030084330C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6A17A082030084330C /* UIKit.framework */; };
@@ -33,8 +37,6 @@
 		7C418CB017A084F40084330C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CAF17A084F40084330C /* QuartzCore.framework */; };
 		7C418CB217A084FE0084330C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB117A084FE0084330C /* StoreKit.framework */; };
 		7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB317A085070084330C /* SystemConfiguration.framework */; };
-		7C5DE41E17A0AF9700A6D635 /* _test_DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C5DE41C17A0AF9700A6D635 /* _test_DetailsViewController.m */; };
-		7C5DE41F17A0AF9700A6D635 /* _test_DetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C5DE41D17A0AF9700A6D635 /* _test_DetailsViewController.xib */; };
 		7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C5DE42117A0B00D00A6D635 /* FBDataStore.m */; };
 		7C99F0FF17A0BD9C008EBCF1 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C99F0FD17A0BD9C008EBCF1 /* FacebookSDK.framework */; };
 		7C99F10017A0BD9C008EBCF1 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C99F0FE17A0BD9C008EBCF1 /* Parse.framework */; };
@@ -58,6 +60,12 @@
 
 /* Begin PBXFileReference section */
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		60D520B117A1A84E009CD642 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
+		60D520B217A1A84E009CD642 /* FBEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsViewController.m; sourceTree = "<group>"; };
+		60D520B417A1C12D009CD642 /* FBEventDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FBEventDetailsViewController.xib; sourceTree = "<group>"; };
+		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		60D520B817A1E3F1009CD642 /* MapPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPoint.h; sourceTree = "<group>"; };
+		60D520B917A1E3F1009CD642 /* MapPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPoint.m; sourceTree = "<group>"; };
 		7C418C6317A082030084330C /* EventsPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C418C6617A082030084330C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7C418C6817A082030084330C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -87,9 +95,6 @@
 		7C418CAF17A084F40084330C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7C418CB117A084FE0084330C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7C418CB317A085070084330C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		7C5DE41B17A0AF9700A6D635 /* _test_DetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _test_DetailsViewController.h; sourceTree = "<group>"; };
-		7C5DE41C17A0AF9700A6D635 /* _test_DetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _test_DetailsViewController.m; sourceTree = "<group>"; };
-		7C5DE41D17A0AF9700A6D635 /* _test_DetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = _test_DetailsViewController.xib; sourceTree = "<group>"; };
 		7C5DE42017A0B00D00A6D635 /* FBDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBDataStore.h; sourceTree = "<group>"; };
 		7C5DE42117A0B00D00A6D635 /* FBDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBDataStore.m; sourceTree = "<group>"; };
 		7C99F0FD17A0BD9C008EBCF1 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
@@ -108,6 +113,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C418CAA17A084E50084330C /* CoreLocation.framework in Frameworks */,
+				60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */,
 				7C99F0FF17A0BD9C008EBCF1 /* FacebookSDK.framework in Frameworks */,
 				7C99F10017A0BD9C008EBCF1 /* Parse.framework in Frameworks */,
 				7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */,
@@ -115,7 +122,6 @@
 				7C418CB017A084F40084330C /* QuartzCore.framework in Frameworks */,
 				7C418CAE17A084EF0084330C /* MobileCoreServices.framework in Frameworks */,
 				7C418CAC17A084EB0084330C /* libz.1.1.3.dylib in Frameworks */,
-				7C418CAA17A084E50084330C /* CoreLocation.framework in Frameworks */,
 				7C418C6917A082030084330C /* CoreGraphics.framework in Frameworks */,
 				7C418CA817A084DA0084330C /* CFNetwork.framework in Frameworks */,
 				7C418CA617A084D30084330C /* AudioToolbox.framework in Frameworks */,
@@ -164,6 +170,7 @@
 		7C418C6517A082030084330C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				60D520B617A1C967009CD642 /* MapKit.framework */,
 				7C99F0FD17A0BD9C008EBCF1 /* FacebookSDK.framework */,
 				7C99F0FE17A0BD9C008EBCF1 /* Parse.framework */,
 				7C418CB317A085070084330C /* SystemConfiguration.framework */,
@@ -192,14 +199,16 @@
 			children = (
 				7C418C7517A082030084330C /* AppDelegate.h */,
 				7C418C7617A082030084330C /* AppDelegate.m */,
+				60D520B817A1E3F1009CD642 /* MapPoint.h */,
+				60D520B917A1E3F1009CD642 /* MapPoint.m */,
 				7CE2DA9917A09AD500834B6F /* LoginViewController.h */,
 				7CE2DA9A17A09AD500834B6F /* LoginViewController.m */,
 				7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */,
+				60D520B117A1A84E009CD642 /* FBEventDetailsViewController.h */,
+				60D520B217A1A84E009CD642 /* FBEventDetailsViewController.m */,
+				60D520B417A1C12D009CD642 /* FBEventDetailsViewController.xib */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
 				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,
-				7C5DE41B17A0AF9700A6D635 /* _test_DetailsViewController.h */,
-				7C5DE41C17A0AF9700A6D635 /* _test_DetailsViewController.m */,
-				7C5DE41D17A0AF9700A6D635 /* _test_DetailsViewController.xib */,
 				7C418C7817A082030084330C /* Images.xcassets */,
 				7C418C6D17A082030084330C /* Supporting Files */,
 			);
@@ -318,8 +327,8 @@
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
-				7C5DE41F17A0AF9700A6D635 /* _test_DetailsViewController.xib in Resources */,
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
+				60D520B517A1C12D009CD642 /* FBEventDetailsViewController.xib in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
@@ -342,11 +351,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60D520BA17A1E3F1009CD642 /* MapPoint.m in Sources */,
 				7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */,
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
 				7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */,
-				7C5DE41E17A0AF9700A6D635 /* _test_DetailsViewController.m in Sources */,
+				60D520B317A1A84E009CD642 /* FBEventDetailsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,8 +480,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -490,8 +501,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
