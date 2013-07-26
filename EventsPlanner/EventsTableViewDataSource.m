@@ -26,10 +26,8 @@
     return self;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 
-<<<<<<< HEAD
 //    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"EventCell"];
 //    
 //    if (!cell) {
@@ -45,7 +43,40 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 0;
+    _guestOf=[[NSMutableArray alloc]init];
+    [ _guestOf addObject:@"1"];
+    
+    _hostOf=[[NSMutableArray alloc]init];
+    [_hostOf addObject:@"2"];
+    [_hostOf addObject:@"3"];
+    
+    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"EventCell"];
+    
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"EventCell"];
+    }
+    
+    if (indexPath.section == 0) {
+        [[cell textLabel] setText:(NSString *)[_hostOf objectAtIndex:indexPath.row]];
+    } else if (indexPath.section == 1) {
+        [[cell textLabel] setText:(NSString *)[_guestOf objectAtIndex:indexPath.row]];
+    }
+
+    return cell;
+    
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+//    _num=_num++;
+    if(section == 0 ){
+    
+        return 2;
+    }
+    
+    else {
+        return 1;
+    }
+}
 
 }
 
