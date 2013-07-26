@@ -29,12 +29,13 @@
     return sharedStore;
 }
 
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *eventData))completionBlock
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
 {
 
     _array = [NSMutableArray array];
    
-    FBRequest *request = [FBRequest requestForGraphPath:@"me/events"];
+    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location),"
+                                                        @"id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
@@ -45,16 +46,25 @@
             [alert show];
         } else {
             
-            FBGraphObject *fbGraphObj=(FBGraphObject *)result;
-            NSArray *graphArray=fbGraphObj[@"data"];
-            NSMutableArray *eventsArray = [[NSMutableArray alloc] init];
+            NSString *myID = result[@"id"];
             
-            for (FBGraphObject *user in graphArray) {
-                NSMutableDictionary *userDict = user;
-                [eventsArray addObject:userDict];
+            FBGraphObject *fbGraphObj = (FBGraphObject *)result;
+            NSArray *eventArray = fbGraphObj[@"events"][@"data"];
+            NSMutableArray *hostEvents = [[NSMutableArray alloc] init];
+            NSMutableArray *guestEvents = [[NSMutableArray alloc] init];
+            
+            for (FBGraphObject *event in eventArray) {
+                NSArray *adminArray = event[@"admins"][@"data"];
+                for (FBGraphObject *adminData in adminArray) {
+                    if ([adminData[@"id"] isEqualToString:myID]) {
+                        [hostEvents addObject:event];
+                        continue;
+                    }
+                }
+                [guestEvents addObject:event];
             }
             
-            completionBlock(eventsArray);
+            completionBlock(hostEvents, guestEvents);
         }
     }];
 }

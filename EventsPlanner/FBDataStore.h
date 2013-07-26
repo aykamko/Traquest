@@ -12,6 +12,6 @@
 
 + (FBDataStore *)sharedStore;
 
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *eventData))completionBlock;
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock;
 
 @end

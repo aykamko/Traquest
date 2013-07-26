@@ -10,6 +10,6 @@
 
 @interface EventsTableViewDataSource : NSObject<UITableViewDataSource>
 
-- (id)initWithEventsList:(NSArray *)eventsList;
+-(id)initWithHostEvent:hostEvents guestEvents:guestEvents;
 
 @end

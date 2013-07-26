@@ -11,17 +11,20 @@
 @interface EventsListController()
 @property (nonatomic, strong) UITableViewController *tableViewController;
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
-@property (nonatomic, strong) NSArray *eventsList;
+@property (nonatomic, strong) NSArray *hostEvents;
+@property (nonatomic, strong) NSArray *guestEvents;
 
 @end
 @implementation EventsListController
--(id)initWithEventsList:(NSArray *)events {
-    self=[super init];
-    if(self){
+-(id)initWithHostEvent:hostEvents guestEvents:guestEvents
+{
+    self = [super init];
+    if (self) {
         
-        _eventsList=events;
+        _hostEvents = hostEvents;
+        _guestEvents = guestEvents;
      
-        _tableViewDataSource = [[EventsTableViewDataSource alloc]initWithEventsList:events];
+        _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvent:hostEvents guestEvents:guestEvents];
         
         _tableViewController=[[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableViewController tableView]setDelegate:self];

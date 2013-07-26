@@ -55,8 +55,8 @@
 
 
 -(void)setEventsListView{
-    [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *eventData) {
-        _eventsListController = [[EventsListController alloc] initWithEventsList:eventData];
+    [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
+        _eventsListController = [[EventsListController alloc] initWithHostEvent:hostEvents guestEvents:guestEvents];
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];
         
