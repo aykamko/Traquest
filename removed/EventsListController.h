@@ -9,9 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface EventsListController : NSObject<UITableViewDelegate>
-
--(id)initWithEventsList:(NSArray *)events;
 - (id)presentableViewController;
-
+- (id)initWithHostEvent:(NSArray *)hostEvents guestEvent:(NSArray *)guestEvents;
 
 @end

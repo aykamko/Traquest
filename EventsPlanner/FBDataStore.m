@@ -52,14 +52,23 @@
             NSMutableArray *guestEvents = [[NSMutableArray alloc] init];
             
             for (FBGraphObject *event in eventArray) {
+                
                 NSArray *adminArray = event[@"admins"][@"data"];
+                
+                BOOL isHost = NO;
                 for (FBGraphObject *adminData in adminArray) {
                     if ([adminData[@"id"] isEqualToString:myID]) {
-                        [hostEvents addObject:event];
-                        continue;
+                        isHost = YES;
+                        break;
                     }
                 }
-                [guestEvents addObject:event];
+                
+                if (isHost == YES) {
+                    [hostEvents addObject:event];
+                } else {
+                    [guestEvents addObject:event];
+                }
+                
             }
             
 

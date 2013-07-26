@@ -16,7 +16,7 @@
 
 @end
 @implementation EventsListController
--(id)initWithHostEvent:hostEvents guestEvents:guestEvents
+-(id)initWithHostEvents:hostEvents guestEvents:guestEvents
 {
     self = [super init];
     if (self) {
@@ -24,7 +24,7 @@
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
      
-        _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvent:hostEvents guestEvents:guestEvents];
+        _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
         _tableViewController=[[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableViewController tableView]setDelegate:self];

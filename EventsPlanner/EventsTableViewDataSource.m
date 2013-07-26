@@ -8,6 +8,7 @@
 
 #import "EventsTableViewDataSource.h"
 @interface EventsTableViewDataSource()
+
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
 
@@ -15,7 +16,7 @@
 
 @implementation EventsTableViewDataSource
 
--(id)initWithHostEvent:hostEvents guestEvents:guestEvents
+-(id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents
 {
     self = [super init];
     if (self) {
@@ -26,58 +27,66 @@
     return self;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
 
-//    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"EventCell"];
-//    
-//    if (!cell) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"EventCell"];
-//    }
-//    
-//    NSString *cellLabel=_eventsList[indexPath.row][@"name"];
-//    cell.textLabel.text=cellLabel;
-//    return cell;
-    return 0;
-
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    
-    _guestOf=[[NSMutableArray alloc]init];
-    [ _guestOf addObject:@"1"];
-    
-    _hostOf=[[NSMutableArray alloc]init];
-    [_hostOf addObject:@"2"];
-    [_hostOf addObject:@"3"];
-    
-    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"EventCell"];
+    static NSString *EventCellIdentifier = @"EventCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"EventCell"];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EventCellIdentifier];
     }
     
+    NSString *labelText = @"";
     if (indexPath.section == 0) {
-        [[cell textLabel] setText:(NSString *)[_hostOf objectAtIndex:indexPath.row]];
+        labelText = [[_hostEvents objectAtIndex:indexPath.row] objectForKey: @"name"];
     } else if (indexPath.section == 1) {
-        [[cell textLabel] setText:(NSString *)[_guestOf objectAtIndex:indexPath.row]];
+        labelText = [[_guestEvents objectAtIndex:indexPath.row] objectForKey: @"name"];
     }
+    
+    [[cell textLabel] setText:labelText];
 
     return cell;
+  
+}
+
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    
+    return 2;
     
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-//    _num=_num++;
-    if(section == 0 ){
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     
-        return 2;
+    switch (section) {
+        case 0: {
+            return _hostEvents.count;
+        } case 1: {
+            return _guestEvents.count;
+        } default: {
+            return 0;
+        }
     }
     
-    else {
-        return 1;
-    }
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    
+    switch (section) {
+        case 0: {
+            return @"Hosted Events";
+        } case 1: {
+            return @"Invited Events";
+        } default: {
+            return @"";
+        }
+    }
+    
 }
+
 
 @end

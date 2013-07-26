@@ -10,7 +10,7 @@
 
 @interface EventsListController : NSObject<UITableViewDelegate>
 
-- (id)initWithHostEvent:hostEvents guestEvents:guestEvents;
+- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents;
 - (id)presentableViewController;
 
 

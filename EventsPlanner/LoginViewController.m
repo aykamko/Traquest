@@ -47,8 +47,7 @@
                 [alert show];
             }
         } else {
-        [self setEventsListView];
-
+            [self setEventsListView];
         }
     }];
     
@@ -56,13 +55,14 @@
 }
 
 
--(void)setEventsListView{
+-(void)setEventsListView
+{
     [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
-        _eventsListController = [[EventsListController alloc] initWithHostEvent:hostEvents guestEvents:guestEvents];
+        
+        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
+        
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];
-        
-        
         
     }];
     
