@@ -16,6 +16,7 @@
     // Check if user is cached and linked to Facebook, if so, bypass login    
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
         //TODO: Push new View
+        // Test edit, yo
     }
 }
 
