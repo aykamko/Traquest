@@ -23,7 +23,7 @@
     if (self) {
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
-        NSLog(@"%@", _hostEvents);
+       
     }
 
     return self;

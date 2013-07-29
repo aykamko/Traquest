@@ -29,10 +29,10 @@
             NSString *date1=[startTime substringWithRange:NSMakeRange(0, 4)];
             NSString *date2=[startTime substringWithRange:NSMakeRange(5, 2)];
             NSString *date3=[startTime substringWithRange:NSMakeRange(8, 2)];
-            _eventDate.text=[NSString stringWithFormat:@"%@/%@/%@",date2,date3,date1];
+            NSString *rsvp=[[_hostEvents objectAtIndex:indexPath.row]objectForKey:@"rsvp_status"];
+            _eventDate.text=[NSString stringWithFormat:@"%@/%@/%@        rsvp: %@",date2,date3,date1,rsvp];
             
             NSString *imageURL=[[[[_hostEvents objectAtIndex:indexPath.row]objectForKey:@"picture"]objectForKey:@"data"]objectForKey:@"url"];;
-            NSLog(@"%@", imageURL);
             NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
             UIImage *image=[UIImage imageWithData:imageData];
             self.imageView.image=image;
@@ -45,10 +45,10 @@
             NSString *date1=[startTime substringWithRange:NSMakeRange(0, 4)];
             NSString *date2=[startTime substringWithRange:NSMakeRange(5, 2)];
             NSString *date3=[startTime substringWithRange:NSMakeRange(8, 2)];
-            _eventDate.text=[NSString stringWithFormat:@"%@/%@/%@",date2,date3,date1];
+            NSString *rsvp=[[_guestEvents objectAtIndex:indexPath.row]objectForKey:@"rsvp_status"];
+            _eventDate.text=[NSString stringWithFormat:@"%@/%@/%@        status: %@",date2,date3,date1,rsvp];
             
             NSString *imageURL=[[[[_guestEvents objectAtIndex:indexPath.row]objectForKey:@"picture"]objectForKey:@"data"]objectForKey:@"url"];;
-            NSLog(@"%@", imageURL);
             NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
             UIImage *image=[UIImage imageWithData:imageData];
             self.imageView.image=image;
