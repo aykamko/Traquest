@@ -72,6 +72,7 @@
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60D520B817A1E3F1009CD642 /* MapPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPoint.h; sourceTree = "<group>"; };
 		60D520B917A1E3F1009CD642 /* MapPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPoint.m; sourceTree = "<group>"; };
+		76FF2F4B17A6FE4700756ECA /* FBHostEventDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBHostEventDetailsViewController.h; sourceTree = "<group>"; };
 		7C418C6317A082030084330C /* EventsPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C418C6617A082030084330C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7C418C6817A082030084330C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -227,6 +228,7 @@
 				7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */,
 				60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */,
 				60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */,
+				76FF2F4B17A6FE4700756ECA /* FBHostEventDetailsViewController.h */,
 				60D520B417A1C12D009CD642 /* FBGuestEventDetailsViewController.xib */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
 				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,

@@ -63,16 +63,35 @@
 
 - (void) viewDidAppear:(BOOL)animated
 {
-    if (![[PFUser currentUser] objectForKey:@"trackingAllowed"])
+    NSNumber *tracking = [[PFUser currentUser] objectForKey:@"trackingAllowed"];
+    if([tracking isEqualToNumber:@0])
     {
-        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:nil cancelButtonTitle: @"Done" otherButtonTitles:@"YES",@"Anonymous",@"NO"];
+        
+        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:nil cancelButtonTitle: @"YES" otherButtonTitles:@"Anonymous",@"NO",nil];
+        requestTracking.cancelButtonIndex = -1;
+        [requestTracking show];
+       
     }
-    
     else
     {
-//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
-   
+        PFGeoPoint *guestLocation = [[PFUser currentUser] objectForKey:@"location"];
+        CLLocationCoordinate2D guestCoordinate = CLLocationCoordinate2DMake(guestLocation.latitude, guestLocation.longitude);
+        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate: guestCoordinate title:@"guestTitle"];
+        NSLog(@"Greetings, %f,%f",guestCoordinate.latitude,guestCoordinate.longitude);
+    
+        [_eventMapView addAnnotation:add_Annotation];
     }
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ((buttonIndex == 0)||(buttonIndex == 1))
+    {
+            [[PFUser currentUser] setObject:[NSNumber numberWithBool:YES]  forKey:@"trackingAllowed"];
+    }
+    else
+    {
+        NSLog(@"User didn't enable Event Tracker!");
+    }
+}
 @end
