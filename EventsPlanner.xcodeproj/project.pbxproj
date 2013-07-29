@@ -37,8 +37,9 @@
 		7C418CB017A084F40084330C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CAF17A084F40084330C /* QuartzCore.framework */; };
 		7C418CB217A084FE0084330C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB117A084FE0084330C /* StoreKit.framework */; };
 		7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB317A085070084330C /* SystemConfiguration.framework */; };
+		7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C471F2417A7639A00601C0C /* MKGeocodingService.m */; };
 		7C553E8017A704C5006A6219 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E7F17A704C5006A6219 /* GoogleMaps.framework */; };
-		7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8317A7051C006A6219 /* GoogleMaps.bundle */; };
+		7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7C553E8317A7051C006A6219 /* GoogleMaps.bundle */; };
 		7C553E8617A70533006A6219 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8517A70533006A6219 /* AVFoundation.framework */; };
 		7C553E8817A70539006A6219 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8717A70539006A6219 /* CoreData.framework */; };
 		7C553E8A17A7054E006A6219 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8917A7054E006A6219 /* CoreText.framework */; };
@@ -113,6 +114,8 @@
 		7C418CAF17A084F40084330C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7C418CB117A084FE0084330C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7C418CB317A085070084330C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		7C471F2317A7639A00601C0C /* MKGeocodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKGeocodingService.h; sourceTree = "<group>"; };
+		7C471F2417A7639A00601C0C /* MKGeocodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKGeocodingService.m; sourceTree = "<group>"; };
 		7C553E7F17A704C5006A6219 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		7C553E8317A7051C006A6219 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		7C553E8517A70533006A6219 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -162,7 +165,6 @@
 				7C553E8A17A7054E006A6219 /* CoreText.framework in Frameworks */,
 				7C553E8817A70539006A6219 /* CoreData.framework in Frameworks */,
 				7C553E8617A70533006A6219 /* AVFoundation.framework in Frameworks */,
-				7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Frameworks */,
 				7C553E8017A704C5006A6219 /* GoogleMaps.framework in Frameworks */,
 				7C418CAA17A084E50084330C /* CoreLocation.framework in Frameworks */,
 				60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */,
@@ -268,8 +270,10 @@
 				7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */,
 				60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */,
 				60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */,
-				76FF2F4B17A6FE4700756ECA /* FBHostEventDetailsViewController.h */,
 				60D520B417A1C12D009CD642 /* FBGuestEventDetailsViewController.xib */,
+				7C471F2317A7639A00601C0C /* MKGeocodingService.h */,
+				7C471F2417A7639A00601C0C /* MKGeocodingService.m */,
+				76FF2F4B17A6FE4700756ECA /* FBHostEventDetailsViewController.h */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
 				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
@@ -398,6 +402,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
@@ -429,6 +434,7 @@
 				60D520BA17A1E3F1009CD642 /* MapPoint.m in Sources */,
 				9050550817A6CF540026B84C /* EventsCell.m in Sources */,
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
+				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
 				7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,

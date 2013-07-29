@@ -58,7 +58,7 @@
         
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
 
-        NSLog(@"%@", currentEventDetails);
+//        NSLog(@"%@", currentEventDetails);
         
         FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithEventDetails:currentEventDetails];
         

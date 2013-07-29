@@ -33,7 +33,7 @@
 {
 
     _array = [NSMutableArray array];
-       FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location,picture,rsvp_status),"
+       FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location,venue,picture,rsvp_status),"
                                                         @"id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {

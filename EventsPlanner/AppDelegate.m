@@ -29,7 +29,7 @@
     [PFFacebookUtils initializeFacebook];
     
     // Google Maps
-    [GMSServices provideAPIKey:@"{AIzaSyC45ad_cm9o1pRoybrn7fY9h-3e1TCAuTM}"];
+    [GMSServices provideAPIKey:@"AIzaSyCYlOnjDI2_s5WPCmeQJ7IMozreNxjyDww"];
     
     (void) [[FBDataStore alloc] init];
     
