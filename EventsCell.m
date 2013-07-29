@@ -20,9 +20,11 @@
     if (self) {
         _guestEvents=guestEvents;
         _hostEvents=hostEvents;
-        _eventTitle=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 0.0, 200.0, 25.0)];
-        _eventDate=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 27.0, 200.0, 15.0)];
-
+        
+        _eventTitle=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 0.0, 250.0, 25.0)];
+        _eventDate=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 27.0, 250.0, 15.0)];
+      
+        //if hosting the event
         if(indexPath.section==0){
             _eventTitle.text=[[_hostEvents objectAtIndex:indexPath.row] objectForKey:@"name"];
             NSString *startTime=[[_hostEvents objectAtIndex:indexPath.row]objectForKey:@"start_time"];

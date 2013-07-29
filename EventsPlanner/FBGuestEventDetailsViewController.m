@@ -32,13 +32,28 @@
     }
     return self;
 }
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    NSString *eventTitle = [_eventDetails objectForKey:@"name"];
+    
+    [_titleLabel setText:eventTitle];
+    
+    CGFloat fontSize = MIN(24,625/[eventTitle length]);
+    
+    UIFont *font = [UIFont fontWithName:[[_titleLabel font] fontName] size:fontSize];
+    
+    [_titleLabel setFont:font];
+    
+    self.navBar = self.navigationController.navigationBar;
+    
+    
     NSString *locationName = [_eventDetails objectForKey:@"location"];
     NSDictionary *venueDict = [_eventDetails objectForKey:@"venue"];
+    
+    [_addressLabel setText:locationName];
+    [_addressLabel setTextColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
     
     if (venueDict[@"latitude"]) {
         
@@ -60,7 +75,7 @@
         }];
         
     }
-    
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
