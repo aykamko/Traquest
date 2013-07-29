@@ -16,4 +16,9 @@ profile
 *.moved-aside
 DerivedData
 .idea/
+
+# custom stuff
 .arcconfig
+FacebookSDK.framework
+Parse.framework
+GoogleMaps.framework

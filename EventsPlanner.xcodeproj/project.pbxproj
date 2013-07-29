@@ -37,6 +37,17 @@
 		7C418CB017A084F40084330C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CAF17A084F40084330C /* QuartzCore.framework */; };
 		7C418CB217A084FE0084330C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB117A084FE0084330C /* StoreKit.framework */; };
 		7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB317A085070084330C /* SystemConfiguration.framework */; };
+		7C553E8017A704C5006A6219 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E7F17A704C5006A6219 /* GoogleMaps.framework */; };
+		7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8317A7051C006A6219 /* GoogleMaps.bundle */; };
+		7C553E8617A70533006A6219 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8517A70533006A6219 /* AVFoundation.framework */; };
+		7C553E8817A70539006A6219 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8717A70539006A6219 /* CoreData.framework */; };
+		7C553E8A17A7054E006A6219 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8917A7054E006A6219 /* CoreText.framework */; };
+		7C553E8C17A70559006A6219 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8B17A70559006A6219 /* GLKit.framework */; };
+		7C553E8E17A70560006A6219 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8D17A70560006A6219 /* ImageIO.framework */; };
+		7C553E9017A7056B006A6219 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8F17A7056B006A6219 /* libc++.dylib */; };
+		7C553E9217A70578006A6219 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9117A70578006A6219 /* libicucore.dylib */; };
+		7C553E9417A70581006A6219 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9317A70581006A6219 /* libz.dylib */; };
+		7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9517A7058E006A6219 /* OpenGLES.framework */; };
 		7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C5DE42117A0B00D00A6D635 /* FBDataStore.m */; };
 		7C99F0FF17A0BD9C008EBCF1 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C99F0FD17A0BD9C008EBCF1 /* FacebookSDK.framework */; };
 		7C99F10017A0BD9C008EBCF1 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C99F0FE17A0BD9C008EBCF1 /* Parse.framework */; };
@@ -102,6 +113,17 @@
 		7C418CAF17A084F40084330C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7C418CB117A084FE0084330C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7C418CB317A085070084330C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		7C553E7F17A704C5006A6219 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
+		7C553E8317A7051C006A6219 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		7C553E8517A70533006A6219 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		7C553E8717A70539006A6219 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		7C553E8917A7054E006A6219 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		7C553E8B17A70559006A6219 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		7C553E8D17A70560006A6219 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		7C553E8F17A7056B006A6219 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		7C553E9117A70578006A6219 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		7C553E9317A70581006A6219 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		7C553E9517A7058E006A6219 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		7C5DE42017A0B00D00A6D635 /* FBDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBDataStore.h; sourceTree = "<group>"; };
 		7C5DE42117A0B00D00A6D635 /* FBDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBDataStore.m; sourceTree = "<group>"; };
 		7C99F0FD17A0BD9C008EBCF1 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
@@ -131,6 +153,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */,
+				7C553E9417A70581006A6219 /* libz.dylib in Frameworks */,
+				7C553E9217A70578006A6219 /* libicucore.dylib in Frameworks */,
+				7C553E9017A7056B006A6219 /* libc++.dylib in Frameworks */,
+				7C553E8E17A70560006A6219 /* ImageIO.framework in Frameworks */,
+				7C553E8C17A70559006A6219 /* GLKit.framework in Frameworks */,
+				7C553E8A17A7054E006A6219 /* CoreText.framework in Frameworks */,
+				7C553E8817A70539006A6219 /* CoreData.framework in Frameworks */,
+				7C553E8617A70533006A6219 /* AVFoundation.framework in Frameworks */,
+				7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Frameworks */,
+				7C553E8017A704C5006A6219 /* GoogleMaps.framework in Frameworks */,
 				7C418CAA17A084E50084330C /* CoreLocation.framework in Frameworks */,
 				60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */,
 				7C99F0FF17A0BD9C008EBCF1 /* FacebookSDK.framework in Frameworks */,
@@ -188,6 +221,17 @@
 		7C418C6517A082030084330C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7C553E9517A7058E006A6219 /* OpenGLES.framework */,
+				7C553E9317A70581006A6219 /* libz.dylib */,
+				7C553E9117A70578006A6219 /* libicucore.dylib */,
+				7C553E8F17A7056B006A6219 /* libc++.dylib */,
+				7C553E8D17A70560006A6219 /* ImageIO.framework */,
+				7C553E8B17A70559006A6219 /* GLKit.framework */,
+				7C553E8917A7054E006A6219 /* CoreText.framework */,
+				7C553E8717A70539006A6219 /* CoreData.framework */,
+				7C553E8517A70533006A6219 /* AVFoundation.framework */,
+				7C553E8317A7051C006A6219 /* GoogleMaps.bundle */,
+				7C553E7F17A704C5006A6219 /* GoogleMaps.framework */,
 				60D520B617A1C967009CD642 /* MapKit.framework */,
 				7C99F0FD17A0BD9C008EBCF1 /* FacebookSDK.framework */,
 				7C99F0FE17A0BD9C008EBCF1 /* Parse.framework */,
@@ -215,10 +259,6 @@
 		7C418C6C17A082030084330C /* EventsPlanner */ = {
 			isa = PBXGroup;
 			children = (
-				90130EBB17A31D450038BBFB /* ActiveEventMapViewController.h */,
-				90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */,
-				90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */,
-				90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */,
 				7C418C7517A082030084330C /* AppDelegate.h */,
 				7C418C7617A082030084330C /* AppDelegate.m */,
 				60D520B817A1E3F1009CD642 /* MapPoint.h */,
@@ -238,6 +278,10 @@
 				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
 				9050550617A6CF540026B84C /* EventsCell.h */,
 				9050550717A6CF540026B84C /* EventsCell.m */,
+				90130EBB17A31D450038BBFB /* ActiveEventMapViewController.h */,
+				90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */,
+				90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */,
+				90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */,
 				7C418C7817A082030084330C /* Images.xcassets */,
 				90C01FC317A18779004D2134 /* EventsCell.xib */,
 				7C418C6D17A082030084330C /* Supporting Files */,
@@ -467,7 +511,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = armv7;
 			};
 			name = Debug;
 		};
@@ -497,8 +543,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = armv7;
 			};
 			name = Release;
 		};

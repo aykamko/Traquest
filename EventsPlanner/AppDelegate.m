@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import <GoogleMaps/GoogleMaps.h>
 #import "LoginViewController.h"
 #import "FBDataStore.h"
 
@@ -26,6 +27,9 @@
                   clientKey:@"oorBErIwapu2EDFwbJIkpOZVAEQUhuPV3azWbD0m"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     [PFFacebookUtils initializeFacebook];
+    
+    // Google Maps
+    [GMSServices provideAPIKey:@"{AIzaSyC45ad_cm9o1pRoybrn7fY9h-3e1TCAuTM}"];
     
     (void) [[FBDataStore alloc] init];
     
