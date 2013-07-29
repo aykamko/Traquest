@@ -49,6 +49,7 @@
 		90130EC117A31D450038BBFB /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
+		9050550817A6CF540026B84C /* EventsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9050550717A6CF540026B84C /* EventsCell.m */; };
 		90C01FC417A18779004D2134 /* EventsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90C01FC317A18779004D2134 /* EventsCell.xib */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
@@ -117,6 +118,8 @@
 		90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventsStatsViewController.m; sourceTree = "<group>"; };
 		90130EBF17A31D450038BBFB /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsListController.h; sourceTree = "<group>"; };
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
+		9050550617A6CF540026B84C /* EventsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventsCell.h; path = ../EventsCell.h; sourceTree = "<group>"; };
+		9050550717A6CF540026B84C /* EventsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventsCell.m; path = ../EventsCell.m; sourceTree = "<group>"; };
 		90C01FC317A18779004D2134 /* EventsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventsCell.xib; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
@@ -231,6 +234,8 @@
 				90130EC017A31D450038BBFB /* EventsListController.m */,
 				90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */,
 				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
+				9050550617A6CF540026B84C /* EventsCell.h */,
+				9050550717A6CF540026B84C /* EventsCell.m */,
 				7C418C7817A082030084330C /* Images.xcassets */,
 				90C01FC317A18779004D2134 /* EventsCell.xib */,
 				7C418C6D17A082030084330C /* Supporting Files */,
@@ -376,6 +381,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				60D520BA17A1E3F1009CD642 /* MapPoint.m in Sources */,
+				9050550817A6CF540026B84C /* EventsCell.m in Sources */,
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
 				7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,

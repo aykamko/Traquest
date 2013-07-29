@@ -7,6 +7,7 @@
 //
 
 #import "EventsTableViewDataSource.h"
+#import "EventsCell.h"
 @interface EventsTableViewDataSource()
 
 @property (nonatomic, strong) NSArray *hostEvents;
@@ -22,6 +23,7 @@
     if (self) {
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
+        NSLog(@"%@", _hostEvents);
     }
 
     return self;
@@ -31,24 +33,26 @@
 {
 
     static NSString *EventCellIdentifier = @"EventCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
+     EventsCell *cell = (EventsCell *)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EventCellIdentifier];
+        cell = [[EventsCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EventCellIdentifier guestEvents:_guestEvents hostEvents:_hostEvents indexPath:indexPath];
+        
     }
     
-    NSString *labelText = @"";
-    if (indexPath.section == 0) {
-        labelText = [[_hostEvents objectAtIndex:indexPath.row] objectForKey: @"name"];
-    } else if (indexPath.section == 1) {
-        labelText = [[_guestEvents objectAtIndex:indexPath.row] objectForKey: @"name"];
-    }
-    
-    [[cell textLabel] setText:labelText];
+//    NSString *labelText = @"";
+//    if (indexPath.section == 0) {
+//        labelText = [[_hostEvents objectAtIndex:indexPath.row] objectForKey:@"name"];
+//    } else if (indexPath.section == 1) {
+//        labelText = [[_guestEvents objectAtIndex:indexPath.row] objectForKey:@"name"];
+//    }
+//    
+//    [[cell textLabel] setText:labelText];
 
     return cell;
   
 }
+
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
