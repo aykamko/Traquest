@@ -14,6 +14,8 @@
 
 @property (nonatomic, strong) UITableViewController *tableViewController;
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
+@property (nonatomic, strong) FBEventDetailsViewController *eventDetailsViewController;
+
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
 
@@ -21,7 +23,7 @@
 
 @implementation EventsListController
 
--(id)initWithHostEvents:hostEvents guestEvents:guestEvents
+- (id)initWithHostEvents:hostEvents guestEvents:guestEvents
 {
     self = [super init];
     if (self) {
