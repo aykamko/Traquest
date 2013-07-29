@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import <Parse/Parse.h>
 
-@interface FBEventDetailsViewController : UIViewController <MKMapViewDelegate,CLLocationManagerDelegate>
+@interface FBGuestEventDetailsViewController : UIViewController <MKMapViewDelegate,CLLocationManagerDelegate>
 
 - (id)initWithEventDetails:(NSDictionary *)details;
 

@@ -6,17 +6,17 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#import "FBEventDetailsViewController.h"
+#import "FBGuestEventDetailsViewController.h"
 #import "MapPoint.h"
 
-@interface FBEventDetailsViewController (){
+@interface FBGuestEventDetailsViewController (){
 
     NSDictionary *_eventDetails;
 }
 
 @end
 
-@implementation FBEventDetailsViewController
+@implementation FBGuestEventDetailsViewController
 
 - (id)initWithEventDetails:(NSDictionary *)details
 {
@@ -42,9 +42,9 @@
         CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
         MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
         [_eventMapView addAnnotation:add_Annotation];
-        
+        NSLog(@"%f,%f",latitude,longitude);
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
-        [_eventMapView setRegion:region animated:YES];
+        [_eventMapView setRegion:region animated:NO];
         
     }];
 }
@@ -59,6 +59,20 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    if (![[PFUser currentUser] objectForKey:@"trackingAllowed"])
+    {
+        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:nil cancelButtonTitle: @"Done" otherButtonTitles:@"YES",@"Anonymous",@"NO"];
+    }
+    
+    else
+    {
+//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
+   
+    }
 }
 
 @end

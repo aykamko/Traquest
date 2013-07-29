@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
-		60D520B317A1A84E009CD642 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B217A1A84E009CD642 /* FBEventDetailsViewController.m */; };
-		60D520B517A1C12D009CD642 /* FBEventDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 60D520B417A1C12D009CD642 /* FBEventDetailsViewController.xib */; };
+		60D520B317A1A84E009CD642 /* FBGuestEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */; };
+		60D520B517A1C12D009CD642 /* FBGuestEventDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 60D520B417A1C12D009CD642 /* FBGuestEventDetailsViewController.xib */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60D520BA17A1E3F1009CD642 /* MapPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B917A1E3F1009CD642 /* MapPoint.m */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
@@ -66,9 +66,9 @@
 
 /* Begin PBXFileReference section */
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		60D520B117A1A84E009CD642 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
-		60D520B217A1A84E009CD642 /* FBEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsViewController.m; sourceTree = "<group>"; };
-		60D520B417A1C12D009CD642 /* FBEventDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FBEventDetailsViewController.xib; sourceTree = "<group>"; };
+		60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBGuestEventDetailsViewController.h; sourceTree = "<group>"; };
+		60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGuestEventDetailsViewController.m; sourceTree = "<group>"; };
+		60D520B417A1C12D009CD642 /* FBGuestEventDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FBGuestEventDetailsViewController.xib; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60D520B817A1E3F1009CD642 /* MapPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPoint.h; sourceTree = "<group>"; };
 		60D520B917A1E3F1009CD642 /* MapPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPoint.m; sourceTree = "<group>"; };
@@ -225,9 +225,9 @@
 				7CE2DA9917A09AD500834B6F /* LoginViewController.h */,
 				7CE2DA9A17A09AD500834B6F /* LoginViewController.m */,
 				7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */,
-				60D520B117A1A84E009CD642 /* FBEventDetailsViewController.h */,
-				60D520B217A1A84E009CD642 /* FBEventDetailsViewController.m */,
-				60D520B417A1C12D009CD642 /* FBEventDetailsViewController.xib */,
+				60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */,
+				60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */,
+				60D520B417A1C12D009CD642 /* FBGuestEventDetailsViewController.xib */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
 				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
@@ -357,7 +357,7 @@
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
 				90C01FC417A18779004D2134 /* EventsCell.xib in Resources */,
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
-				60D520B517A1C12D009CD642 /* FBEventDetailsViewController.xib in Resources */,
+				60D520B517A1C12D009CD642 /* FBGuestEventDetailsViewController.xib in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
@@ -390,7 +390,7 @@
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
 				7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */,
-				60D520B317A1A84E009CD642 /* FBEventDetailsViewController.m in Sources */,
+				60D520B317A1A84E009CD642 /* FBGuestEventDetailsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,11 +7,10 @@
 
 @interface LoginViewController ()
 @property (nonatomic, strong) EventsListController *eventsListController;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 @end
 
 @implementation LoginViewController
-
-
 
 #pragma mark - UIViewController
 
@@ -22,7 +21,23 @@
     // Check if user is cached and linked to Facebook, if so, bypass login    
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
         
-         [self setEventsListView];
+        [self setEventsListView];
+        [self getUserLocation];
+    }
+}
+
+-(void)getUserLocation
+{
+    if ([PFUser currentUser])
+    {
+        _locationManager = [[CLLocationManager alloc] init];
+        
+        [_locationManager setDelegate:self];
+        [_locationManager startUpdatingLocation];
+       
+
+ 
+
     }
 }
 
@@ -54,7 +69,6 @@
     [_activityIndicator startAnimating]; // Show loading indicator until login is finished
 }
 
-
 -(void)setEventsListView
 {
     [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
@@ -65,6 +79,38 @@
                                              animated:YES];
         
     }];
+    
+}
+
+-(void) locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
+{
+
+       CLLocation* location = [locations lastObject];
+      NSLog(@"%hhd", [CLLocationManager locationServicesEnabled]);
+    NSLog(@"%@", location);
+    CLLocationCoordinate2D coordinate = [location coordinate];
+    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
+                                           longitude:coordinate.longitude];
+    NSLog(@"%f,%f",geoPoint.latitude,geoPoint.longitude);
+    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
+    [_userPastLocations addObject:geoPoint];
+    
+    [[PFUser currentUser] setObject:[NSNumber numberWithBool:NO]  forKey:@"trackingAllowed"];
+    
+    
+    
+    NSDate* eventDate = location.timestamp;
+    NSLog(@"%@", location);
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    //self.userLocation = [[CLLocation alloc] init];
+    if (abs(howRecent) < 15.0)
+    {
+        // If the event is recent, assign to userLocation and print
+        // self.userLocation = location;
+        NSLog(@"latitude %+.6f, longitude %+.6f\n",
+              location.coordinate.latitude,
+              location.coordinate.longitude);
+    }
     
 }
 @end

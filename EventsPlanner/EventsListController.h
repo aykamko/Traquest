@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum eventType {
+    hostedEvent=0,
+    guestEvent=1
+}eventType;
+
 @interface EventsListController : NSObject<UITableViewDelegate>
 
 - (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents;
