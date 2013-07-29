@@ -22,7 +22,7 @@
         _hostEvents=hostEvents;
         _eventTitle=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 0.0, 250.0, 25.0)];
         _eventDate=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 27.0, 250.0, 15.0)];
-      //if hosting the event
+
         if(indexPath.section==0){
             _eventTitle.text=[[_hostEvents objectAtIndex:indexPath.row] objectForKey:@"name"];
             NSString *startTime=[[_hostEvents objectAtIndex:indexPath.row]objectForKey:@"start_time"];
@@ -35,7 +35,6 @@
             NSLog(@"%@", imageURL);
             NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
             UIImage *image=[UIImage imageWithData:imageData];
-          //  [self.contentView addSubview: [[UIImageView alloc]initWithFrame:CGRectMake(0.0, 0.0, 20.0, 20.0)]];
             self.imageView.image=image;
 
         }
