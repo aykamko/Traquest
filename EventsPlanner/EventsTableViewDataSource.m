@@ -23,7 +23,7 @@
     if (self) {
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
-        NSLog(@"%@", _hostEvents);
+       
     }
 
     return self;
@@ -40,15 +40,6 @@
         
     }
     
-//    NSString *labelText = @"";
-//    if (indexPath.section == 0) {
-//        labelText = [[_hostEvents objectAtIndex:indexPath.row] objectForKey:@"name"];
-//    } else if (indexPath.section == 1) {
-//        labelText = [[_guestEvents objectAtIndex:indexPath.row] objectForKey:@"name"];
-//    }
-//    
-//    [[cell textLabel] setText:labelText];
-
     return cell;
   
 }
