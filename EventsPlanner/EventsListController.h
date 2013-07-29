@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FBHostEventDetailsViewController.h"
 
 typedef enum eventType {
     hostedEvent=0,

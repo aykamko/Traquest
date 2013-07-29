@@ -27,7 +27,7 @@
 
 @implementation FBGuestEventDetailsViewController
 
-- (id)initWithEventDetails:(NSDictionary *)details
+- (id)initWithGuestEventDetails:(NSDictionary *)details
 {
     self = [super init];
     if (self) {
@@ -41,6 +41,24 @@
     _temp_mapView = [[ActiveEventMapViewController alloc] init];
     [self.navigationController pushViewController:_temp_mapView
                                          animated:YES];
+    //NSString *locationAddress = [_eventDetails objectForKey:@"location"];
+    
+//    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+//    
+//    [geocoder geocodeAddressString:locationAddress completionHandler:^(NSArray* placemarks, NSError* error){
+//        
+//        CLPlacemark *aPlacemark = [placemarks firstObject];
+//        double latitude = aPlacemark.location.coordinate.latitude;
+//        double longitude = aPlacemark.location.coordinate.longitude;
+//        
+//        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
+//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
+//        [_eventMapView addAnnotation:add_Annotation];
+//        NSLog(@"%f,%f",latitude,longitude);
+//        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 5000);
+//        [_eventMapView setRegion:region animated:NO];
+//        
+//    }];
 }
 
 - (void)viewDidLoad
@@ -100,7 +118,7 @@
     if ([tracking isEqualToNumber:@0])
     {
         
-        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:nil cancelButtonTitle: @"YES" otherButtonTitles:@"Anonymous",@"NO",nil];
+        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:self cancelButtonTitle: @"YES" otherButtonTitles:@"Anonymous",@"NO",nil];
         requestTracking.cancelButtonIndex = -1;
         [requestTracking show];
        

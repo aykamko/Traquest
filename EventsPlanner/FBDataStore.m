@@ -8,6 +8,8 @@
 
 #import <FacebookSDK/FacebookSDK.h>
 #import "FBDataStore.h"
+#import <Parse/PFUser.h>
+
 @interface FBDataStore(){
     NSMutableArray *_arrayOfEventIds;
 }
@@ -33,6 +35,7 @@
 {
 
     FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location,venue,picture.width(100).height(100),rsvp_status),"
+
                                                         @"id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
@@ -44,6 +47,10 @@
             [alert show];
         } else {
             NSString *myID = result[@"id"];
+            
+            // Save the logged in user's Facebook ID to parse
+            [[PFUser currentUser] setObject:myID forKey:@"fbID"];
+            [[PFUser currentUser] saveInBackground]; 
             
             FBGraphObject *fbGraphObj = (FBGraphObject *)result;
             NSArray *eventArray = fbGraphObj[@"events"][@"data"];

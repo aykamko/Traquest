@@ -38,8 +38,11 @@
 
 
 - (void)viewDidLoad {
-    
+
     [super viewDidLoad];
+    self.title = @"Facebook Profile";
+    _allUsers = [PFObject objectWithClassName:@"allUsers"];
+
     // Check if user is cached and linked to Facebook, if so, bypass login
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
         [self setEventsListView];
@@ -154,6 +157,10 @@
     _logo2.editable=NO;
     _logo2.scrollEnabled=NO;
     _logo.scrollEnabled=NO;
+
+
+    
+
     
     
     _logo.transform=CGAffineTransformMakeRotation(-13*M_PI/180.0);

@@ -13,7 +13,7 @@
 
 @interface FBGuestEventDetailsViewController : UIViewController <MKMapViewDelegate,CLLocationManagerDelegate>
 
-- (id)initWithEventDetails:(NSDictionary *)details;
+- (id)initWithGuestEventDetails:(NSDictionary *)details;
 
 @property (strong, nonatomic) IBOutlet UILabel *addressLabel;
 @property (strong, nonatomic) IBOutlet UINavigationBar *navBar;

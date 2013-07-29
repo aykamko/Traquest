@@ -9,6 +9,7 @@
 #import "EventsListController.h"
 #import "EventsTableViewDataSource.h"
 #import "FBGuestEventDetailsViewController.h"
+#import "FBHostEventDetailsViewController.h"
 
 @interface EventsListController() <UITableViewDelegate>
 
@@ -72,12 +73,29 @@
     
     if ([indexPath section] == hostedEvent) {
         eventsArray = _hostEvents;
+        
+        NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
+        
+        NSLog(@"%@", currentEventDetails);
+        
+        
+        FBHostEventDetailsViewController *hostEventDetailsController = [[FBHostEventDetailsViewController alloc] initWithHostEventDetails:currentEventDetails];
+        
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                       style:UIBarButtonItemStyleBordered
+                                                                      target:nil
+                                                                      action:nil];
+        
+        [_tableViewController.navigationItem setBackBarButtonItem:backButton];
+        
+        [[_tableViewController navigationController] pushViewController:hostEventDetailsController animated:YES];
     }
     
     else if([indexPath section] == guestEvent){
         eventsArray = _guestEvents;
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithEventDetails:currentEventDetails];
+
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
                                                                        style:UIBarButtonItemStyleBordered
