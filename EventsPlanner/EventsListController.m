@@ -14,8 +14,6 @@
 
 @property (nonatomic, strong) UITableViewController *tableViewController;
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
-@property (nonatomic, strong) FBEventDetailsViewController *eventDetailsViewController;
-
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
 
