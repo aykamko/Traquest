@@ -8,6 +8,7 @@
 
 #import "EventsTableViewDataSource.h"
 #import "EventsCell.h"
+
 @interface EventsTableViewDataSource()
 
 @property (nonatomic, strong) NSArray *hostEvents;
@@ -33,7 +34,7 @@
 {
 
     static NSString *EventCellIdentifier = @"EventCell";
-    EventsCell *cell = (EventsCell *)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     
     if (!cell) {
         
@@ -107,23 +108,5 @@
     }
     
 }
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    
-    switch (section) {
-        case 0: {
-            return @"Hosted Events";
-            break;
-        } case 1: {
-            return @"Invited Events";
-            break;
-        } default: {
-            return @"";
-        }
-    }
-    
-}
-
 
 @end

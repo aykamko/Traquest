@@ -10,6 +10,7 @@
 #import "EventsTableViewDataSource.h"
 #import "FBGuestEventDetailsViewController.h"
 #import "FBHostEventDetailsViewController.h"
+#import "EventHeaderView.h"
 
 @interface EventsListController() <UITableViewDelegate>
 
@@ -31,18 +32,22 @@
         _guestEvents = guestEvents;
         _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
-        _tableViewController=[[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
-        [[_tableViewController tableView]setDelegate:self];
-        [[_tableViewController tableView]setDataSource:_tableViewDataSource];
+        _tableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
+        [[_tableViewController tableView] setDelegate:self];
+        [[_tableViewController tableView] setDataSource:_tableViewDataSource];
         [self setTableViewController:_tableViewController];
-
-        UIImage *backgroundImage = [UIImage imageNamed:@"lemonlime.jpg"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:backgroundImage];
         
-        _tableViewController.tableView.backgroundView = imageView;
+//        UIImage *backgroundImage = [UIImage imageNamed:@"lemonlime.jpg"];
+//        UIImageView *imageView = [[UIImageView alloc] initWithImage:backgroundImage];
         
-        UIBarButtonItem *barButton=[[UIBarButtonItem alloc]initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logUserOut:)];
-        self.tableViewController.navigationItem.rightBarButtonItem=barButton;
+//        _tableViewController.tableView.backgroundView = imageView;
+        
+        UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+                                                                         style:UIBarButtonItemStylePlain
+                                                                        target:self
+                                                                        action:@selector(logUserOut:)];
+        self.tableViewController.navigationItem.rightBarButtonItem = logoutButton;
+        self.tableViewController.navigationController.navigationBar.translucent = NO;
         
     }
     return self;
@@ -66,8 +71,44 @@
     return [self tableViewController];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    // Hide footer
+    return 0.1;
+}
 
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 35.0;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 65.0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    EventHeaderView *headerView = [[EventHeaderView alloc] init];
+    
+    NSString *headerText;
+    switch (section) {
+        case 0: {
+            headerText = @"Events You're Hosting";
+            break;
+        } case 1: {
+            headerText = @"Events You're Invited To";
+            break;
+        } default: {
+            headerText = @"";
+        }
+    }
+    
+    [headerView setText:headerText];
+    return headerView;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSArray *eventsArray;
     
@@ -95,7 +136,6 @@
         eventsArray = _guestEvents;
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithGuestEventDetails:currentEventDetails];
-
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
                                                                        style:UIBarButtonItemStyleBordered

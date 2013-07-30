@@ -20,34 +20,20 @@
 
 #pragma mark - UIViewController
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        
-        self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        //self.view.backgroundColor = [UIColor whiteColor];
-        
-        self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"firstBackground.png"]];
-        [self setLayout];
-      
-    }
-    return self;
-}
-
-
-
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    self.title = @"Facebook Profile";
     _allUsers = [PFObject objectWithClassName:@"allUsers"];
-
+    
+    self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"firstBackground.png"]];
+    [self setLayout];
+    
     // Check if user is cached and linked to Facebook, if so, bypass login
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
         [self setEventsListView];
         [self getUserLocation];
     }
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -59,6 +45,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.navigationController setNavigationBarHidden:NO animated:animated];
+    [self.navigationController.navigationBar setTranslucent:NO];
     [super viewWillDisappear:animated];
 }
 

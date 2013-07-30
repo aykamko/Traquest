@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#define kSmallLabelFontSize           9.0f
-#define kBigLabelFontSize             10.0f
+#define kSmallLabelFontSize           13.0f
+#define kBigLabelFontSize             15.0f
 #define kLabelSpacer                  0.5f
-#define kSpaceBetweenImageAndLabels   7.0f
+#define kSpaceBetweenImageAndLabels   9.0f
 
 #import "EventsCell.h"
 
@@ -62,7 +62,6 @@
         [_eventTitleLabel setFont:[UIFont boldSystemFontOfSize:kBigLabelFontSize]];
         [_eventTitleLabel setBackgroundColor:[UIColor clearColor]];
         
-        
         // Event Status Label properties
         [_eventStatusLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
         NSLayoutConstraint *statusCenterConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
@@ -114,15 +113,8 @@
         [self.contentView addConstraints:@[statusCenterConstraint, statusLeftConstraint]];
         [self.contentView addConstraints:@[titleBottomConstraint, titleLeftConstraint]];
         [self.contentView addConstraints:@[dateTopConstraint, dateLeftConstraint]];
-        
     }
     return self;
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-
 }
 
 @end
