@@ -10,4 +10,5 @@
 @property (nonatomic,strong) NSMutableArray *userPastLocations;
 - (IBAction)loginButtonTouchHandler:(id)sender;
 
+
 @end

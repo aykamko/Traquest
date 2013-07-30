@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
 @property(nonatomic,strong) UIImage *background;
+-(IBAction)logUserOut:(id)sender;
 @end
 
 @implementation EventsListController
@@ -28,6 +29,10 @@
         
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
+
+        
+        
+        
      
         _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
@@ -44,10 +49,27 @@
   //    NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
 //        UIImage *image=[UIImage imageWithData:imageData];
         _tableViewController.view.backgroundColor=[UIColor colorWithPatternImage:_background];
-
+        //UIView *container=[[UIView alloc]init];
+        UIBarButtonItem *barButton=[[UIBarButtonItem alloc]initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logUserOut:)];
+        self.tableViewController.navigationItem.rightBarButtonItem=barButton;
+        
     }
     return self;
 }
+
+
+
+
+-(IBAction)logUserOut:(id)sender{
+    [PFUser logOut];
+    [_tableViewController.navigationController popToRootViewControllerAnimated:YES];
+    [PFQuery clearAllCachedResults];
+     NSLog(@"lalal");
+
+    
+      
+}
+
 
 - (id)presentableViewController
 {
