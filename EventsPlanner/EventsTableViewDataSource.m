@@ -37,7 +37,7 @@
     
     if (!cell) {
         cell = [[EventsCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EventCellIdentifier guestEvents:_guestEvents hostEvents:_hostEvents indexPath:indexPath];
-        
+       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     return cell;

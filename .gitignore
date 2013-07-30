@@ -17,3 +17,7 @@ profile
 DerivedData
 .idea/
 .arcconfig
+FacebookSDK.framework
+Parse.framework
+GoogleMaps.framework
+

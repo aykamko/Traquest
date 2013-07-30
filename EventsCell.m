@@ -59,10 +59,11 @@
         
         
         _eventTitle.textColor=[UIColor blueColor];
-        [_eventTitle setFont:[UIFont fontWithName:@"American Typewriter" size:18]];
-        [_eventDate setFont:[UIFont fontWithName:@"TimesNewRomanPSMT" size:10]];
+        [_eventTitle setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:18]];
+        [_eventDate setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:10]];
         [_eventTitle setBackgroundColor:[UIColor clearColor]];
         [_eventDate setBackgroundColor:[UIColor clearColor]];
+        self.backgroundColor=[UIColor clearColor];
         [self.contentView addSubview:_eventTitle];
         [self.contentView addSubview:_eventDate];
         

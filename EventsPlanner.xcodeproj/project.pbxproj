@@ -50,6 +50,8 @@
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
 		9050550817A6CF540026B84C /* EventsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9050550717A6CF540026B84C /* EventsCell.m */; };
+		9050551017A72D3E0026B84C /* lemonlime.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9050550E17A72C7E0026B84C /* lemonlime.jpg */; };
+		9050551217A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9050551117A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg */; };
 		90C01FC417A18779004D2134 /* EventsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90C01FC317A18779004D2134 /* EventsCell.xib */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
@@ -121,6 +123,8 @@
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
 		9050550617A6CF540026B84C /* EventsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventsCell.h; path = ../EventsCell.h; sourceTree = "<group>"; };
 		9050550717A6CF540026B84C /* EventsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventsCell.m; path = ../EventsCell.m; sourceTree = "<group>"; };
+		9050550E17A72C7E0026B84C /* lemonlime.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = lemonlime.jpg; sourceTree = "<group>"; };
+		9050551117A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg"; sourceTree = "<group>"; };
 		90C01FC317A18779004D2134 /* EventsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventsCell.xib; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
@@ -215,6 +219,8 @@
 		7C418C6C17A082030084330C /* EventsPlanner */ = {
 			isa = PBXGroup;
 			children = (
+				9050551117A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg */,
+				9050550E17A72C7E0026B84C /* lemonlime.jpg */,
 				90130EBB17A31D450038BBFB /* ActiveEventMapViewController.h */,
 				90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */,
 				90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */,
@@ -354,6 +360,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9050551217A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg in Resources */,
+				9050551017A72D3E0026B84C /* lemonlime.jpg in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,

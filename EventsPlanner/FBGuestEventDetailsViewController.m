@@ -42,7 +42,7 @@
         CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
         MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
         [_eventMapView addAnnotation:add_Annotation];
-        NSLog(@"%f,%f",latitude,longitude);
+       // NSLog(@"%f,%f",latitude,longitude);
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
         [_eventMapView setRegion:region animated:NO];
         
@@ -77,7 +77,7 @@
         PFGeoPoint *guestLocation = [[PFUser currentUser] objectForKey:@"location"];
         CLLocationCoordinate2D guestCoordinate = CLLocationCoordinate2DMake(guestLocation.latitude, guestLocation.longitude);
         MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate: guestCoordinate title:@"guestTitle"];
-        NSLog(@"Greetings, %f,%f",guestCoordinate.latitude,guestCoordinate.longitude);
+        //NSLog(@"Greetings, %f,%f",guestCoordinate.latitude,guestCoordinate.longitude);
     
         [_eventMapView addAnnotation:add_Annotation];
     }
@@ -91,7 +91,7 @@
     }
     else
     {
-        NSLog(@"User didn't enable Event Tracker!");
+       // NSLog(@"User didn't enable Event Tracker!");
     }
 }
 @end

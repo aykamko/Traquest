@@ -16,7 +16,7 @@
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
-
+@property(nonatomic,strong) UIImage *background;
 @end
 
 @implementation EventsListController
@@ -35,7 +35,16 @@
         [[_tableViewController tableView]setDelegate:self];
         [[_tableViewController tableView]setDataSource:_tableViewDataSource];
         [self setTableViewController:_tableViewController];
+
         
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"lemonlime" ofType:@"jpg"];
+        NSLog(@"%@",imagePath);
+        _background=[[UIImage alloc]init];
+       _background = [UIImage imageWithContentsOfFile:imagePath];
+  //    NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
+//        UIImage *image=[UIImage imageWithData:imageData];
+        _tableViewController.view.backgroundColor=[UIColor colorWithPatternImage:_background];
+
     }
     return self;
 }
@@ -44,6 +53,7 @@
 {
     return [self tableViewController];
 }
+
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
