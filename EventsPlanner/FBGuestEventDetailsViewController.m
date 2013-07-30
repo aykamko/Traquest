@@ -10,6 +10,7 @@
 #import "FBGuestEventDetailsViewController.h"
 #import "MapPoint.h"
 #import "MKGeocodingService.h"
+#import "ActiveEventMapViewController.h"
 
 @interface FBGuestEventDetailsViewController ()
 {
@@ -18,8 +19,10 @@
     NSDictionary *_eventDetails;
 }
 
+- (IBAction)_temp_openMapView:(id)sender;
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 
+@property (nonatomic, strong) ActiveEventMapViewController *temp_mapView;
 @end
 
 @implementation FBGuestEventDetailsViewController
@@ -32,6 +35,14 @@
     }
     return self;
 }
+
+- (void)_temp_openMapView:(id)sender
+{
+    _temp_mapView = [[ActiveEventMapViewController alloc] init];
+    [self.navigationController pushViewController:_temp_mapView
+                                         animated:YES];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -61,12 +72,13 @@
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         
-        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
-        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
-        //[_eventMapView addAnnotation:add_Annotation];
-       // NSLog(@"%f,%f",latitude,longitude);
-        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
-        //[_eventMapView setRegion:region animated:NO];
+//        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
+//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
+//        [_eventMapView addAnnotation:add_Annotation];
+//        NSLog(@"%f,%f",latitude,longitude);
+//        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
+//        [_eventMapView setRegion:region animated:NO];
+        
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
   
     } else {

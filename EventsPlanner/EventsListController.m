@@ -77,7 +77,6 @@
     else if([indexPath section] == guestEvent){
         eventsArray = _guestEvents;
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
-        
         FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithEventDetails:currentEventDetails];
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"

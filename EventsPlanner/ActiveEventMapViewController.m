@@ -7,32 +7,29 @@
 //
 
 #import "ActiveEventMapViewController.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 @interface ActiveEventMapViewController ()
-
+{
+    GMSMapView *_mapView;
+}
 @end
 
 @implementation ActiveEventMapViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (void)loadView
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:37.4842
+                                                            longitude:-122.1485
+                                                                 zoom:14];
+    _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    _mapView.myLocationEnabled = YES;
+    self.view = _mapView;
 }
 
-- (void)viewDidLoad
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 @end

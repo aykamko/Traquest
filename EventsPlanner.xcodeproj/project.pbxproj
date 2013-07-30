@@ -579,8 +579,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks",
-					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks/FacebookSDK",
 					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -602,8 +600,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks",
-					"$(SRCROOT)/../../Documents/iOS\\\\\\ Frameworks/FacebookSDK",
 					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

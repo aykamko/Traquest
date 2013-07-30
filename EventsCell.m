@@ -6,70 +6,115 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
+#define kSmallLabelFontSize           9.0f
+#define kBigLabelFontSize             10.0f
+#define kLabelSpacer                  0.5f
+#define kSpaceBetweenImageAndLabels   7.0f
+
 #import "EventsCell.h"
-@interface EventsCell()
-@property (nonatomic,strong) NSArray *guestEvents;
-@property (nonatomic, strong)NSArray *hostEvents;
-@end
 
 @implementation EventsCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier guestEvents:(NSArray *)guestEvents hostEvents:(NSArray *)hostEvents indexPath:(NSIndexPath *)indexPath
+- (instancetype)initWithTitle:(NSString *)title
+                   rsvpStatus:(NSString *)status
+                         date:(NSDate *)date
+                    thumbnail:(UIImage *)thumbnail
+             resuseIdentifier:(NSString *)identifier
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     if (self) {
-        _guestEvents=guestEvents;
-        _hostEvents=hostEvents;
         
-        _eventTitle=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 0.0, 250.0, 25.0)];
-        _eventDate=[[UILabel alloc]initWithFrame:CGRectMake(60.0, 27.0, 250.0, 15.0)];
-      
-        //if hosting the event
-        if(indexPath.section==0){
-            _eventTitle.text=[[_hostEvents objectAtIndex:indexPath.row] objectForKey:@"name"];
-            NSString *startTime=[[_hostEvents objectAtIndex:indexPath.row]objectForKey:@"start_time"];
-            NSString *date1=[startTime substringWithRange:NSMakeRange(0, 4)];
-            NSString *date2=[startTime substringWithRange:NSMakeRange(5, 2)];
-            NSString *date3=[startTime substringWithRange:NSMakeRange(8, 2)];
-            NSString *rsvp=[[_hostEvents objectAtIndex:indexPath.row]objectForKey:@"rsvp_status"];
-            _eventDate.text=[NSString stringWithFormat:@"%@/%@/%@        status: %@",date2,date3,date1,rsvp];
-            
-            NSString *imageURL=[[[[_hostEvents objectAtIndex:indexPath.row]objectForKey:@"picture"]objectForKey:@"data"]objectForKey:@"url"];;
-            NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
-            UIImage *image=[UIImage imageWithData:imageData];
-            self.imageView.image=image;
-
-        }
+        // Setting thumbnail
+        [self.imageView setImage:thumbnail];
         
-        else{
-            _eventTitle.text=[[_guestEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            NSString *startTime=[[_guestEvents objectAtIndex:indexPath.row]objectForKey:@"start_time"];
-            NSString *date1=[startTime substringWithRange:NSMakeRange(0, 4)];
-            NSString *date2=[startTime substringWithRange:NSMakeRange(5, 2)];
-            NSString *date3=[startTime substringWithRange:NSMakeRange(8, 2)];
-            NSString *rsvp=[[_guestEvents objectAtIndex:indexPath.row]objectForKey:@"rsvp_status"];
-            _eventDate.text=[NSString stringWithFormat:@"%@/%@/%@        status: %@",date2,date3,date1,rsvp];
-            
-            NSString *imageURL=[[[[_guestEvents objectAtIndex:indexPath.row]objectForKey:@"picture"]objectForKey:@"data"]objectForKey:@"url"];;
-            NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
-            UIImage *image=[UIImage imageWithData:imageData];
-            self.imageView.image=image;
-
-
-        }
+        // Initializing labels
+        _eventTitleLabel = [[UILabel alloc] init];
+        _eventStatusLabel = [[UILabel alloc] init];
+        _eventDateLabel = [[UILabel alloc] init];
+        
+        // Setting label text
+        [_eventTitleLabel setText:title];
+        [_eventStatusLabel setText:status];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDoesRelativeDateFormatting:YES];
+        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+        [_eventDateLabel setText:[dateFormatter stringFromDate:date]];
         
         
+        // Event Title Label properties
+        [_eventTitleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+        NSLayoutConstraint *titleBottomConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
+                                                                                 attribute:NSLayoutAttributeTop
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:_eventTitleLabel
+                                                                                 attribute:NSLayoutAttributeBottom
+                                                                                multiplier:1.0
+                                                                                  constant:kSmallLabelFontSize - kBigLabelFontSize + 1.0 + kLabelSpacer];
+        NSLayoutConstraint *titleLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
+                                                                               attribute:NSLayoutAttributeLeading
+                                                                               relatedBy:NSLayoutRelationEqual
+                                                                                  toItem:_eventTitleLabel
+                                                                               attribute:NSLayoutAttributeLeading
+                                                                              multiplier:1.0
+                                                                                constant:0.0];
+        [_eventTitleLabel setFont:[UIFont boldSystemFontOfSize:kBigLabelFontSize]];
+        [_eventTitleLabel setBackgroundColor:[UIColor clearColor]];
         
-        _eventTitle.textColor=[UIColor blueColor];
-        [_eventTitle setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:18]];
-        [_eventDate setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:10]];
-        [_eventTitle setBackgroundColor:[UIColor clearColor]];
-        [_eventDate setBackgroundColor:[UIColor clearColor]];
-        self.backgroundColor=[UIColor clearColor];
-        [self.contentView addSubview:_eventTitle];
-        [self.contentView addSubview:_eventDate];
         
-       
+        // Event Status Label properties
+        [_eventStatusLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+        NSLayoutConstraint *statusCenterConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+                                                                                  attribute:NSLayoutAttributeCenterY
+                                                                                  relatedBy:NSLayoutRelationEqual
+                                                                                     toItem:_eventStatusLabel
+                                                                                  attribute:NSLayoutAttributeCenterY
+                                                                                 multiplier:1.0
+                                                                                   constant:0.0];
+        NSLayoutConstraint *statusLeftConstraint = [NSLayoutConstraint constraintWithItem:self.imageView
+                                                                                attribute:NSLayoutAttributeRight
+                                                                                relatedBy:NSLayoutRelationEqual
+                                                                                   toItem:_eventStatusLabel
+                                                                                attribute:NSLayoutAttributeLeft
+                                                                               multiplier:1.0
+                                                                                 constant:-kSpaceBetweenImageAndLabels];
+        [_eventStatusLabel setFont:[UIFont systemFontOfSize:kSmallLabelFontSize]];
+        [_eventStatusLabel setTextColor:[UIColor lightGrayColor]];
+        [_eventStatusLabel setBackgroundColor:[UIColor clearColor]];
+        
+        
+        // Event Date Label properties
+        [_eventDateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+        NSLayoutConstraint *dateTopConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
+                                                                                 attribute:NSLayoutAttributeBottom
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:_eventDateLabel
+                                                                                 attribute:NSLayoutAttributeTop
+                                                                                multiplier:1.0
+                                                                                  constant:0.0 - kLabelSpacer];
+        NSLayoutConstraint *dateLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
+                                                                               attribute:NSLayoutAttributeLeading
+                                                                               relatedBy:NSLayoutRelationEqual
+                                                                                  toItem:_eventDateLabel
+                                                                               attribute:NSLayoutAttributeLeading
+                                                                              multiplier:1.0
+                                                                                constant:0.0];
+        [_eventDateLabel setFont:[UIFont systemFontOfSize:kSmallLabelFontSize]];
+        [_eventDateLabel setTextColor:[UIColor lightGrayColor]];
+        [_eventDateLabel setBackgroundColor:[UIColor clearColor]];
+        
+        
+        // Adding to superview
+        [self.contentView addSubview:_eventTitleLabel];
+        [self.contentView addSubview:_eventStatusLabel];
+        [self.contentView addSubview:_eventDateLabel];
+        
+        // Adding constraints
+        [self.contentView addConstraints:@[statusCenterConstraint, statusLeftConstraint]];
+        [self.contentView addConstraints:@[titleBottomConstraint, titleLeftConstraint]];
+        [self.contentView addConstraints:@[dateTopConstraint, dateLeftConstraint]];
+        
     }
     return self;
 }

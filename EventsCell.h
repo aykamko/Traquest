@@ -11,9 +11,16 @@
 
 
 @interface EventsCell : UITableViewCell
-@property (nonatomic,strong) UIImage *eventImage;
-@property (nonatomic,strong) UILabel *eventTitle;
-@property (nonatomic,strong) UILabel *eventDate;
--(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier guestEvents:(NSArray *)guestEvents hostEvents:(NSArray *)hostEvents indexPath:(NSIndexPath *)indexPath;
+
+@property (nonatomic, strong) UIImage *eventImage;
+@property (nonatomic, strong) UILabel *eventTitleLabel;
+@property (nonatomic, strong) UILabel *eventStatusLabel;
+@property (nonatomic, strong) UILabel *eventDateLabel;
+
+- (instancetype)initWithTitle:(NSString *)title
+                   rsvpStatus:(NSString *)status
+                         date:(NSDate *)date
+                    thumbnail:(UIImage *)thumbnail
+             resuseIdentifier:(NSString *)identifier;
 
 @end
