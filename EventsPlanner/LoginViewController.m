@@ -184,9 +184,7 @@
     [self.loginButton addTarget:self
                          action:@selector(loginButtonTouchHandler:)
                forControlEvents:UIControlEventTouchUpInside];
-    
->>>>>>> moreUI
-    
+        
     [self.view addSubview:description];
     [self.view addSubview:self.loginButton];
     [self.view addSubview:imageView];
