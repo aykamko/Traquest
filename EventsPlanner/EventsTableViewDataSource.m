@@ -59,8 +59,10 @@
     switch (section) {
         case 0: {
             return _hostEvents.count;
+            break;
         } case 1: {
             return _guestEvents.count;
+            break;
         } default: {
             return 0;
         }
@@ -74,8 +76,10 @@
     switch (section) {
         case 0: {
             return @"Hosted Events";
+            break;
         } case 1: {
             return @"Invited Events";
+            break;
         } default: {
             return @"";
         }

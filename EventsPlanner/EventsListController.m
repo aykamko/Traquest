@@ -16,24 +16,18 @@
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
-@property(nonatomic,strong) UIImage *background;
 -(IBAction)logUserOut:(id)sender;
 @end
 
 @implementation EventsListController
 
--(id)initWithHostEvents:hostEvents guestEvents:guestEvents
+- (id)initWithHostEvents:hostEvents guestEvents:guestEvents
 {
     self = [super init];
     if (self) {
         
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
-
-        
-        
-        
-     
         _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
         _tableViewController=[[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
@@ -41,15 +35,11 @@
         [[_tableViewController tableView]setDataSource:_tableViewDataSource];
         [self setTableViewController:_tableViewController];
 
+        UIImage *backgroundImage = [UIImage imageNamed:@"lemonlime.jpg"];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:backgroundImage];
         
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"lemonlime" ofType:@"jpg"];
-        NSLog(@"%@",imagePath);
-        _background=[[UIImage alloc]init];
-       _background = [UIImage imageWithContentsOfFile:imagePath];
-  //    NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
-//        UIImage *image=[UIImage imageWithData:imageData];
-        _tableViewController.view.backgroundColor=[UIColor colorWithPatternImage:_background];
-        //UIView *container=[[UIView alloc]init];
+        _tableViewController.tableView.backgroundView = imageView;
+        
         UIBarButtonItem *barButton=[[UIBarButtonItem alloc]initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logUserOut:)];
         self.tableViewController.navigationItem.rightBarButtonItem=barButton;
         
@@ -61,10 +51,9 @@
 
 
 -(IBAction)logUserOut:(id)sender{
-    [PFUser logOut];
-    [_tableViewController.navigationController popToRootViewControllerAnimated:YES];
-    [PFQuery clearAllCachedResults];
-     NSLog(@"lalal");
+    
+    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"To login as another use, please logout of your Facebook App." message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+    [alert show];
 
     
       
@@ -87,10 +76,7 @@
     
     else if([indexPath section] == guestEvent){
         eventsArray = _guestEvents;
-        
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
-
-        NSLog(@"%@", currentEventDetails);
         
         FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithEventDetails:currentEventDetails];
         
@@ -98,9 +84,7 @@
                                                                        style:UIBarButtonItemStyleBordered
                                                                       target:nil
                                                                       action:nil];
-        
         [_tableViewController.navigationItem setBackBarButtonItem:backButton];
-        
         [[_tableViewController navigationController] pushViewController:eventDetailsController animated:YES];
 
     }

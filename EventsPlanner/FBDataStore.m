@@ -9,7 +9,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "FBDataStore.h"
 @interface FBDataStore(){
-    NSMutableArray *_array;
+    NSMutableArray *_arrayOfEventIds;
 }
 
 @end
@@ -32,8 +32,7 @@
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
 {
 
-    _array = [NSMutableArray array];
-       FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location,picture,rsvp_status),"
+    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location,venue,picture,rsvp_status),"
                                                         @"id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
@@ -64,9 +63,9 @@
                 }
                 
                 if (isHost == YES) {
-                    [hostEvents addObject:event];
+                    [hostEvents insertObject:event atIndex:0];
                 } else {
-                    [guestEvents addObject:event];
+                    [guestEvents insertObject:event atIndex:0];
                 }
                 
             }
