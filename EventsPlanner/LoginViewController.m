@@ -88,27 +88,21 @@
 {
 
        CLLocation* location = [locations lastObject];
-<<<<<<< HEAD
     CLLocationCoordinate2D coordinate = [location coordinate];
     PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
                                            longitude:coordinate.longitude];
-=======
 //      NSLog(@"%hhd", [CLLocationManager locationServicesEnabled]);
 //    NSLog(@"%@", location);
-    CLLocationCoordinate2D coordinate = [location coordinate];
-    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-                                           longitude:coordinate.longitude];
+   // CLLocationCoordinate2D coordinate = [location coordinate];
+   // PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
+                                          // longitude:coordinate.longitude];
     //NSLog(@"%f,%f",geoPoint.latitude,geoPoint.longitude);
->>>>>>> 49ce3314b18256a2b8dfbb113c0ea161bfa0d190
+
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
     [_userPastLocations addObject:geoPoint];
     
     [[PFUser currentUser] setObject:[NSNumber numberWithBool:NO]  forKey:@"trackingAllowed"];
-<<<<<<< HEAD
 
-
-
-=======
     
     
     
@@ -124,7 +118,6 @@
 //              location.coordinate.latitude,
 //              location.coordinate.longitude);
     }
->>>>>>> 49ce3314b18256a2b8dfbb113c0ea161bfa0d190
     
 }
 @end

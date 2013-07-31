@@ -63,16 +63,13 @@
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         
-<<<<<<< HEAD
         CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
         MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
-        [_eventMapView addAnnotation:add_Annotation];
+        //[_eventMapView addAnnotation:add_Annotation];
        // NSLog(@"%f,%f",latitude,longitude);
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
-        [_eventMapView setRegion:region animated:NO];
-=======
+        //[_eventMapView setRegion:region animated:NO];
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
->>>>>>> 49ce3314b18256a2b8dfbb113c0ea161bfa0d190
         
     } else {
         
