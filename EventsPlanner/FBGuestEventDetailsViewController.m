@@ -35,7 +35,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     NSString *eventTitle = [_eventDetails objectForKey:@"name"];
     
     [_titleLabel setText:eventTitle];
@@ -56,7 +55,6 @@
     [_addressLabel setTextColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
     
     if (venueDict[@"latitude"]) {
-        
         NSString *latString = venueDict[@"latitude"];
         NSString *lngString = venueDict[@"longitude"];
         double latitude = [latString doubleValue];
@@ -70,7 +68,7 @@
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
         //[_eventMapView setRegion:region animated:NO];
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
-        
+  
     } else {
         
         MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];

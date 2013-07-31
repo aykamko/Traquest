@@ -61,9 +61,11 @@
 		90130EC117A31D450038BBFB /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
+		90164D2117A8659000E5A564 /* Empty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90164D2017A8659000E5A564 /* Empty.xib */; };
+		90164D2317A8939800E5A564 /* firstBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 90164D2217A8939800E5A564 /* firstBackground.png */; };
+		904838DE17A9AB1400042357 /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 904838DD17A9AB1400042357 /* stickynote.png */; };
 		9050550817A6CF540026B84C /* EventsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9050550717A6CF540026B84C /* EventsCell.m */; };
 		9050551017A72D3E0026B84C /* lemonlime.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9050550E17A72C7E0026B84C /* lemonlime.jpg */; };
-		9050551217A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9050551117A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg */; };
 		90C01FC417A18779004D2134 /* EventsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90C01FC317A18779004D2134 /* EventsCell.xib */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
@@ -145,10 +147,12 @@
 		90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventsStatsViewController.m; sourceTree = "<group>"; };
 		90130EBF17A31D450038BBFB /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsListController.h; sourceTree = "<group>"; };
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
+		90164D2017A8659000E5A564 /* Empty.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Empty.xib; sourceTree = "<group>"; };
+		90164D2217A8939800E5A564 /* firstBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = firstBackground.png; sourceTree = "<group>"; };
+		904838DD17A9AB1400042357 /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
 		9050550617A6CF540026B84C /* EventsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventsCell.h; path = ../EventsCell.h; sourceTree = "<group>"; };
 		9050550717A6CF540026B84C /* EventsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventsCell.m; path = ../EventsCell.m; sourceTree = "<group>"; };
 		9050550E17A72C7E0026B84C /* lemonlime.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = lemonlime.jpg; sourceTree = "<group>"; };
-		9050551117A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg"; sourceTree = "<group>"; };
 		90C01FC317A18779004D2134 /* EventsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventsCell.xib; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
@@ -264,7 +268,8 @@
 		7C418C6C17A082030084330C /* EventsPlanner */ = {
 			isa = PBXGroup;
 			children = (
-				9050551117A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg */,
+				904838DD17A9AB1400042357 /* stickynote.png */,
+				90164D2217A8939800E5A564 /* firstBackground.png */,
 				9050550E17A72C7E0026B84C /* lemonlime.jpg */,
 				90130EBB17A31D450038BBFB /* ActiveEventMapViewController.h */,
 				90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */,
@@ -284,6 +289,7 @@
 				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
 				90130EC017A31D450038BBFB /* EventsListController.m */,
+				90164D2017A8659000E5A564 /* Empty.xib */,
 				90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */,
 				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
 				9050550617A6CF540026B84C /* EventsCell.h */,
@@ -408,7 +414,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9050551217A737EB0026B84C /* lemon_lime_simple_texture_by_jdyanni-d514n8r.jpg in Resources */,
+				904838DE17A9AB1400042357 /* stickynote.png in Resources */,
 				9050551017A72D3E0026B84C /* lemonlime.jpg in Resources */,
 				7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Resources */,
 				60CC2BB817A83C030012A0EE /* FBGuestEventDetailsViewController.xib in Resources */,
@@ -417,8 +423,10 @@
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
 				90C01FC417A18779004D2134 /* EventsCell.xib in Resources */,
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
+				90164D2317A8939800E5A564 /* firstBackground.png in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
+				90164D2117A8659000E5A564 /* Empty.xib in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
 				7CE2DA9D17A09AD500834B6F /* LoginViewController.xib in Resources */,
 			);
@@ -579,8 +587,10 @@
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -602,6 +612,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
