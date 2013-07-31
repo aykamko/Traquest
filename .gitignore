@@ -16,8 +16,13 @@ profile
 *.moved-aside
 DerivedData
 .idea/
+
+# custom stuff
 .arcconfig
 FacebookSDK.framework
 Parse.framework
 GoogleMaps.framework
+<<<<<<< HEAD
 
+=======
+>>>>>>> 49ce3314b18256a2b8dfbb113c0ea161bfa0d190

@@ -22,7 +22,7 @@
 
 @implementation EventsListController
 
--(id)initWithHostEvents:hostEvents guestEvents:guestEvents
+- (id)initWithHostEvents:hostEvents guestEvents:guestEvents
 {
     self = [super init];
     if (self) {
@@ -90,7 +90,7 @@
         
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
 
-        NSLog(@"%@", currentEventDetails);
+//        NSLog(@"%@", currentEventDetails);
         
         FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithEventDetails:currentEventDetails];
         

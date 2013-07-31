@@ -15,6 +15,9 @@
 
 - (id)initWithEventDetails:(NSDictionary *)details;
 
-@property (strong, nonatomic) IBOutlet MKMapView *eventMapView;
+@property (strong, nonatomic) IBOutlet UILabel *addressLabel;
+@property (strong, nonatomic) IBOutlet UINavigationBar *navBar;
+@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
+
 
 @end
