@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
+#import "FBHostEventDetailsViewController.h"
 
 @interface ActiveEventMapViewController : UIViewController
+
+@property (strong, nonatomic) NSMutableArray *friendsIDArray;
+@property (strong, nonatomic) IBOutlet UINavigationBar *navBar;
+
+- (id)initWithFriendsDetails:(NSMutableArray *)attendingFriends;
 
 @end

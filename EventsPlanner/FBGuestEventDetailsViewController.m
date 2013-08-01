@@ -8,7 +8,6 @@
 
 #import <GoogleMaps/GoogleMaps.h>
 #import "FBGuestEventDetailsViewController.h"
-#import "MapPoint.h"
 #import "MKGeocodingService.h"
 #import "ActiveEventMapViewController.h"
 
@@ -41,24 +40,6 @@
     _temp_mapView = [[ActiveEventMapViewController alloc] init];
     [self.navigationController pushViewController:_temp_mapView
                                          animated:YES];
-    //NSString *locationAddress = [_eventDetails objectForKey:@"location"];
-    
-//    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-//    
-//    [geocoder geocodeAddressString:locationAddress completionHandler:^(NSArray* placemarks, NSError* error){
-//        
-//        CLPlacemark *aPlacemark = [placemarks firstObject];
-//        double latitude = aPlacemark.location.coordinate.latitude;
-//        double longitude = aPlacemark.location.coordinate.longitude;
-//        
-//        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
-//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
-//        [_eventMapView addAnnotation:add_Annotation];
-//        NSLog(@"%f,%f",latitude,longitude);
-//        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 5000);
-//        [_eventMapView setRegion:region animated:NO];
-//        
-//    }];
 }
 
 - (void)viewDidLoad
@@ -90,13 +71,6 @@
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         
-//        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
-//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
-//        [_eventMapView addAnnotation:add_Annotation];
-//        NSLog(@"%f,%f",latitude,longitude);
-//        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
-//        [_eventMapView setRegion:region animated:NO];
-        
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
   
     } else {
@@ -123,17 +97,7 @@
         [requestTracking show];
        
     }
-    else
-    {
-        /*
-        PFGeoPoint *guestLocation = [[PFUser currentUser] objectForKey:@"location"];
-        CLLocationCoordinate2D guestCoordinate = CLLocationCoordinate2DMake(guestLocation.latitude, guestLocation.longitude);
-        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate: guestCoordinate title:@"guestTitle"];
-        //NSLog(@"Greetings, %f,%f",guestCoordinate.latitude,guestCoordinate.longitude);
-    
-        [_eventMapView addAnnotation:add_Annotation];
-         */
-    }
+
 }
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate

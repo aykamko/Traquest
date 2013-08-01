@@ -34,7 +34,7 @@
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
 {
 
-    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location,venue,picture.width(100).height(100),rsvp_status),"
+    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id),location,venue,picture.width(100).height(100),rsvp_status,attending),"
 
                                                         @"id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {

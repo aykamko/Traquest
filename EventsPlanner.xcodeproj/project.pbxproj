@@ -15,6 +15,9 @@
 		760BDC3317A9D3D4008A1877 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */; };
 		761214AD17A710180024CA09 /* FBHostEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761214AC17A710180024CA09 /* FBHostEventDetailsViewController.m */; };
 		761214AF17A732460024CA09 /* FBHostEventDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 761214AE17A7133A0024CA09 /* FBHostEventDetailsViewController.xib */; };
+		768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */; };
+		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
+		7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */; };
 		76FF2F5117A704B900756ECA /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76FF2F5017A704B900756ECA /* Parse.framework */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
 		7C418C6917A082030084330C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6817A082030084330C /* CoreGraphics.framework */; };
@@ -42,8 +45,6 @@
 		7C418CB217A084FE0084330C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB117A084FE0084330C /* StoreKit.framework */; };
 		7C418CB417A085070084330C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418CB317A085070084330C /* SystemConfiguration.framework */; };
 		7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C471F2417A7639A00601C0C /* MKGeocodingService.m */; };
-		7C553E8017A704C5006A6219 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E7F17A704C5006A6219 /* GoogleMaps.framework */; };
-		7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7C553E8317A7051C006A6219 /* GoogleMaps.bundle */; };
 		7C553E8617A70533006A6219 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8517A70533006A6219 /* AVFoundation.framework */; };
 		7C553E8817A70539006A6219 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8717A70539006A6219 /* CoreData.framework */; };
 		7C553E8A17A7054E006A6219 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E8917A7054E006A6219 /* CoreText.framework */; };
@@ -60,7 +61,6 @@
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
 		7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */; };
-		90130EC117A31D450038BBFB /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
 		90164D2117A8659000E5A564 /* Empty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90164D2017A8659000E5A564 /* Empty.xib */; };
@@ -90,11 +90,14 @@
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60D520B817A1E3F1009CD642 /* MapPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPoint.h; sourceTree = "<group>"; };
 		60D520B917A1E3F1009CD642 /* MapPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPoint.m; sourceTree = "<group>"; };
-
 		760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		761214AB17A710180024CA09 /* FBHostEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBHostEventDetailsViewController.h; sourceTree = "<group>"; };
 		761214AC17A710180024CA09 /* FBHostEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBHostEventDetailsViewController.m; sourceTree = "<group>"; };
 		761214AE17A7133A0024CA09 /* FBHostEventDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FBHostEventDetailsViewController.xib; path = ../FBHostEventDetailsViewController.xib; sourceTree = "<group>"; };
+		768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
+		768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
+		7698B93117AAE8AB00D351BF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
+		7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		76FF2F5017A704B900756ECA /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = "../Documents/iOS Frameworks/Parse.framework"; sourceTree = "<group>"; };
 		7C418C6317A082030084330C /* EventsPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C418C6617A082030084330C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -127,8 +130,6 @@
 		7C418CB317A085070084330C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		7C471F2317A7639A00601C0C /* MKGeocodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKGeocodingService.h; sourceTree = "<group>"; };
 		7C471F2417A7639A00601C0C /* MKGeocodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKGeocodingService.m; sourceTree = "<group>"; };
-		7C553E7F17A704C5006A6219 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
-		7C553E8317A7051C006A6219 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		7C553E8517A70533006A6219 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		7C553E8717A70539006A6219 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		7C553E8917A7054E006A6219 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -147,8 +148,6 @@
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
 		7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small@2x.png"; sourceTree = "<group>"; };
-		90130EBB17A31D450038BBFB /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
-		90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
 		90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveEventsStatsViewController.h; sourceTree = "<group>"; };
 		90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventsStatsViewController.m; sourceTree = "<group>"; };
 		90130EBF17A31D450038BBFB /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsListController.h; sourceTree = "<group>"; };
@@ -169,6 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */,
 				7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */,
 				7C553E9417A70581006A6219 /* libz.dylib in Frameworks */,
 				7C553E9217A70578006A6219 /* libicucore.dylib in Frameworks */,
@@ -178,7 +178,6 @@
 				7C553E8A17A7054E006A6219 /* CoreText.framework in Frameworks */,
 				7C553E8817A70539006A6219 /* CoreData.framework in Frameworks */,
 				7C553E8617A70533006A6219 /* AVFoundation.framework in Frameworks */,
-				7C553E8017A704C5006A6219 /* GoogleMaps.framework in Frameworks */,
 				7C418CAA17A084E50084330C /* CoreLocation.framework in Frameworks */,
 				760BDC3317A9D3D4008A1877 /* FacebookSDK.framework in Frameworks */,
 				60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */,
@@ -217,6 +216,7 @@
 		7C418C5A17A082030084330C = {
 			isa = PBXGroup;
 			children = (
+				7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */,
 				7C418C6C17A082030084330C /* EventsPlanner */,
 				7C418C8517A082030084330C /* EventsPlannerTests */,
 				7C418C6517A082030084330C /* Frameworks */,
@@ -236,7 +236,7 @@
 		7C418C6517A082030084330C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-
+				7698B93117AAE8AB00D351BF /* GoogleMaps.framework */,
 				7C553E9517A7058E006A6219 /* OpenGLES.framework */,
 				7C553E9317A70581006A6219 /* libz.dylib */,
 				7C553E9117A70578006A6219 /* libicucore.dylib */,
@@ -246,9 +246,6 @@
 				7C553E8917A7054E006A6219 /* CoreText.framework */,
 				7C553E8717A70539006A6219 /* CoreData.framework */,
 				7C553E8517A70533006A6219 /* AVFoundation.framework */,
-				7C553E8317A7051C006A6219 /* GoogleMaps.bundle */,
-				7C553E7F17A704C5006A6219 /* GoogleMaps.framework */,
-
 				760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */,
 				76FF2F5017A704B900756ECA /* Parse.framework */,
 				60D520B617A1C967009CD642 /* MapKit.framework */,
@@ -276,16 +273,17 @@
 		7C418C6C17A082030084330C /* EventsPlanner */ = {
 			isa = PBXGroup;
 			children = (
-
 				904838DD17A9AB1400042357 /* stickynote.png */,
 				90164D2217A8939800E5A564 /* firstBackground.png */,
 				9050550E17A72C7E0026B84C /* lemonlime.jpg */,
-
+				768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */,
+				768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */,
 				761214AE17A7133A0024CA09 /* FBHostEventDetailsViewController.xib */,
 				761214AB17A710180024CA09 /* FBHostEventDetailsViewController.h */,
 				761214AC17A710180024CA09 /* FBHostEventDetailsViewController.m */,
-				90130EBB17A31D450038BBFB /* ActiveEventMapViewController.h */,
-				90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */,
+				60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */,
+				60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */,
+				60CC2BB717A83C030012A0EE /* FBGuestEventDetailsViewController.xib */,
 				7C418C7517A082030084330C /* AppDelegate.h */,
 				7C418C7617A082030084330C /* AppDelegate.m */,
 				60D520B817A1E3F1009CD642 /* MapPoint.h */,
@@ -293,13 +291,8 @@
 				7CE2DA9917A09AD500834B6F /* LoginViewController.h */,
 				7CE2DA9A17A09AD500834B6F /* LoginViewController.m */,
 				7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */,
-				60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */,
-				60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */,
-				60CC2BB717A83C030012A0EE /* FBGuestEventDetailsViewController.xib */,
 				7C471F2317A7639A00601C0C /* MKGeocodingService.h */,
 				7C471F2417A7639A00601C0C /* MKGeocodingService.m */,
-
-				60D520B417A1C12D009CD642 /* FBGuestEventDetailsViewController.xib */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
 				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
@@ -309,8 +302,6 @@
 				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
 				9050550617A6CF540026B84C /* EventsCell.h */,
 				9050550717A6CF540026B84C /* EventsCell.m */,
-				90130EBB17A31D450038BBFB /* ActiveEventMapViewController.h */,
-				90130EBC17A31D450038BBFB /* ActiveEventMapViewController.m */,
 				90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */,
 				90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */,
 				7C418C7817A082030084330C /* Images.xcassets */,
@@ -429,9 +420,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				904838DE17A9AB1400042357 /* stickynote.png in Resources */,
 				9050551017A72D3E0026B84C /* lemonlime.jpg in Resources */,
-				7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Resources */,
 				60CC2BB817A83C030012A0EE /* FBGuestEventDetailsViewController.xib in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
@@ -470,8 +461,8 @@
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
 				7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
+				768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */,
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
-				90130EC117A31D450038BBFB /* ActiveEventMapViewController.m in Sources */,
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
 				7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */,
@@ -596,10 +587,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../Documents/iOS\\\\\\\\\\\\\\ Frameworks",
-					"$(SRCROOT)/../../Documents/iOS\\\\\\\\\\\\\\ Frameworks/FacebookSDK",
 					"$(SRCROOT)",
-					"$(SRCROOT)/../Documents/iOS\\ Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
@@ -620,11 +608,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-
-					"$(SRCROOT)/../../Documents/iOS\\\\\\\\\\\\\\ Frameworks",
-					"$(SRCROOT)/../../Documents/iOS\\\\\\\\\\\\\\ Frameworks/FacebookSDK",
 					"$(SRCROOT)",
-					"$(SRCROOT)/../Documents/iOS\\ Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
