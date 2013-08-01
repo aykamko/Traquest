@@ -14,6 +14,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "FBGuestEventsDetailsDataSource.h"
+#import "ActiveEventMapViewController.h"
 
 @interface FBGuestEventDetailsViewController ()<FBFriendPickerDelegate>
 {
@@ -31,11 +32,12 @@
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 
+//@property (nonatomic, strong) ActiveEventMapViewController *temp_mapView;
 @end
 
 @implementation FBGuestEventDetailsViewController
 
-- (id)initWithEventDetails:(NSDictionary *)details
+- (id)initWithGuestEventDetails:(NSDictionary *)details
 {
     self = [super init];
     if (self) {
@@ -108,7 +110,7 @@
     [inviteButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
     [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
     [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
-    [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:) forControlEvents:UIControlEventTouchDragOutside];
+    [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:) forControlEvents:UIControlEventTouchUpOutside];
     [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
     
     //creating RSVP Status button, need to figure out if writing from FB SDK is possible
@@ -150,15 +152,21 @@
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
     if (venueDict[@"latitude"]) {
-        
         NSString *latString = venueDict[@"latitude"];
         NSString *lngString = venueDict[@"longitude"];
         double latitude = [latString doubleValue];
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         
-        [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
+//        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
+//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
+//        [_eventMapView addAnnotation:add_Annotation];
+//        NSLog(@"%f,%f",latitude,longitude);
+//        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
+//        [_eventMapView setRegion:region animated:NO];
         
+        [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
+  
     } else {
         
         MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
@@ -179,8 +187,9 @@
     //setting some UI aspects of tableview
     skeletonRect.size.height = _detailsTable.contentSize.height;
     _detailsTable.frame = skeletonRect;
-    [_detailsTable.layer setBorderWidth:2];
-    [_detailsTable.layer setBorderColor: [[UIColor blackColor] CGColor]];
+    [_detailsTable.layer setCornerRadius:3];
+    [_detailsTable.layer setBorderWidth:0.5];
+    [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3]CGColor]];
     [_detailsTable setUserInteractionEnabled:NO];
     [_detailsTable setScrollEnabled:NO];
     
@@ -193,7 +202,7 @@
     if ([tracking isEqualToNumber:@0])
     {
         
-        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:nil cancelButtonTitle: @"YES" otherButtonTitles:@"Anonymous",@"NO",nil];
+        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:self cancelButtonTitle: @"YES" otherButtonTitles:@"Anonymous",@"NO",nil];
         requestTracking.cancelButtonIndex = -1;
         [requestTracking show];
        
@@ -204,7 +213,7 @@
         PFGeoPoint *guestLocation = [[PFUser currentUser] objectForKey:@"location"];
         CLLocationCoordinate2D guestCoordinate = CLLocationCoordinate2DMake(guestLocation.latitude, guestLocation.longitude);
         MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate: guestCoordinate title:@"guestTitle"];
-        NSLog(@"Greetings, %f,%f",guestCoordinate.latitude,guestCoordinate.longitude);
+        //NSLog(@"Greetings, %f,%f",guestCoordinate.latitude,guestCoordinate.longitude);
     
         [_eventMapView addAnnotation:add_Annotation];
          */
@@ -232,7 +241,7 @@
     }
     else
     {
-        NSLog(@"User didn't enable Event Tracker!");
+       // NSLog(@"User didn't enable Event Tracker!");
     }
 }
 

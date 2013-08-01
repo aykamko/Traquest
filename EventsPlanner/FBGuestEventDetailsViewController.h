@@ -13,7 +13,7 @@
 
 @interface FBGuestEventDetailsViewController : UIViewController <UIScrollViewDelegate>
 
-- (id)initWithEventDetails:(NSDictionary *)details;
+- (id)initWithGuestEventDetails:(NSDictionary *)details;
 
 
 

@@ -33,18 +33,56 @@
 {
 
     static NSString *EventCellIdentifier = @"EventCell";
-     EventsCell *cell = (EventsCell *)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
+    EventsCell *cell = (EventsCell *)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     
     if (!cell) {
-        cell = [[EventsCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EventCellIdentifier guestEvents:_guestEvents hostEvents:_hostEvents indexPath:indexPath];
         
+        NSArray *eventArray;
+        if (indexPath.section == 0) {
+            eventArray = _hostEvents;
+        } else {
+            eventArray = _guestEvents;
+        }
+        
+        // Arguments to pass to cell
+        NSString *cellTitle;
+        NSString *cellRsvpStatus;
+        NSDate *cellDate;
+        UIImage *cellThumbnail;
+        
+        // Getting arguments
+        cellTitle = eventArray[indexPath.row][@"name"];
+        
+        cellRsvpStatus = eventArray[indexPath.row][@"rsvp_status"];
+        if ([cellRsvpStatus isEqualToString:@"attending"]) {
+            cellRsvpStatus = @"You're going.";
+        }
+        
+        NSString *startTimeStr = eventArray[indexPath.row][@"start_time"];
+        
+        NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
+        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        [dateFormater setLocale:enUSPOSIXLocale];
+        [dateFormater setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+        
+        cellDate = [dateFormater dateFromString:startTimeStr];
+        
+        NSString *imageURLStr = eventArray[indexPath.row][@"picture"][@"data"][@"url"];
+        NSURL *URL = [NSURL URLWithString:imageURLStr];
+        NSData *imageData = [NSData dataWithContentsOfURL:URL];
+        cellThumbnail = [UIImage imageWithData:imageData];
+        
+        // Allocating and initializing actual cell
+        cell = [[EventsCell alloc] initWithTitle:cellTitle
+                                      rsvpStatus:cellRsvpStatus
+                                            date:cellDate
+                                       thumbnail:cellThumbnail
+                                resuseIdentifier:EventCellIdentifier];
     }
     
     return cell;
   
 }
-
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {

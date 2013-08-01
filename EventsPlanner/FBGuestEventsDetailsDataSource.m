@@ -36,9 +36,8 @@
     NSMutableString *privacyString= [NSMutableString stringWithString:[details[@"privacy"] isEqualToString:@"OPEN"]? @"Public":@"Invite Only"];
     
     NSString *startTime = details[@"start_time"];
-    startTime = [startTime substringToIndex:[startTime length]-5];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss"];
+    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZ"];
     NSDate *date =[formatter dateFromString:startTime];
     [formatter setDateFormat:@"EEEE',' MMMM dd',' 'at' h:mm a"];
     NSString *dateString = [formatter stringFromDate:date];

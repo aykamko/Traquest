@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FBHostEventDetailsViewController.h"
 
 typedef enum eventType {
     hostedEvent=0,
@@ -17,6 +18,8 @@ typedef enum eventType {
 
 - (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents;
 - (id)presentableViewController;
+
+
 
 
 @end
