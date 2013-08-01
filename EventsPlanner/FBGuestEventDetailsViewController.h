@@ -11,13 +11,10 @@
 #import <CoreLocation/CoreLocation.h>
 #import <Parse/Parse.h>
 
-@interface FBGuestEventDetailsViewController : UIViewController <MKMapViewDelegate,CLLocationManagerDelegate>
+@interface FBGuestEventDetailsViewController : UIViewController <UIScrollViewDelegate>
 
 - (id)initWithEventDetails:(NSDictionary *)details;
 
-@property (strong, nonatomic) IBOutlet UILabel *addressLabel;
-@property (strong, nonatomic) IBOutlet UINavigationBar *navBar;
-@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 
 
 @end

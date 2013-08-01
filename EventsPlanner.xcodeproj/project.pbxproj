@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		60CC2BB817A83C030012A0EE /* FBGuestEventDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 60CC2BB717A83C030012A0EE /* FBGuestEventDetailsViewController.xib */; };
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B317A1A84E009CD642 /* FBGuestEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60D520BA17A1E3F1009CD642 /* MapPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B917A1E3F1009CD642 /* MapPoint.m */; };
+		60DB5D6717AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 60DB5D6617AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
 		7C418C6917A082030084330C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6817A082030084330C /* CoreGraphics.framework */; };
 		7C418C6B17A082030084330C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6A17A082030084330C /* UIKit.framework */; };
@@ -77,13 +77,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		60CC2BB717A83C030012A0EE /* FBGuestEventDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FBGuestEventDetailsViewController.xib; sourceTree = "<group>"; };
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBGuestEventDetailsViewController.h; sourceTree = "<group>"; };
 		60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGuestEventDetailsViewController.m; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60D520B817A1E3F1009CD642 /* MapPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPoint.h; sourceTree = "<group>"; };
 		60D520B917A1E3F1009CD642 /* MapPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPoint.m; sourceTree = "<group>"; };
+		60DB5D6517AA65EA00334F95 /* FBGuestEventsDetailsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBGuestEventsDetailsDataSource.h; sourceTree = "<group>"; };
+		60DB5D6617AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGuestEventsDetailsDataSource.m; sourceTree = "<group>"; };
 		7C418C6317A082030084330C /* EventsPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C418C6617A082030084330C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7C418C6817A082030084330C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -269,7 +270,8 @@
 				7CE2DA9B17A09AD500834B6F /* LoginViewController.xib */,
 				60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */,
 				60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */,
-				60CC2BB717A83C030012A0EE /* FBGuestEventDetailsViewController.xib */,
+				60DB5D6517AA65EA00334F95 /* FBGuestEventsDetailsDataSource.h */,
+				60DB5D6617AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m */,
 				7C471F2317A7639A00601C0C /* MKGeocodingService.h */,
 				7C471F2417A7639A00601C0C /* MKGeocodingService.m */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
@@ -401,7 +403,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C553E8417A7051C006A6219 /* GoogleMaps.bundle in Resources */,
-				60CC2BB817A83C030012A0EE /* FBGuestEventDetailsViewController.xib in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
@@ -439,6 +440,7 @@
 				90130EC117A31D450038BBFB /* ActiveEventMapViewController.m in Sources */,
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
+				60DB5D6717AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m in Sources */,
 				7CE2DA9C17A09AD500834B6F /* LoginViewController.m in Sources */,
 				60D520B317A1A84E009CD642 /* FBGuestEventDetailsViewController.m in Sources */,
 			);
@@ -514,10 +516,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv6";
 			};
 			name = Debug;
 		};
@@ -547,10 +549,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv6";
 			};
 			name = Release;
 		};
