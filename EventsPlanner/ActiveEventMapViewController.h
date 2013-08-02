@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
-#import "FBHostEventDetailsViewController.h"
 
 @interface ActiveEventMapViewController : UIViewController
 

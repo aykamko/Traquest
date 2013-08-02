@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#import "FBGuestEventsDetailsDataSource.h"
+#import "FBEventsDetailsDataSource.h"
 
-@interface FBGuestEventsDetailsDataSource () {
+@interface FBEventsDetailsDataSource () {
     NSMutableArray *_relevantDetails;
     NSDictionary *_allDetails;
 }
 
 @end
 
-@implementation FBGuestEventsDetailsDataSource
+@implementation FBEventsDetailsDataSource
 
 - (id)initWithEventDetails: (NSDictionary *) eventDetails
 {
@@ -28,7 +28,7 @@
     return self;
 }
 
-- (void) parseEventDetails: (NSDictionary *) details {
+-(void) parseEventDetails: (NSDictionary *) details {
     //NSArray *relevantKeys = @[@"location", @"privacy", @"start_time", @"description", @"admins"];
     
     [_relevantDetails addObject:details[@"location"]];
@@ -36,9 +36,8 @@
     NSMutableString *privacyString= [NSMutableString stringWithString:[details[@"privacy"] isEqualToString:@"OPEN"]? @"Public":@"Invite Only"];
     
     NSString *startTime = details[@"start_time"];
-    startTime = [startTime substringToIndex:[startTime length]-5];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss"];
+    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZ"];
     NSDate *date =[formatter dateFromString:startTime];
     [formatter setDateFormat:@"EEEE',' MMMM dd',' 'at' h:mm a"];
     NSString *dateString = [formatter stringFromDate:date];

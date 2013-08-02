@@ -9,10 +9,7 @@
 /* Begin PBXBuildFile section */
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
-		60DB5D6717AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 60DB5D6617AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m */; };
 		760BDC3317A9D3D4008A1877 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */; };
-		761214AD17A710180024CA09 /* FBHostEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761214AC17A710180024CA09 /* FBHostEventDetailsViewController.m */; };
-		761214AF17A732460024CA09 /* FBHostEventDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 761214AE17A7133A0024CA09 /* FBHostEventDetailsViewController.xib */; };
 		768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */; };
 		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
 		7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */; };
@@ -55,7 +52,6 @@
 		7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C78920B17A9E7B600610FB2 /* EventHeaderView.m */; };
 		7CBBD70017AB851700ED9DAB /* EventsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventsCell.m */; };
 		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
-		7CBBD70417AB853900ED9DAB /* FBGuestEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */; };
 		7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CCF244517AB6384009855B5 /* Parse.framework */; };
 		7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */; };
 		7CCF244917AB657C009855B5 /* EventTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventTableViewCell.m */; };
@@ -83,15 +79,8 @@
 
 /* Begin PBXFileReference section */
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBGuestEventDetailsViewController.h; sourceTree = "<group>"; };
-		60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGuestEventDetailsViewController.m; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		60DB5D6517AA65EA00334F95 /* FBGuestEventsDetailsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBGuestEventsDetailsDataSource.h; sourceTree = "<group>"; };
-		60DB5D6617AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGuestEventsDetailsDataSource.m; sourceTree = "<group>"; };
 		760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
-		761214AB17A710180024CA09 /* FBHostEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBHostEventDetailsViewController.h; sourceTree = "<group>"; };
-		761214AC17A710180024CA09 /* FBHostEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBHostEventDetailsViewController.m; sourceTree = "<group>"; };
-		761214AE17A7133A0024CA09 /* FBHostEventDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FBHostEventDetailsViewController.xib; path = ../FBHostEventDetailsViewController.xib; sourceTree = "<group>"; };
 		768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
 		768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
 		7698B93117AAE8AB00D351BF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
@@ -320,13 +309,6 @@
 		7CBBD70517AB857400ED9DAB /* Detail View Stuff */ = {
 			isa = PBXGroup;
 			children = (
-				60DB5D6517AA65EA00334F95 /* FBGuestEventsDetailsDataSource.h */,
-				60DB5D6617AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m */,
-				761214AE17A7133A0024CA09 /* FBHostEventDetailsViewController.xib */,
-				761214AB17A710180024CA09 /* FBHostEventDetailsViewController.h */,
-				761214AC17A710180024CA09 /* FBHostEventDetailsViewController.m */,
-				60D520B117A1A84E009CD642 /* FBGuestEventDetailsViewController.h */,
-				60D520B217A1A84E009CD642 /* FBGuestEventDetailsViewController.m */,
 			);
 			name = "Detail View Stuff";
 			sourceTree = "<group>";
@@ -498,7 +480,6 @@
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
-				761214AF17A732460024CA09 /* FBHostEventDetailsViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,9 +498,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7CBBD70417AB853900ED9DAB /* FBGuestEventDetailsViewController.m in Sources */,
 				7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */,
-				761214AD17A710180024CA09 /* FBHostEventDetailsViewController.m in Sources */,
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
 				7CCF244917AB657C009855B5 /* EventTableViewCell.m in Sources */,
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
@@ -532,7 +511,6 @@
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				7CBBD70017AB851700ED9DAB /* EventsCell.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
-				60DB5D6717AA65EA00334F95 /* FBGuestEventsDetailsDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
