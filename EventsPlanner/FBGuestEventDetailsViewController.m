@@ -29,13 +29,8 @@
     UITableView *_detailsTable;
 }
 
-- (IBAction)_temp_openMapView:(id)sender;
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 
-<<<<<<< HEAD
-@property (nonatomic, strong) ActiveEventMapViewController *temp_mapView;
-=======
->>>>>>> Redesigned table view cells, and restructed code that creates/displays them
 @end
 
 @implementation FBGuestEventDetailsViewController

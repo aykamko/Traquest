@@ -39,7 +39,7 @@
         
 //        UIImage *backgroundImage = [UIImage imageNamed:@"lemonlime.jpg"];
 //        UIImageView *imageView = [[UIImageView alloc] initWithImage:backgroundImage];
-        
+//        
 //        _tableViewController.tableView.backgroundView = imageView;
         
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
@@ -79,12 +79,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 35.0;
+    return 40.0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 65.0;
+    return 135.0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -111,14 +111,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSArray *eventsArray;
+    NSDictionary *currentEventDetails;
     
     if ([indexPath section] == hostedEvent) {
         eventsArray = _hostEvents;
-        
-        NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
-        
-        NSLog(@"%@", currentEventDetails);
-        
+        currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
         FBHostEventDetailsViewController *hostEventDetailsController = [[FBHostEventDetailsViewController alloc] initWithHostEventDetails:currentEventDetails];
         
@@ -134,7 +131,8 @@
     
     else if([indexPath section] == guestEvent){
         eventsArray = _guestEvents;
-        NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
+        currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
+        
         FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithGuestEventDetails:currentEventDetails];
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
@@ -142,6 +140,7 @@
                                                                       target:nil
                                                                       action:nil];
         [_tableViewController.navigationItem setBackBarButtonItem:backButton];
+        
         [[_tableViewController navigationController] pushViewController:eventDetailsController animated:YES];
 
     }

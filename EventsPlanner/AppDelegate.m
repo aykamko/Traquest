@@ -27,7 +27,6 @@
                   clientKey:@"oorBErIwapu2EDFwbJIkpOZVAEQUhuPV3azWbD0m"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     [PFFacebookUtils initializeFacebook];
-    //[[[PFUser alloc]init] class];
     
     // Google Maps
     [GMSServices provideAPIKey:@"AIzaSyCYlOnjDI2_s5WPCmeQJ7IMozreNxjyDww"];
@@ -38,6 +37,7 @@
     self.window.backgroundColor = [UIColor brownColor];
     
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[LoginViewController alloc] init]];
+//    self.window.rootViewController = [[UIViewController alloc] init];
     [self.window makeKeyAndVisible];
     return YES;
 }

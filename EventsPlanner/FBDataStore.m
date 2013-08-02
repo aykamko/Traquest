@@ -34,8 +34,10 @@
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
 {
 
-    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).fields(name,admins.fields(id,name),location,cover,owner,privacy,description,venue,picture,rsvp_status),"
-                                                        @"id"];
+    FBRequest *request = [FBRequest requestForGraphPath:
+                          @"me?fields=events.limit(1000).fields(name,admins.fields(id,name),"
+                          @"attending.limit(5),location,cover,owner,"
+                          @"privacy,description,venue,picture,rsvp_status),id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"

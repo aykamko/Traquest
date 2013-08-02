@@ -10,17 +10,17 @@
 #import <Parse/Parse.h>
 
 
-@interface EventsCell : UITableViewCell
+@interface EventsCell : UIView
 
 @property (nonatomic, strong) UIImage *eventImage;
 @property (nonatomic, strong) UILabel *eventTitleLabel;
 @property (nonatomic, strong) UILabel *eventStatusLabel;
 @property (nonatomic, strong) UILabel *eventDateLabel;
 
-- (instancetype)initWithTitle:(NSString *)title
+- (instancetype)initWithFrame:(CGRect)frame
+                        title:(NSString *)title
                    rsvpStatus:(NSString *)status
                          date:(NSDate *)date
-                    thumbnail:(UIImage *)thumbnail
-             resuseIdentifier:(NSString *)identifier;
+                   background:(UIImage *)background;
 
 @end

@@ -45,18 +45,17 @@
 // is related to MapPoint, as we are now implementing everything using Google Maps
 - (void)viewWillAppear:(BOOL)animated
 {
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    
+    MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
     
     NSString *locationAddress = [_eventDetails objectForKey:@"location"];
     
-    [geocoder geocodeAddressString:locationAddress completionHandler:^(NSArray* placemarks, NSError* error){
+    [geocoder fetchGeocodeAddress:locationAddress completion:^(NSDictionary *geocode, NSError *error) {
         
-        CLPlacemark *aPlacemark = [placemarks firstObject];
-        double latitude = aPlacemark.location.coordinate.latitude;
-        double longitude = aPlacemark.location.coordinate.longitude;
+        CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
+        GMSMarker *add_Annotation = [GMSMarker markerWithPosition:coordinate];
+        add_Annotation.map = _mapView;
         
-        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
-        GMSMarker *add_Annotation = [GMSMarker markerWithPosition:eventLocation];
     }];
 }
 
@@ -80,7 +79,7 @@
     for (NSDictionary *friend in attendingFriends)
     {
         [_friendsIDArray addObject:(NSString *)friend[@"id"]];
-        NSLog((NSString *)friend[@"id"]);
+        NSLog(@"%@", friend[@"id"]);
     }
 
 }
@@ -145,11 +144,6 @@
     
     [_mapViewPlaceholder removeFromSuperview];
     [self.view addSubview:_mapView];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

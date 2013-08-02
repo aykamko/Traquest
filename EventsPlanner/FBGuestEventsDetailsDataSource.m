@@ -28,7 +28,7 @@
     return self;
 }
 
--(void) parseEventDetails: (NSDictionary *) details {
+- (void) parseEventDetails: (NSDictionary *) details {
     //NSArray *relevantKeys = @[@"location", @"privacy", @"start_time", @"description", @"admins"];
     
     [_relevantDetails addObject:details[@"location"]];

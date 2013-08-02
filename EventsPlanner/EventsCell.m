@@ -6,26 +6,25 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#define kSmallLabelFontSize           13.0f
-#define kBigLabelFontSize             15.0f
+#define kSmallLabelFontSize           19.0f
+#define kBigLabelFontSize             20.0f
 #define kLabelSpacer                  0.5f
-#define kSpaceBetweenImageAndLabels   9.0f
+#define kMargins                      9.0f
 
 #import "EventsCell.h"
 
 @implementation EventsCell
 
-- (instancetype)initWithTitle:(NSString *)title
+- (instancetype)initWithFrame:(CGRect)frame
+                        title:(NSString *)title
                    rsvpStatus:(NSString *)status
                          date:(NSDate *)date
-                    thumbnail:(UIImage *)thumbnail
-             resuseIdentifier:(NSString *)identifier
+                   background:(UIImage *)background
 {
-    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    self = [super initWithFrame:frame];
     if (self) {
         
-        // Setting thumbnail
-        [self.imageView setImage:thumbnail];
+        self.backgroundColor = [UIColor clearColor];
         
         // Initializing labels
         _eventTitleLabel = [[UILabel alloc] init];
@@ -45,54 +44,53 @@
         
         // Event Title Label properties
         [_eventTitleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-        NSLayoutConstraint *titleBottomConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
-                                                                                 attribute:NSLayoutAttributeTop
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:_eventTitleLabel
-                                                                                 attribute:NSLayoutAttributeBottom
-                                                                                multiplier:1.0
-                                                                                  constant:kSmallLabelFontSize - kBigLabelFontSize + 1.0 + kLabelSpacer];
-        NSLayoutConstraint *titleLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
-                                                                               attribute:NSLayoutAttributeLeading
+        NSLayoutConstraint *titleTopConstraint = [NSLayoutConstraint constraintWithItem:self
+                                                                              attribute:NSLayoutAttributeTop
+                                                                              relatedBy:NSLayoutRelationEqual
+                                                                                 toItem:_eventTitleLabel
+                                                                              attribute:NSLayoutAttributeTop
+                                                                             multiplier:1.0
+                                                                               constant:-kMargins];
+        NSLayoutConstraint *titleLeftConstraint = [NSLayoutConstraint constraintWithItem:self
+                                                                               attribute:NSLayoutAttributeLeft
                                                                                relatedBy:NSLayoutRelationEqual
                                                                                   toItem:_eventTitleLabel
                                                                                attribute:NSLayoutAttributeLeading
                                                                               multiplier:1.0
-                                                                                constant:0.0];
+                                                                                constant:-kMargins];
         [_eventTitleLabel setFont:[UIFont boldSystemFontOfSize:kBigLabelFontSize]];
         [_eventTitleLabel setBackgroundColor:[UIColor clearColor]];
         
         // Event Status Label properties
         [_eventStatusLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-        NSLayoutConstraint *statusCenterConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
-                                                                                  attribute:NSLayoutAttributeCenterY
+        NSLayoutConstraint *statusBottomConstraint = [NSLayoutConstraint constraintWithItem:_eventDateLabel
+                                                                                  attribute:NSLayoutAttributeTop
                                                                                   relatedBy:NSLayoutRelationEqual
                                                                                      toItem:_eventStatusLabel
-                                                                                  attribute:NSLayoutAttributeCenterY
+                                                                                  attribute:NSLayoutAttributeBottom
                                                                                  multiplier:1.0
                                                                                    constant:0.0];
-        NSLayoutConstraint *statusLeftConstraint = [NSLayoutConstraint constraintWithItem:self.imageView
-                                                                                attribute:NSLayoutAttributeRight
+        NSLayoutConstraint *statusLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventTitleLabel
+                                                                                attribute:NSLayoutAttributeLeft
                                                                                 relatedBy:NSLayoutRelationEqual
                                                                                    toItem:_eventStatusLabel
                                                                                 attribute:NSLayoutAttributeLeft
                                                                                multiplier:1.0
-                                                                                 constant:-kSpaceBetweenImageAndLabels];
+                                                                                 constant:0];
         [_eventStatusLabel setFont:[UIFont systemFontOfSize:kSmallLabelFontSize]];
-        [_eventStatusLabel setTextColor:[UIColor lightGrayColor]];
         [_eventStatusLabel setBackgroundColor:[UIColor clearColor]];
         
         
         // Event Date Label properties
         [_eventDateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-        NSLayoutConstraint *dateTopConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
+        NSLayoutConstraint *dateBottomConstraint = [NSLayoutConstraint constraintWithItem:self
                                                                                  attribute:NSLayoutAttributeBottom
                                                                                  relatedBy:NSLayoutRelationEqual
                                                                                     toItem:_eventDateLabel
-                                                                                 attribute:NSLayoutAttributeTop
+                                                                                 attribute:NSLayoutAttributeBottom
                                                                                 multiplier:1.0
-                                                                                  constant:0.0 - kLabelSpacer];
-        NSLayoutConstraint *dateLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventStatusLabel
+                                                                                  constant:kMargins];
+        NSLayoutConstraint *dateLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventTitleLabel
                                                                                attribute:NSLayoutAttributeLeading
                                                                                relatedBy:NSLayoutRelationEqual
                                                                                   toItem:_eventDateLabel
@@ -100,19 +98,17 @@
                                                                               multiplier:1.0
                                                                                 constant:0.0];
         [_eventDateLabel setFont:[UIFont systemFontOfSize:kSmallLabelFontSize]];
-        [_eventDateLabel setTextColor:[UIColor lightGrayColor]];
         [_eventDateLabel setBackgroundColor:[UIColor clearColor]];
         
-        
         // Adding to superview
-        [self.contentView addSubview:_eventTitleLabel];
-        [self.contentView addSubview:_eventStatusLabel];
-        [self.contentView addSubview:_eventDateLabel];
+        [self addSubview:_eventTitleLabel];
+        [self addSubview:_eventStatusLabel];
+        [self addSubview:_eventDateLabel];
         
         // Adding constraints
-        [self.contentView addConstraints:@[statusCenterConstraint, statusLeftConstraint]];
-        [self.contentView addConstraints:@[titleBottomConstraint, titleLeftConstraint]];
-        [self.contentView addConstraints:@[dateTopConstraint, dateLeftConstraint]];
+        [self addConstraints:@[statusBottomConstraint, statusLeftConstraint,
+                               titleTopConstraint, titleLeftConstraint,
+                               dateBottomConstraint, dateLeftConstraint]];
     }
     return self;
 }

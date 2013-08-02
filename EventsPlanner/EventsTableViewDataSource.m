@@ -7,7 +7,7 @@
 //
 
 #import "EventsTableViewDataSource.h"
-#import "EventsCell.h"
+#import "EventTableViewCell.h"
 
 @interface EventsTableViewDataSource()
 
@@ -49,7 +49,7 @@
         NSString *cellTitle;
         NSString *cellRsvpStatus;
         NSDate *cellDate;
-        UIImage *cellThumbnail;
+        UIImage *cellBackground;
         
         // Getting arguments
         cellTitle = eventArray[indexPath.row][@"name"];
@@ -68,17 +68,17 @@
         
         cellDate = [dateFormater dateFromString:startTimeStr];
         
-        NSString *imageURLStr = eventArray[indexPath.row][@"picture"][@"data"][@"url"];
+        NSString *imageURLStr = eventArray[indexPath.row][@"cover"][@"source"];
         NSURL *URL = [NSURL URLWithString:imageURLStr];
         NSData *imageData = [NSData dataWithContentsOfURL:URL];
-        cellThumbnail = [UIImage imageWithData:imageData];
+        cellBackground = [UIImage imageWithData:imageData];
         
         // Allocating and initializing actual cell
-        cell = [[EventsCell alloc] initWithTitle:cellTitle
-                                      rsvpStatus:cellRsvpStatus
-                                            date:cellDate
-                                       thumbnail:cellThumbnail
-                                resuseIdentifier:EventCellIdentifier];
+        cell = [[EventTableViewCell alloc] initWithTitle:cellTitle
+                                              rsvpStatus:cellRsvpStatus
+                                                    date:cellDate
+                                              background:cellBackground
+                                         reuseIdentifier:EventCellIdentifier];
     }
     
     return cell;
