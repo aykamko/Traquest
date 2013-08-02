@@ -78,7 +78,7 @@
         NSLog(@"%@", currentEventDetails);
         
         
-        FBEventDetailsViewController *hostEventDetailsController = [[FBEventDetailsViewController alloc] initWithGuestEventDetails:currentEventDetails];
+        FBEventDetailsViewController *hostEventDetailsController = [[FBEventDetailsViewController alloc] initWithGuestEventDetails:currentEventDetails isHost:YES];
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
                                                                        style:UIBarButtonItemStyleBordered
@@ -93,7 +93,7 @@
     else if([indexPath section] == guestEvent){
         eventsArray = _guestEvents;
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
-        FBEventDetailsViewController *eventDetailsController = [[FBEventDetailsViewController alloc] initWithGuestEventDetails:currentEventDetails];
+        FBEventDetailsViewController *eventDetailsController = [[FBEventDetailsViewController alloc] initWithGuestEventDetails:currentEventDetails isHost:NO];
 
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"

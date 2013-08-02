@@ -17,6 +17,7 @@
 
 @interface FBEventDetailsViewController ()<FBFriendPickerDelegate>
 {
+    BOOL _isHost;
     NSDictionary *_eventDetails;
     NSMutableArray *_friendsIDArray;
     ActiveEventMapViewController *_mapViewController;
@@ -38,10 +39,11 @@
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithGuestEventDetails:(NSDictionary *)details
+- (id)initWithGuestEventDetails:(NSDictionary *)details isHost: (BOOL) isHost
 {
     self = [super init];
     if (self) {
+        _isHost = isHost;
         _eventDetails = details;
         _friendPicker = [[FBFriendPickerViewController alloc] init];
         _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:details];
@@ -171,8 +173,19 @@
         }];
     }
     
-    //creating table view with event details and setting data source
     skeletonRect.origin.x +=margin;
+    //if it is a host, add a button to start tracking
+    if (_isHost) {
+        skeletonRect.size = CGSizeMake(frameSize.width-2*margin, frameSize.width/5);
+        UIButton *trackingButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        trackingButton.frame = skeletonRect;
+        skeletonRect.origin.y += skeletonRect.size.height;
+        [trackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
+        [trackingButton addTarget:self action:@selector(loadMapView:) forControlEvents:UIControlEventTouchDown];
+        [_mainView addSubview:trackingButton];
+    }
+    
+    //creating table view with event details and setting data source
     skeletonRect.size = CGSizeMake(frameSize.width-2*margin,frameSize.width);
     _detailsTable = [[UITableView alloc] initWithFrame:skeletonRect style:UITableViewStylePlain];
     [_detailsTable setDataSource:_dataSource];
