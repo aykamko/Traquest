@@ -28,5 +28,6 @@
 + (UIImage *)imageWithImage:(UIImage*)image scaledToWidth:(CGFloat)newWidth;
 
 + (UIImage *)imageWithImage:(UIImage *)image cropRectFromCenterOfSize:(CGSize)size;
-    
+
++(UIImage *) imageWithGradient: (CGSize) imageSize withColor1: (UIColor*) color1 withColor2: (UIColor*) color2 vertical:(BOOL) vertical;
 @end

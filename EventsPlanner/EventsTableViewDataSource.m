@@ -68,10 +68,7 @@
         
         cellDate = [dateFormater dateFromString:startTimeStr];
         
-        NSString *imageURLStr = eventArray[indexPath.row][@"cover"][@"source"];
-        NSURL *URL = [NSURL URLWithString:imageURLStr];
-        NSData *imageData = [NSData dataWithContentsOfURL:URL];
-        cellBackground = [UIImage imageWithData:imageData];
+        cellBackground = eventArray[indexPath.row][@"cover"];
         
         // Allocating and initializing actual cell
         cell = [[EventTableViewCell alloc] initWithTitle:cellTitle

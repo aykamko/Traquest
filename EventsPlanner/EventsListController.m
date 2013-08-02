@@ -58,11 +58,18 @@
 
 -(IBAction)logUserOut:(id)sender{
     
-    UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"To login as another use, please logout of your Facebook App." message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-    [alert show];
-
+    [[PFFacebookUtils session] closeAndClearTokenInformation];
+    [[PFFacebookUtils session] close];
+    [PFUser logOut];
+    [self.tableViewController.navigationController popViewControllerAnimated:YES];
     
-      
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another use, please logout of your Facebook App."
+                                                    message:Nil
+                                                   delegate:self
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+    
 }
 
 

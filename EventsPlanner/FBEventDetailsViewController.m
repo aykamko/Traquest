@@ -31,25 +31,24 @@
     FBEventsDetailsDataSource *_dataSource;
     UITableView *_detailsTable;
     
-    __strong IBOutlet UIButton *_trackingButton;
+    __strong UIButton *_trackingButton;
 }
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
-- (IBAction)loadMapView:(id)sender;
+- (void)loadMapView:(id)sender;
 
-//@property (nonatomic, strong) ActiveEventMapViewController *temp_mapView;
 @end
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithEventDetails:(NSDictionary *)details isHost: (BOOL) isHost
+- (id)initWithEventDetails:(NSDictionary *)details isHost:(BOOL) isHost
 {
     self = [super init];
     if (self) {
         _isHost = isHost;
         _eventDetails = details;
         _friendPicker = [[FBFriendPickerViewController alloc] init];
-        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:details];
+        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
     }
     return self;
 }
@@ -77,9 +76,7 @@
     UIImageView *eventImageView = [[UIImageView alloc] initWithFrame:skeletonRect];
     
     //getting image for cover photo
-    NSURL *imageURL = [NSURL URLWithString:_eventDetails[@"cover"][@"source"]];
-    NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
-    _originalEventImage = [UIImage imageWithData:imageData];
+    _originalEventImage = _eventDetails[@"cover"];
     CGImageRef ref = CGImageCreateWithImageInRect([_originalEventImage CGImage], CGRectMake(0,_originalEventImage.size.height/4, _originalEventImage.size.width, _originalEventImage.size.height/2));
     UIImage *croppedImage = [UIImage imageWithCGImage:ref];
     

@@ -71,4 +71,24 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     return newImage;
 }
 
++ (UIImage *) imageWithGradient: (CGSize) imageSize withColor1: (UIColor*) color1 withColor2: (UIColor*) color2 vertical:(BOOL) vertical{
+    UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+    size_t gradientNumberOfLocations = 2;
+    CGFloat gradientLocations[2] = { 0.0, 1.0};
+    CGFloat gradientComponents[8];
+    [color1 getRed:&gradientComponents[0] green:&gradientComponents[1] blue:&gradientComponents[2] alpha:&gradientComponents[3]];
+    [color2 getRed:&gradientComponents[4] green:&gradientComponents[5] blue:&gradientComponents[6] alpha:&gradientComponents[7]];
+    CGGradientRef gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations);
+    
+    CGPoint end = vertical? CGPointMake(0, imageSize.height):CGPointMake(imageSize.width, 0);//{0, imageSize.height}:{imageSize.width, 0} ;
+    CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), end, 0);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 @end

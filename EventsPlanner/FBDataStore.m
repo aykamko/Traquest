@@ -9,6 +9,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "FBDataStore.h"
 #import <Parse/PFUser.h>
+#import "UIImage+ImageCrop.h"
 
 @interface FBDataStore(){
     NSMutableArray *_arrayOfEventIds;
@@ -74,6 +75,21 @@
                     [hostEvents insertObject:event atIndex:0];
                 } else {
                     [guestEvents insertObject:event atIndex:0];
+                }
+                if(!event[@"cover"]) {
+                    event[@"cover"] = [UIImage imageWithGradient:CGSizeMake(1000, 1000) withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:1] withColor2:[UIColor colorWithRed:1 green:1 blue:1 alpha:0] vertical:NO];
+                } else {
+                    event[@"cover"] = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:event[@"cover"][@"source"]]]];
+                    
+                    UIImage *backgroundImage = event[@"cover"];
+                    UIImage *watermarkImage = [UIImage imageWithGradient:backgroundImage.size withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:1] withColor2:[UIColor colorWithRed:1 green:1 blue:1 alpha:0] vertical:NO];
+                    
+                    UIGraphicsBeginImageContext(backgroundImage.size);
+                    [backgroundImage drawInRect:CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height)];
+                    [watermarkImage drawInRect:CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height)];
+                    UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+                    UIGraphicsEndImageContext();
+                    event[@"cover"] = result;
                 }
                 
             }

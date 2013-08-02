@@ -10,14 +10,14 @@
 
 @interface FBEventsDetailsDataSource () {
     NSMutableArray *_relevantDetails;
-    NSDictionary *_allDetails;
+    NSMutableDictionary *_allDetails;
 }
 
 @end
 
 @implementation FBEventsDetailsDataSource
 
-- (id)initWithEventDetails: (NSDictionary *) eventDetails
+- (id)initWithEventDetails: (NSMutableDictionary *) eventDetails
 {
     self = [super init];
     if (self) {
@@ -28,8 +28,7 @@
     return self;
 }
 
--(void) parseEventDetails: (NSDictionary *) details {
-    //NSArray *relevantKeys = @[@"location", @"privacy", @"start_time", @"description", @"admins"];
+-(void) parseEventDetails: (NSMutableDictionary *) details {
     
     [_relevantDetails addObject:details[@"location"]];
     
@@ -44,7 +43,8 @@
     
     [_relevantDetails addObject:[NSString stringWithFormat:@"%@\n%@",privacyString,dateString ]];
     
-    [_relevantDetails addObject:details[@"description"]];
+    if (details[@"description"])
+        [_relevantDetails addObject:details[@"description"]];
     
     NSArray *array = details[@"admins"][@"data"];
     if(array) {
