@@ -7,13 +7,20 @@
 //
 
 #import "FBHostEventDetailsViewController.h"
-#import "MapPoint.h"
+#import "MKGeocodingService.h"
 
 @interface FBHostEventDetailsViewController ()
 {
-
+    __weak IBOutlet UIView *_mapViewPlaceholder;
+    __strong GMSMapView *_mapView;
     NSDictionary *_eventDetails;
+    ActiveEventMapViewController *_mapViewController;
 }
+
+- (IBAction)_temp_openMapView:(id)sender;
+- (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
+
+@property (nonatomic, strong) ActiveEventMapViewController *temp_mapView;
 @end
 
 @implementation FBHostEventDetailsViewController
@@ -27,22 +34,20 @@
     return self;
 }
 
+- (void)_temp_openMapView:(id)sender
+{
+    _temp_mapView = [[ActiveEventMapViewController alloc] init];
+    [self.navigationController pushViewController:_temp_mapView
+                                         animated:YES];
+}
 
+// much of this can be commented out... not that useful. Please remember to eventually get rid of everything that
+// is related to MapPoint, as we are now implementing everything using Google Maps
 - (void)viewWillAppear:(BOOL)animated
-{    
-    NSString *locationAddress = [_eventDetails objectForKey:@"location"];
-    
-    FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
-    NSArray *allFriends = fbGraphObj[@"attending"][@"data"];
-    
-    _friendsArray = [[NSMutableArray alloc] init];
-    for (NSDictionary *friend in allFriends)
-    {
-        [_friendsArray addObject:(NSString *)friend[@"id"]];
-        NSLog((NSString *)friend[@"id"]);
-    }
-    
+{
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    
+    NSString *locationAddress = [_eventDetails objectForKey:@"location"];
     
     [geocoder geocodeAddressString:locationAddress completionHandler:^(NSArray* placemarks, NSError* error){
         
@@ -51,42 +56,100 @@
         double longitude = aPlacemark.location.coordinate.longitude;
         
         CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
-        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
-   //     [_eventMapView addAnnotation:add_Annotation];
-        NSLog(@"%f,%f",latitude,longitude);
-        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 1000000, 1000000);
-        [_eventMapView setRegion:region animated:NO];
-        
+        GMSMarker *add_Annotation = [GMSMarker markerWithPosition:eventLocation];
     }];
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    [self initFriendsIDArray];
+}
+
+// The following method populates friendIDArray with the
+// Facebook ID's of the friends who will attend the event.
+- (void)initFriendsIDArray
+{
+    FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+    NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
+    
+    _friendsIDArray = [[NSMutableArray alloc] init];
+    
+    // Populate friendsIDArray with the ID's of
+    // everyone attending event
+    for (NSDictionary *friend in attendingFriends)
+    {
+        [_friendsIDArray addObject:(NSString *)friend[@"id"]];
+        NSLog((NSString *)friend[@"id"]);
+    }
+
+}
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSString *eventTitle = [_eventDetails objectForKey:@"name"];
     
+    [_titleLabel setText:eventTitle];
+    
+    CGFloat fontSize = MIN(24,625/[eventTitle length]);
+    
+    UIFont *font = [UIFont fontWithName:[[_titleLabel font] fontName] size:fontSize];
+    
+    [_titleLabel setFont:font];
+    
+    self.navBar = self.navigationController.navigationBar;
+    
+    
+    NSString *locationName = [_eventDetails objectForKey:@"location"];
+    NSDictionary *venueDict = [_eventDetails objectForKey:@"venue"];
+    
+    [_addressLabel setText:locationName];
+    [_addressLabel setTextColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+    
+    if (venueDict[@"latitude"]) {
+        NSString *latString = venueDict[@"latitude"];
+        NSString *lngString = venueDict[@"longitude"];
+        double latitude = [latString doubleValue];
+        double longitude = [lngString doubleValue];
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+        
+        [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
+        
+    } else {
+        
+        MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
+        
+        [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
+            CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
+            [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
+        }];
+        
+    }
+}
+
+
+
+- (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate
+{
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:coordinate.latitude
+                                                            longitude:coordinate.longitude
+                                                                 zoom:14];
+    _mapView = [GMSMapView mapWithFrame:[_mapViewPlaceholder frame] camera:camera];
+    _mapView.myLocationEnabled = YES;
+    
+    GMSMarker *marker = [[GMSMarker alloc] init];
+    marker.position = coordinate;
+    marker.map = _mapView;
+    
+    [_mapViewPlaceholder removeFromSuperview];
+    [self.view addSubview:_mapView];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void) viewDidAppear:(BOOL)animated
-{
-    PFQuery *query = [PFUser query];
-    [query whereKey:@"fbID" containedIn:_friendsArray];
-    [query whereKeyExists:@"location"];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *array, NSError *error) {
-        for (int i = 0; i < [array count]; i++)
-        {
-            PFGeoPoint *geoPoint = [[array objectAtIndex:i] objectForKey:@"location"];
-            CLLocationCoordinate2D guestLocation = CLLocationCoordinate2DMake(geoPoint.latitude, geoPoint.longitude);
-            MapPoint *add_point = [[MapPoint alloc] initWithCoordinate:guestLocation title:@"newTitle"];
-            [_eventMapView addAnnotation:add_point];
-        }
-    }];
-
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -100,5 +163,14 @@
         NSLog(@"User didn't enable Event Tracker!");
     }
 }
+
+-(IBAction)loadMapView:(id)sender
+{
+    _mapViewController = [[ActiveEventMapViewController alloc] init];
+    [_mapViewController initWithFriendsDetails:_friendsIDArray];
+    [[self navigationController] pushViewController: _mapViewController animated:YES];
+}
+
+
 
 @end
