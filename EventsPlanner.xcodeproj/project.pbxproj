@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
+		60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */; };
+		60E093C717AC5211007CE1C8 /* FBEventsDetailsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C517AC5211007CE1C8 /* FBEventsDetailsDataSource.m */; };
 		760BDC3317A9D3D4008A1877 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */; };
 		768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */; };
 		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
@@ -80,6 +82,10 @@
 /* Begin PBXFileReference section */
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
+		60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsViewController.m; sourceTree = "<group>"; };
+		60E093C417AC5211007CE1C8 /* FBEventsDetailsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventsDetailsDataSource.h; sourceTree = "<group>"; };
+		60E093C517AC5211007CE1C8 /* FBEventsDetailsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventsDetailsDataSource.m; sourceTree = "<group>"; };
 		760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
 		768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
@@ -309,6 +315,10 @@
 		7CBBD70517AB857400ED9DAB /* Detail View Stuff */ = {
 			isa = PBXGroup;
 			children = (
+				60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */,
+				60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */,
+				60E093C417AC5211007CE1C8 /* FBEventsDetailsDataSource.h */,
+				60E093C517AC5211007CE1C8 /* FBEventsDetailsDataSource.m */,
 			);
 			name = "Detail View Stuff";
 			sourceTree = "<group>";
@@ -502,8 +512,10 @@
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
 				7CCF244917AB657C009855B5 /* EventTableViewCell.m in Sources */,
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
+				60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */,
 				7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */,
 				7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */,
+				60E093C717AC5211007CE1C8 /* FBEventsDetailsDataSource.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
 				768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */,
 				7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */,

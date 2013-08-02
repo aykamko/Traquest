@@ -8,13 +8,14 @@
 
 #import <GoogleMaps/GoogleMaps.h>
 #import "ActiveEventMapViewController.h"
+#import "FBEventDetailsViewController.h"
 
 @interface ActiveEventMapViewController ()
 {
     GMSMapView *_mapView;
 }
 
-@property (strong, nonatomic) FBHostEventDetailsViewController *hostDetailsViewController;
+@property (strong, nonatomic) FBEventDetailsViewController *detailsViewController;
 @end
 
 @implementation ActiveEventMapViewController
@@ -28,20 +29,7 @@
     return self;
 }
 
-- (void) viewDidLoad
-{
-    [super viewDidLoad];
-    [_navBar pushNavigationItem:self.navigationItem animated:YES];
-    [_mapView addSubview:_navBar];
-}
-
-- (void) back
-{
-    _hostDetailsViewController = [[FBHostEventDetailsViewController alloc] init];
-    [[self navigationController] pushViewController: _hostDetailsViewController animated:YES];
-}
-
-- (void) loadView
+- (void)loadView
 {
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:37.4842
                                                             longitude:-122.1485
@@ -53,15 +41,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:YES];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+    [super viewWillAppear:animated];
 }
 
 
 // method has been moved from FBHostEventDetailsViewController
 - (void) viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:YES];
+    [super viewDidAppear:animated];
     PFQuery *query = [PFUser query];
     [query whereKey:@"fbID" containedIn:_friendsIDArray];
     [query findObjectsInBackgroundWithBlock:^(NSArray *array, NSError *error) {

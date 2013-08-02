@@ -20,7 +20,7 @@
     BOOL _isHost;
     NSDictionary *_eventDetails;
     NSMutableArray *_friendsIDArray;
-    ActiveEventMapViewController *_mapViewController;
+    __strong ActiveEventMapViewController *_mapViewController;
     
     __strong GMSMapView *_mapView;
     __strong UIView *_mainView;
@@ -30,16 +30,19 @@
     FBFriendPickerViewController *_friendPicker;
     FBEventsDetailsDataSource *_dataSource;
     UITableView *_detailsTable;
+    
+    __strong IBOutlet UIButton *_trackingButton;
 }
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
+- (IBAction)loadMapView:(id)sender;
 
 //@property (nonatomic, strong) ActiveEventMapViewController *temp_mapView;
 @end
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithGuestEventDetails:(NSDictionary *)details isHost: (BOOL) isHost
+- (id)initWithEventDetails:(NSDictionary *)details isHost: (BOOL) isHost
 {
     self = [super init];
     if (self) {
@@ -53,7 +56,6 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
     
     //initialzing dimension values that are re-used in creating new children
     CGPoint origin = self.view.frame.origin;
@@ -177,12 +179,13 @@
     //if it is a host, add a button to start tracking
     if (_isHost) {
         skeletonRect.size = CGSizeMake(frameSize.width-2*margin, frameSize.width/5);
-        UIButton *trackingButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        trackingButton.frame = skeletonRect;
+        _trackingButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [_trackingButton setBackgroundColor:[UIColor purpleColor]];
+        _trackingButton.frame = skeletonRect;
         skeletonRect.origin.y += skeletonRect.size.height;
-        [trackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
-        [trackingButton addTarget:self action:@selector(loadMapView:) forControlEvents:UIControlEventTouchDown];
-        [_mainView addSubview:trackingButton];
+        [_trackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
+        [_trackingButton addTarget:self action:@selector(loadMapView:) forControlEvents:UIControlEventTouchUpInside];
+        [_mainView addSubview:_trackingButton];
     }
     
     //creating table view with event details and setting data source
@@ -201,30 +204,8 @@
     [_detailsTable setScrollEnabled:NO];
     
     [_mainView addSubview:_detailsTable];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    NSNumber *tracking = [[PFUser currentUser] objectForKey:@"trackingAllowed"];
-    if ([tracking isEqualToNumber:@0])
-    {
-        
-        UIAlertView *requestTracking = [[UIAlertView alloc] initWithTitle:@"Hi!" message:@"Allow the host to see where you are" delegate:self cancelButtonTitle: @"YES" otherButtonTitles:@"Anonymous",@"NO",nil];
-        requestTracking.cancelButtonIndex = -1;
-        [requestTracking show];
-       
-    }
-    else
-    {
-        /*
-        PFGeoPoint *guestLocation = [[PFUser currentUser] objectForKey:@"location"];
-        CLLocationCoordinate2D guestCoordinate = CLLocationCoordinate2DMake(guestLocation.latitude, guestLocation.longitude);
-        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate: guestCoordinate title:@"guestTitle"];
-        //NSLog(@"Greetings, %f,%f",guestCoordinate.latitude,guestCoordinate.longitude);
     
-        [_eventMapView addAnnotation:add_Annotation];
-         */
-    }
+    [super viewDidLoad];
 }
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate
@@ -259,6 +240,7 @@
 }
 
 -(void) tap: (UIGestureRecognizer*) gr {
+    NSLog(@"%@", _mapViewController);
     //push new popover view with full image
 }
 
@@ -319,9 +301,9 @@
     
 }
 
--(void)loadMapView:(id)sender
+- (void)loadMapView:(id)sender
 {
-    _mapViewController = [[ActiveEventMapViewController alloc] initWithFriendsDetails:_friendsIDArray];
+    _mapViewController = [[ActiveEventMapViewController alloc] init];
     [[self navigationController] pushViewController: _mapViewController animated:YES];
 }
 
