@@ -27,19 +27,33 @@
     self = [super init];
     if (self) {
         
+        
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
         _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
         _tableViewController=[[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
+        _tableViewController.navigationItem.hidesBackButton=YES;
         [[_tableViewController tableView]setDelegate:self];
         [[_tableViewController tableView]setDataSource:_tableViewDataSource];
+        _tableViewController.navigationItem.title=@"Plan your Events!";
+
+        
+        
         [self setTableViewController:_tableViewController];
 
         UIImage *backgroundImage = [UIImage imageNamed:@"lemonlime.jpg"];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:backgroundImage];
         
         _tableViewController.tableView.backgroundView = imageView;
+        UILabel *navLabel=[[UILabel alloc]initWithFrame:CGRectMake(-1.0, -1.0, 50, 15)];
+        
+        navLabel.text=@"Plan your Facebook Events!";
+        [navLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:15]];
+        navLabel.textColor=[UIColor blueColor];
+        navLabel.backgroundColor = [UIColor clearColor];
+        navLabel.adjustsFontSizeToFitWidth=YES;
+        navLabel.text=_tableViewController.navigationItem.title;
         
         UIBarButtonItem *barButton=[[UIBarButtonItem alloc]initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logUserOut:)];
         self.tableViewController.navigationItem.rightBarButtonItem=barButton;
@@ -76,7 +90,6 @@
         
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
-        NSLog(@"%@", currentEventDetails);
         
         
         FBHostEventDetailsViewController *hostEventDetailsController = [[FBHostEventDetailsViewController alloc] initWithHostEventDetails:currentEventDetails];
@@ -94,7 +107,7 @@
     else if([indexPath section] == guestEvent){
         eventsArray = _guestEvents;
         NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
-        FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithEventDetails:currentEventDetails];
+        FBGuestEventDetailsViewController *eventDetailsController = [[FBGuestEventDetailsViewController alloc] initWithGuestEventDetails:currentEventDetails];
 
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"

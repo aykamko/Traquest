@@ -116,7 +116,6 @@
     [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
         
         _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
-        
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];
         

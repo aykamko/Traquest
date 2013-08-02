@@ -39,7 +39,7 @@
     for (NSDictionary *friend in allFriends)
     {
         [_friendsArray addObject:(NSString *)friend[@"id"]];
-        NSLog((NSString *)friend[@"id"]);
+
     }
     
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
@@ -53,7 +53,6 @@
         CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
         MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
    //     [_eventMapView addAnnotation:add_Annotation];
-        NSLog(@"%f,%f",latitude,longitude);
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 1000000, 1000000);
         [_eventMapView setRegion:region animated:NO];
         
@@ -95,10 +94,7 @@
     {
         [[PFUser currentUser] setObject:[NSNumber numberWithBool:YES]  forKey:@"trackingAllowed"];
     }
-    else
-    {
-        NSLog(@"User didn't enable Event Tracker!");
-    }
+
 }
 
 @end
