@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#import "FBGuestEventsDetailsDataSource.h"
+#import "FBEventsDetailsDataSource.h"
 
-@interface FBGuestEventsDetailsDataSource () {
+@interface FBEventsDetailsDataSource () {
     NSMutableArray *_relevantDetails;
     NSDictionary *_allDetails;
 }
 
 @end
 
-@implementation FBGuestEventsDetailsDataSource
+@implementation FBEventsDetailsDataSource
 
 - (id)initWithEventDetails: (NSDictionary *) eventDetails
 {

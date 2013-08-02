@@ -11,7 +11,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <Parse/Parse.h>
 
-@interface FBGuestEventDetailsViewController : UIViewController <UIScrollViewDelegate>
+@interface FBEventDetailsViewController : UIViewController <UIScrollViewDelegate>
 
 - (id)initWithGuestEventDetails:(NSDictionary *)details;
 

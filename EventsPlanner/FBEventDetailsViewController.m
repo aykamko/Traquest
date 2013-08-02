@@ -7,26 +7,27 @@
 //
 
 #import <GoogleMaps/GoogleMaps.h>
-#import "FBGuestEventDetailsViewController.h"
-#import "MapPoint.h"
+#import "FBEventDetailsViewController.h"
 #import "MKGeocodingService.h"
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/QuartzCore.h>
 #import <FacebookSDK/FacebookSDK.h>
-#import "FBGuestEventsDetailsDataSource.h"
+#import "FBEventsDetailsDataSource.h"
 #import "ActiveEventMapViewController.h"
 
-@interface FBGuestEventDetailsViewController ()<FBFriendPickerDelegate>
+@interface FBEventDetailsViewController ()<FBFriendPickerDelegate>
 {
-    __strong GMSMapView *_mapView;
     NSDictionary *_eventDetails;
-    __strong UIView *_mainView;
+    NSMutableArray *_friendsIDArray;
+    ActiveEventMapViewController *_mapViewController;
     
+    __strong GMSMapView *_mapView;
+    __strong UIView *_mainView;
     UILabel *_titleLabel;
     UIImage *_originalEventImage;
     UIView *_buttonHolder;
     FBFriendPickerViewController *_friendPicker;
-    FBGuestEventsDetailsDataSource *_dataSource;
+    FBEventsDetailsDataSource *_dataSource;
     UITableView *_detailsTable;
 }
 
@@ -35,7 +36,7 @@
 //@property (nonatomic, strong) ActiveEventMapViewController *temp_mapView;
 @end
 
-@implementation FBGuestEventDetailsViewController
+@implementation FBEventDetailsViewController
 
 - (id)initWithGuestEventDetails:(NSDictionary *)details
 {
@@ -43,7 +44,7 @@
     if (self) {
         _eventDetails = details;
         _friendPicker = [[FBFriendPickerViewController alloc] init];
-        _dataSource = [[FBGuestEventsDetailsDataSource alloc] initWithEventDetails:details];
+        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:details];
     }
     return self;
 }
@@ -157,13 +158,6 @@
         double latitude = [latString doubleValue];
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
-        
-//        CLLocationCoordinate2D eventLocation = CLLocationCoordinate2DMake(latitude, longitude);
-//        MapPoint *add_Annotation = [[MapPoint alloc] initWithCoordinate:eventLocation title:@"myTitle"];
-//        [_eventMapView addAnnotation:add_Annotation];
-//        NSLog(@"%f,%f",latitude,longitude);
-//        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(eventLocation, 5000, 2500);
-//        [_eventMapView setRegion:region animated:NO];
         
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
   
@@ -293,5 +287,30 @@
     }
     [_friendPicker clearSelection];
 }
+
+
+- (void)initFriendsIDArray
+{
+    FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+    NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
+    
+    _friendsIDArray = [[NSMutableArray alloc] init];
+    
+    // Populate friendsIDArray with the ID's of
+    // everyone attending event
+    for (NSDictionary *friend in attendingFriends)
+    {
+        [_friendsIDArray addObject:(NSString *)friend[@"id"]];
+        NSLog(@"%@", friend[@"id"]);
+    }
+    
+}
+
+-(void)loadMapView:(id)sender
+{
+    _mapViewController = [[ActiveEventMapViewController alloc] initWithFriendsDetails:_friendsIDArray];
+    [[self navigationController] pushViewController: _mapViewController animated:YES];
+}
+
 
 @end

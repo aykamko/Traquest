@@ -8,13 +8,14 @@
 
 #import <GoogleMaps/GoogleMaps.h>
 #import "ActiveEventMapViewController.h"
+#import "FBEventDetailsViewController.h"
 
 @interface ActiveEventMapViewController ()
 {
     GMSMapView *_mapView;
 }
 
-@property (strong, nonatomic) FBHostEventDetailsViewController *hostDetailsViewController;
+@property (strong, nonatomic) FBEventDetailsViewController *guestDetailsViewController;
 @end
 
 @implementation ActiveEventMapViewController
@@ -31,30 +32,12 @@
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-    [_navBar pushNavigationItem:self.navigationItem animated:YES];
-    [_mapView addSubview:_navBar];
-}
-
-- (void) back
-{
-    _hostDetailsViewController = [[FBHostEventDetailsViewController alloc] init];
-    [[self navigationController] pushViewController: _hostDetailsViewController animated:YES];
-}
-
-- (void) loadView
-{
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:37.4842
                                                             longitude:-122.1485
                                                                  zoom:14];
     _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     _mapView.myLocationEnabled = YES;
     self.view = _mapView;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:YES];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 

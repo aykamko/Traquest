@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface FBGuestEventsDetailsDataSource : NSObject <UITableViewDataSource>
+@interface FBEventsDetailsDataSource : NSObject <UITableViewDataSource>
 
 -initWithEventDetails: (NSDictionary*) eventDetails;
 
