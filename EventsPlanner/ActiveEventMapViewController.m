@@ -31,7 +31,7 @@
     return self;
 }
 
-- (void)loadView
+- (void) loadView
 {
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_venueLocationCoordinate.latitude longitude:_venueLocationCoordinate.longitude zoom:14];
                                  
@@ -82,7 +82,6 @@
             
             }
         }
-        
             
         else if (array.count == 0){
             GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_venueLocationCoordinate.latitude longitude:_venueLocationCoordinate.longitude zoom:14];
@@ -93,7 +92,5 @@
     
      ];
 }
-
-
 
 @end

@@ -10,7 +10,16 @@
 #import <Parse/Parse.h>
 #import <GoogleMaps/GoogleMaps.h>
 #import "LoginViewController.h"
+#import "FBDataStore.h"
 #import "ParseDataStore.h"
+#import "EventsListController.h"
+
+@interface AppDelegate ()
+
+@property (nonatomic, strong) EventsListController *eventsListController;
+@property (nonatomic, strong) LoginViewController *loginViewController;
+
+@end
 
 @implementation AppDelegate
 
@@ -31,14 +40,26 @@
     // Google Maps
     [GMSServices provideAPIKey:@"AIzaSyCYlOnjDI2_s5WPCmeQJ7IMozreNxjyDww"];
     
+    // Initializing Data Store
     (void) [[ParseDataStore alloc] init];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor brownColor];
     
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[LoginViewController alloc] init]];
-//    self.window.rootViewController = [[UIViewController alloc] init];
-    [self.window makeKeyAndVisible];
+    _loginViewController = [[LoginViewController alloc] init];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:_loginViewController];
+    
+    if ([[ParseDataStore sharedStore] isLoggedIn]) {
+        [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
+            _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
+            [(UINavigationController *)self.window.rootViewController pushViewController:[_eventsListController presentableViewController]
+                                                                                animated:YES];
+            [self.window makeKeyAndVisible];
+        }];
+    } else {
+        [self.window makeKeyAndVisible];
+    }
+    
     return YES;
 }
 

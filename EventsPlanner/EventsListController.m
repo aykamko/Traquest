@@ -49,16 +49,14 @@
                                                                         target:self
                                                                         action:@selector(logUserOut:)];
         self.tableViewController.navigationItem.rightBarButtonItem = logoutButton;
+        self.tableViewController.navigationItem.hidesBackButton = YES;
         self.tableViewController.navigationController.navigationBar.translucent = NO;
         
     }
     return self;
 }
 
-
-
-
--(IBAction)logUserOut:(id)sender{
+- (IBAction)logUserOut:(id)sender{
     
   [[ParseDataStore sharedStore]logOutWithCompletion:^{
     [self.tableViewController.navigationController popViewControllerAnimated:YES];
