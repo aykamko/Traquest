@@ -91,4 +91,23 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     return image;
 }
 
++(UIImage *) overlayImage: (UIImage *) image2 overImage: (UIImage *) image1 {
+    UIGraphicsBeginImageContext(image2.size);
+    [image1 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
+    [image2 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
+    UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return  result;
+}
+
++(UIImage *) imageWithBackground:(UIColor *) color size: (CGSize) size {
+    UIGraphicsBeginImageContext(size);
+    CGRect bounds = {{0,0},size};
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, color.CGColor);
+    CGContextFillRect(context, bounds);
+    UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return  result;
+}
 @end

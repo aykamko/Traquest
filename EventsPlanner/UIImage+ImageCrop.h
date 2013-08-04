@@ -30,4 +30,9 @@
 + (UIImage *)imageWithImage:(UIImage *)image cropRectFromCenterOfSize:(CGSize)size;
 
 +(UIImage *) imageWithGradient: (CGSize) imageSize withColor1: (UIColor*) color1 withColor2: (UIColor*) color2 vertical:(BOOL) vertical;
+
++(UIImage *) overlayImage: (UIImage *) image1 overImage: (UIImage *) image2;
+
++(UIImage *) imageWithBackground:(UIColor *) color size: (CGSize) size;
+
 @end

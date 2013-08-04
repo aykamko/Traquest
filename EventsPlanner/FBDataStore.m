@@ -76,20 +76,16 @@
                 } else {
                     [guestEvents insertObject:event atIndex:0];
                 }
+                CGSize defaultCoverSize = {640,320};
                 if(!event[@"cover"]) {
-                    event[@"cover"] = [UIImage imageWithGradient:CGSizeMake(1000, 1000) withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:1] withColor2:[UIColor colorWithRed:1 green:1 blue:1 alpha:0] vertical:NO];
+                    UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
+                    NSLog(@"%f, %f", mainImage.size.height, mainImage.size.width);
+                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.5] size:defaultCoverSize];
+                    event[@"cover"] = [UIImage overlayImage:coloring overImage:mainImage];
                 } else {
-                    event[@"cover"] = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:event[@"cover"][@"source"]]]];
-                    
-                    UIImage *backgroundImage = event[@"cover"];
-                    UIImage *watermarkImage = [UIImage imageWithGradient:backgroundImage.size withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:1] withColor2:[UIColor colorWithRed:1 green:1 blue:1 alpha:0] vertical:NO];
-                    
-                    UIGraphicsBeginImageContext(backgroundImage.size);
-                    [backgroundImage drawInRect:CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height)];
-                    [watermarkImage drawInRect:CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height)];
-                    UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
-                    UIGraphicsEndImageContext();
-                    event[@"cover"] = result;
+                    UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:event[@"cover"][@"source"]]]];
+                    UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] withColor2:[UIColor colorWithWhite:1 alpha:0] vertical:NO];
+                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
                 }
                 
             }

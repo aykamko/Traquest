@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */ = {isa = PBXBuildFile; fileRef = 6065E46417ACA3C8003B947E /* eventCoverPhoto.png */; };
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */; };
@@ -80,6 +81,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6065E46417ACA3C8003B947E /* eventCoverPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eventCoverPhoto.png; sourceTree = "<group>"; };
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				6065E46417ACA3C8003B947E /* eventCoverPhoto.png */,
 				904838DD17A9AB1400042357 /* stickynote.png */,
 				90164D2217A8939800E5A564 /* firstBackground.png */,
 				9050550E17A72C7E0026B84C /* lemonlime.jpg */,
@@ -353,11 +356,11 @@
 			isa = PBXGroup;
 			children = (
 				7C78920A17A9E7B600610FB2 /* EventHeaderView.h */,
-				7C78920B17A9E7B600610FB2 /* EventHeaderView.m */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
 				90130EC017A31D450038BBFB /* EventsListController.m */,
 				90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */,
 				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
+				7C78920B17A9E7B600610FB2 /* EventHeaderView.m */,
 				7CCF244717AB657C009855B5 /* EventTableViewCell.h */,
 				7CCF244817AB657C009855B5 /* EventTableViewCell.m */,
 				7CBBD6FE17AB851700ED9DAB /* EventsCell.h */,
@@ -488,6 +491,7 @@
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
 				90164D2317A8939800E5A564 /* firstBackground.png in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
+				6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
 			);
