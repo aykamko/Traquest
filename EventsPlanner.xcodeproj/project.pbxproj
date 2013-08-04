@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */ = {isa = PBXBuildFile; fileRef = 6065E46417ACA3C8003B947E /* eventCoverPhoto.png */; };
+		6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6065E46717AE1ADA003B947E /* ParseDataStore.m */; };
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */; };
@@ -82,6 +83,8 @@
 
 /* Begin PBXFileReference section */
 		6065E46417ACA3C8003B947E /* eventCoverPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eventCoverPhoto.png; sourceTree = "<group>"; };
+		6065E46617AE1ADA003B947E /* ParseDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDataStore.h; sourceTree = "<group>"; };
+		6065E46717AE1ADA003B947E /* ParseDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDataStore.m; sourceTree = "<group>"; };
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
@@ -381,6 +384,8 @@
 		7CBBD70A17AB862F00ED9DAB /* Data Abstraction Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6065E46617AE1ADA003B947E /* ParseDataStore.h */,
+				6065E46717AE1ADA003B947E /* ParseDataStore.m */,
 				7C471F2317A7639A00601C0C /* MKGeocodingService.h */,
 				7C471F2417A7639A00601C0C /* MKGeocodingService.m */,
 				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
@@ -525,6 +530,7 @@
 				7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */,
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
+				6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */,
 				7CBBD70017AB851700ED9DAB /* EventsCell.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
 			);
