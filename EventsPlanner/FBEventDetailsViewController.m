@@ -17,7 +17,7 @@
 #import "UIImage+ImageCrop.h"
 #import "ParseDataStore.h"
 
-@interface FBEventDetailsViewController ()<FBFriendPickerDelegate>
+@interface FBEventDetailsViewController ()<FBFriendPickerDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 {
     BOOL _isHost;
     NSDictionary *_eventDetails;
@@ -67,6 +67,18 @@
         [[ParseDataStore sharedStore] initWithFriends:_friendsIDArray];
     }
     return self;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (!(_eventDetails[@"location"]||_eventDetails[@"venue"][@"lattitude"])) {
+        __strong UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your Event Location Was Invalid" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
+        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
+        [alert setDelegate:self];
+        UITextField *locationInputTextView = [alert textFieldAtIndex:0];
+        [locationInputTextView setPlaceholder:@"Please Enter a Location"];
+        [alert show];
+    }
 }
 
 - (void)viewDidLoad
@@ -236,16 +248,24 @@
         marker.map = _mapView;
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if ((buttonIndex == 0) || (buttonIndex == 1))
-    {
-            [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
-    }
-    else
-    {
-       // NSLog(@"User didn't enable Event Tracker!");
-    }
+    NSString *locationString = [alertView textFieldAtIndex:0].text;
+    MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
+    
+    [geocoder fetchGeocodeAddress:locationString completion:^(NSDictionary *geocode, NSError *error) {
+        CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
+        [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
+        if (!coordinate.latitude) {
+            [alertView show];
+        }
+        else {
+            [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
+            [_eventDetails setValue:locationString forKey:@"location"];
+            [_dataSource updateObject:locationString forKey:@"location"];
+            [_detailsTable reloadData];
+        }
+    }];
 }
 
 

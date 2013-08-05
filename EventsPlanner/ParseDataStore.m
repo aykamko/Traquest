@@ -160,7 +160,6 @@
             NSString *myID = result[@"id"];
             
             // Save the logged in user's Facebook ID to parse
-
             [[PFUser currentUser] setObject:myID forKey:@"fbID"];
             [[PFUser currentUser] saveInBackground];
             
@@ -168,11 +167,9 @@
             NSArray *eventArray = fbGraphObj[@"events"][@"data"];
             NSMutableArray *hostEvents = [[NSMutableArray alloc] init];
             NSMutableArray *guestEvents = [[NSMutableArray alloc] init];
-            NSArray *friends = [[NSMutableArray alloc] init];
-            friends = fbGraphObj[@"events"][@"data"];
             
             for (FBGraphObject *event in eventArray) {
-                
+                NSLog(@"%@",event);
                 NSArray *adminArray = event[@"admins"][@"data"];
                 
                 BOOL isHost = NO;
@@ -192,11 +189,13 @@
                 if(!event[@"cover"]) {
                     UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
                     NSLog(@"%f, %f", mainImage.size.height, mainImage.size.width);
-                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.5] size:defaultCoverSize];
-                    event[@"cover"] = [UIImage overlayImage:coloring overImage:mainImage];
+                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3] size:defaultCoverSize];
+                    UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
+                    UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6] withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2] vertical:NO];
+                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
                 } else {
                     UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:event[@"cover"][@"source"]]]];
-                    UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] withColor2:[UIColor colorWithWhite:1 alpha:0] vertical:NO];
+                    UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6] withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2] vertical:NO];
                     event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
                 }
                 
@@ -204,7 +203,6 @@
             
             
             completionBlock(hostEvents, guestEvents);
-            _friendsIDArray = friends;
         }
     }];
 }

@@ -9,7 +9,7 @@
 #import "FBEventsDetailsDataSource.h"
 
 @interface FBEventsDetailsDataSource () {
-    NSMutableArray *_relevantDetails;
+    NSMutableArray *_relevantDetailsKeys;
     NSMutableDictionary *_allDetails;
 }
 
@@ -21,8 +21,9 @@
 {
     self = [super init];
     if (self) {
-        _relevantDetails = [[NSMutableArray alloc] init];
+        _relevantDetailsKeys = [[NSMutableArray alloc] init];
         _allDetails = eventDetails;
+        _relevantDetailsKeys = [(NSArray*)@[@"location", @"privacy", @"start_time", @"description", @"owner"] mutableCopy];
         [self parseEventDetails:eventDetails];
     }
     return self;
@@ -30,45 +31,57 @@
 
 -(void) parseEventDetails: (NSMutableDictionary *) details {
     
-    [_relevantDetails addObject:details[@"location"]];
+    details[@"location"] = details[@"location"]? details[@"location"]:@" ";
     
-    NSMutableString *privacyString= [NSMutableString stringWithString:[details[@"privacy"] isEqualToString:@"OPEN"]? @"Public":@"Invite Only"];
+    details[@"privacy"] = [NSMutableString stringWithString:[details[@"privacy"] isEqualToString:@"OPEN"]? @"Public":@"Invite Only"];
     
     NSString *startTime = details[@"start_time"];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZ"];
     NSDate *date =[formatter dateFromString:startTime];
-    [formatter setDateFormat:@"EEEE',' MMMM dd',' 'at' h:mm a"];
-    NSString *dateString = [formatter stringFromDate:date];
+    NSString *dateString = @"";
+    if(!date) {
+        [formatter setDateFormat:@"YYYY-MM-dd"];
+        date = [formatter dateFromString:startTime];
+        [formatter setDateFormat:@"EEEE',' MMMM dd, YYYY"];
+        dateString = [formatter stringFromDate:date];
+    }
+    else {
+        [formatter setDateFormat:@"EEEE',' MMMM dd',' 'at' h:mm a"];
+        dateString = [formatter stringFromDate:date];
+    }
     
-    [_relevantDetails addObject:[NSString stringWithFormat:@"%@\n%@",privacyString,dateString ]];
+    details[@"start_time"] = dateString;
     
-    if (details[@"description"])
-        [_relevantDetails addObject:details[@"description"]];
+    if (!details[@"description"]){
+        [_relevantDetailsKeys removeObject:@"description"];
+    }
     
     NSArray *array = details[@"admins"][@"data"];
+    NSString *hostString  = @"";
     if(array) {
         if ([array count]>2) {
             NSString *firstAdmin = [array firstObject][@"name"];
-            [_relevantDetails addObject:[NSString stringWithFormat:@"Hosted by %@ and %d others",firstAdmin,[array count]-1]];
+            hostString = [NSString stringWithFormat:@"Hosted by %@ and %d others",firstAdmin,[array count]-1];
         } else {
             NSMutableString *namesString = [[NSMutableString alloc] init];
             [namesString appendString:array[0][@"name"]];
             if([array count]==2) {
                 [namesString appendString:[NSString stringWithFormat:@" and %@ ",array[1][@"name"]]];
             }
-            [_relevantDetails addObject:[NSString stringWithFormat:@"Hosted by %@",namesString]];
+            hostString =[NSString stringWithFormat:@"Hosted by %@",namesString];
         }
     } else {
         if (details[@"owner"]) {
             NSString * ownerString = details[@"owner"][@"name"];
-            [_relevantDetails addObject:[NSString stringWithFormat:@"Hosted by %@",ownerString]];
+            hostString =[NSString stringWithFormat:@"Hosted by %@",ownerString];
         }
     }
+    details[@"owner"] = hostString;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_relevantDetails count];
+    return [_relevantDetailsKeys count];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -85,8 +98,14 @@
     [[cell textLabel] setTextColor:[UIColor colorWithWhite:0 alpha:0.4]];
     [[cell textLabel] setFont:[UIFont fontWithName:@"Helvetica" size:14]];
     NSLog(@"%@",[[cell textLabel] font ]);
-    [[cell textLabel] setText:_relevantDetails[[indexPath row]] ];
+    
+    NSString *currentKey = _relevantDetailsKeys[[indexPath row]];
+    [[cell textLabel] setText: _allDetails[currentKey]];
     return cell;
+}
+
+-(void) updateObject: (NSString *) value forKey: (NSString *) key {
+    [_allDetails setObject:value forKey:key];
 }
 
 @end

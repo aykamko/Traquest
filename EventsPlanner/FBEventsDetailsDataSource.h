@@ -11,5 +11,6 @@
 @interface FBEventsDetailsDataSource : NSObject <UITableViewDataSource>
 
 -initWithEventDetails: (NSDictionary*) eventDetails;
+-(void) updateObject: (NSString *) value forKey: (NSString *) key;
 
 @end

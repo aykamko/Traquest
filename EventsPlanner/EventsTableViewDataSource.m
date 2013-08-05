@@ -34,52 +34,53 @@
 {
 
     static NSString *EventCellIdentifier = @"EventCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
-    
-    if (!cell) {
-        
-        NSArray *eventArray;
-        if (indexPath.section == 0) {
-            eventArray = _hostEvents;
-        } else {
-            eventArray = _guestEvents;
-        }
-        
-        // Arguments to pass to cell
-        NSString *cellTitle;
-        NSString *cellRsvpStatus;
-        NSDate *cellDate;
-        UIImage *cellBackground;
-        
-        // Getting arguments
-        cellTitle = eventArray[indexPath.row][@"name"];
-        
-        cellRsvpStatus = eventArray[indexPath.row][@"rsvp_status"];
-        if ([cellRsvpStatus isEqualToString:@"attending"]) {
-            cellRsvpStatus = @"You're going.";
-        }
-        
-        NSString *startTimeStr = eventArray[indexPath.row][@"start_time"];
-        
-        NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
-        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-        [dateFormater setLocale:enUSPOSIXLocale];
-        [dateFormater setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
-        
-        cellDate = [dateFormater dateFromString:startTimeStr];
-        
-        cellBackground = eventArray[indexPath.row][@"cover"];
-        
-        // Allocating and initializing actual cell
-        cell = [[EventTableViewCell alloc] initWithTitle:cellTitle
-                                              rsvpStatus:cellRsvpStatus
-                                                    date:cellDate
-                                              background:cellBackground
-                                         reuseIdentifier:EventCellIdentifier];
+    EventTableViewCell *cell = (EventTableViewCell*)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
+    if(cell) {
+        cell = nil;
     }
     
-    return cell;
-  
+    NSArray *eventArray;
+    if (indexPath.section == 0) {
+        eventArray = _hostEvents;
+    } else {
+        eventArray = _guestEvents;
+    }
+    
+    // Arguments to pass to cell
+    NSString *cellTitle;
+    NSString *cellRsvpStatus;
+    NSDate *cellDate;
+    UIImage *cellBackground;
+    
+    // Getting arguments
+    cellTitle = eventArray[indexPath.row][@"name"];
+    
+    cellRsvpStatus = eventArray[indexPath.row][@"rsvp_status"];
+    if ([cellRsvpStatus isEqualToString:@"attending"]) {
+        cellRsvpStatus = @"You're going.";
+    }
+    
+    NSString *startTimeStr = eventArray[indexPath.row][@"start_time"];
+    
+    NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
+    NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    [dateFormater setLocale:enUSPOSIXLocale];
+    [dateFormater setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+    
+    cellDate = [dateFormater dateFromString:startTimeStr];
+    
+    cellBackground = eventArray[indexPath.row][@"cover"];
+    
+    // Allocating and initializing actual cell
+    
+    if (!cell) {
+        cell = [[EventTableViewCell alloc]initWithTitle:cellTitle
+                                                  rsvpStatus:cellRsvpStatus
+                                                        date:cellDate
+                                                  background:cellBackground
+                                             reuseIdentifier:EventCellIdentifier];
+    }
+    return  cell;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
