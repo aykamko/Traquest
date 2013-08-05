@@ -44,20 +44,6 @@
     }
     return self;
 }
-
--(void) setTitle:(NSString *)title
-                  rsvpStatus:(NSString *)status
-                        date:(NSDate *)date
-                  background:(UIImage *)background
-             reuseIdentifier:(NSString *)identifier {
-    
-    _title = title;
-    _status = status;
-    _date = date;
-    _background = background;
-    
-}
-
 - (void)layoutSubviews
 {
     [super layoutSubviews];

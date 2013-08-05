@@ -19,7 +19,6 @@
 #import "FBEventStatusTableController.h"
 
 @interface FBEventDetailsViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
-
 {
     BOOL _isHost;
    CLLocationCoordinate2D venueLocationCoordinate;

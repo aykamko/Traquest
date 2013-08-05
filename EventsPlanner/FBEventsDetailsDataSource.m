@@ -96,7 +96,6 @@
     [cell textLabel].numberOfLines = 0;
     [[cell textLabel] setTextColor:[UIColor colorWithWhite:0 alpha:0.4]];
     [[cell textLabel] setFont:[UIFont fontWithName:@"Helvetica" size:14]];
-    
     NSString *currentKey = _relevantDetailsKeys[[indexPath row]];
     [[cell textLabel] setText: _allDetails[currentKey]];
     return cell;

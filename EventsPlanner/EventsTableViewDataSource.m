@@ -34,10 +34,7 @@
 {
 
     static NSString *EventCellIdentifier = @"EventCell";
-    EventCell *cell = (EventCell*)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
-    if(cell) {
-        cell = nil;
-    }
+    EventCell *cell = (EventCell*) [tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     
     NSArray *eventArray;
     if (indexPath.section == 0) {
@@ -72,14 +69,11 @@
     cellBackground = eventArray[indexPath.row][@"cover"];
     
     // Allocating and initializing actual cell
-    
-    if (!cell) {
-        cell = [[EventCell alloc] initWithTitle:cellTitle
-                                              rsvpStatus:cellRsvpStatus
-                                                    date:cellDate
-                                              background:cellBackground
-                                         reuseIdentifier:EventCellIdentifier];
-    }
+    cell = [[EventCell alloc]initWithTitle:cellTitle
+                                                  rsvpStatus:cellRsvpStatus
+                                                        date:cellDate
+                                                  background:cellBackground
+                                             reuseIdentifier:EventCellIdentifier];
     return  cell;
 }
 
