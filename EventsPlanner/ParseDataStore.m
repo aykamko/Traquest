@@ -10,11 +10,16 @@
 #import "UIImage+ImageCrop.h"
 
 @interface ParseDataStore () <CLLocationManagerDelegate>
+
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
+
 @property (strong, nonatomic) NSArray *friendsIDArray;
 @property (strong, nonatomic) NSMutableArray *allAttendingFriends;
+
+@property (strong, nonatomic) NSString *myId;
+
 @end
 @implementation ParseDataStore
 
@@ -110,7 +115,7 @@
 {
     
     // Set permissions required from the facebook user account
-    NSArray *permissionsArray = @[@"user_events"];
+    NSArray *permissionsArray = @[@"user_events", @"friends_events", @"create_event", @"rsvp_event"];
     
     // Login PFUser using facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
@@ -145,7 +150,7 @@
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
-                          @"me?fields=events.limit(1000).fields(name,admins.fields(id,name),"
+                          @"me?fields=events.limit(1000).fields(name,id,admins.fields(id,name),"
                           @"attending.limit(5),location,cover,owner,"
                           @"privacy,description,venue,picture,rsvp_status),id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -157,10 +162,10 @@
                                                   otherButtonTitles:nil];
             [alert show];
         } else {
-            NSString *myID = result[@"id"];
+            _myId = result[@"id"];
             
             // Save the logged in user's Facebook ID to parse
-            [[PFUser currentUser] setObject:myID forKey:@"fbID"];
+            [[PFUser currentUser] setObject:_myId forKey:@"fbID"];
             [[PFUser currentUser] saveInBackground];
             
             FBGraphObject *fbGraphObj = (FBGraphObject *)result;
@@ -174,7 +179,7 @@
                 
                 BOOL isHost = NO;
                 for (FBGraphObject *adminData in adminArray) {
-                    if ([adminData[@"id"] isEqualToString:myID]) {
+                    if ([adminData[@"id"] isEqualToString:_myId]) {
                         isHost = YES;
                         break;
                     }
@@ -212,5 +217,73 @@
     
 }
 
+- (void)event:(NSString *)eventId inviteFriends:(NSArray *)freindIdArray completion:(void (^)())completionBlock
+{
+    NSString *friendIdArrayString = [freindIdArray componentsJoinedByString:@","];
+    
+    NSDictionary *requestParams = @{ @"users":friendIdArrayString };
+    NSString *graphPath = [NSString stringWithFormat:@"%@/invited", eventId];
+    
+    FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:requestParams HTTPMethod:@"POST"];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        if (error) {
+            
+            UIAlertView *alertView;
+            
+            alertView = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                   message:error.localizedDescription
+                                                  delegate:nil
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil];
+            
+            [alertView show];
+            
+        } else {
+            
+            if (completionBlock)
+                completionBlock();
+            
+        }
+        
+    }];
+}
+
+- (void)event:(NSString *)eventId changeRsvpStatusTo:(NSString *)status completion:(void (^)())completionBlock
+{
+    NSString *urlStatusString;
+    if ([status isEqualToString:@"Going"]) {
+        urlStatusString = @"attending";
+    } else if ([status isEqualToString:@"Maybe"]) {
+        urlStatusString = @"maybe";
+    } else if ([status isEqualToString:@"Not Going"]) {
+        urlStatusString = @"declined";
+    }
+    
+    NSString *graphPath = [NSString stringWithFormat:@"%@/%@/%@", eventId, urlStatusString, _myId];
+    
+    FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:nil HTTPMethod:@"POST"];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        if (error) {
+            
+            UIAlertView *alertView;
+            alertView = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                   message:error.localizedDescription
+                                                  delegate:nil
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil];
+            
+            [alertView show];
+            
+        } else {
+            
+            if (completionBlock)
+                completionBlock();
+            
+        }
+        
+    }];
+}
 
 @end

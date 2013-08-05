@@ -10,7 +10,6 @@
 #import <Parse/Parse.h>
 #import <GoogleMaps/GoogleMaps.h>
 #import "LoginViewController.h"
-#import "FBDataStore.h"
 #import "ParseDataStore.h"
 #import "EventsListController.h"
 

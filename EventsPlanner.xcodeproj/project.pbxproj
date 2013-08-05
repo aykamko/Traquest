@@ -52,7 +52,6 @@
 		7C553E9217A70578006A6219 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9117A70578006A6219 /* libicucore.dylib */; };
 		7C553E9417A70581006A6219 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9317A70581006A6219 /* libz.dylib */; };
 		7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9517A7058E006A6219 /* OpenGLES.framework */; };
-		7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C5DE42117A0B00D00A6D635 /* FBDataStore.m */; };
 		7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C78920B17A9E7B600610FB2 /* EventHeaderView.m */; };
 		7CBBD70017AB851700ED9DAB /* EventsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventsCell.m */; };
 		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
@@ -63,13 +62,14 @@
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
 		7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */; };
+		7CED113017B036CE005B533D /* FBEventStatusTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED112F17B036CE005B533D /* FBEventStatusTableController.m */; };
+		7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
 		90164D2317A8939800E5A564 /* firstBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 90164D2217A8939800E5A564 /* firstBackground.png */; };
 		904838DE17A9AB1400042357 /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 904838DD17A9AB1400042357 /* stickynote.png */; };
 		9050551017A72D3E0026B84C /* lemonlime.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9050550E17A72C7E0026B84C /* lemonlime.jpg */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
-		90FB116D17AC852E00E68343 /* ParseDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FB116C17AC852E00E68343 /* ParseDataStore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,8 +137,6 @@
 		7C553E9117A70578006A6219 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		7C553E9317A70581006A6219 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		7C553E9517A7058E006A6219 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		7C5DE42017A0B00D00A6D635 /* FBDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBDataStore.h; sourceTree = "<group>"; };
-		7C5DE42117A0B00D00A6D635 /* FBDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBDataStore.m; sourceTree = "<group>"; };
 		7C78920A17A9E7B600610FB2 /* EventHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventHeaderView.h; sourceTree = "<group>"; };
 		7C78920B17A9E7B600610FB2 /* EventHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventHeaderView.m; sourceTree = "<group>"; };
 		7CBBD6FE17AB851700ED9DAB /* EventsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsCell.h; sourceTree = "<group>"; };
@@ -154,6 +152,10 @@
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
 		7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small@2x.png"; sourceTree = "<group>"; };
+		7CED112E17B036CE005B533D /* FBEventStatusTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventStatusTableController.h; sourceTree = "<group>"; };
+		7CED112F17B036CE005B533D /* FBEventStatusTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventStatusTableController.m; sourceTree = "<group>"; };
+		7CED113117B03A6D005B533D /* FBEventStatusViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventStatusViewDataSource.h; sourceTree = "<group>"; };
+		7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventStatusViewDataSource.m; sourceTree = "<group>"; };
 		90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveEventsStatsViewController.h; sourceTree = "<group>"; };
 		90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventsStatsViewController.m; sourceTree = "<group>"; };
 		90130EBF17A31D450038BBFB /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsListController.h; sourceTree = "<group>"; };
@@ -163,8 +165,6 @@
 		9050550E17A72C7E0026B84C /* lemonlime.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = lemonlime.jpg; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
-		90FB116B17AC852E00E68343 /* ParseDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDataStore.h; sourceTree = "<group>"; };
-		90FB116C17AC852E00E68343 /* ParseDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDataStore.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +327,10 @@
 				60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */,
 				60E093C417AC5211007CE1C8 /* FBEventsDetailsDataSource.h */,
 				60E093C517AC5211007CE1C8 /* FBEventsDetailsDataSource.m */,
+				7CED112E17B036CE005B533D /* FBEventStatusTableController.h */,
+				7CED112F17B036CE005B533D /* FBEventStatusTableController.m */,
+				7CED113117B03A6D005B533D /* FBEventStatusViewDataSource.h */,
+				7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */,
 			);
 			name = "Detail View Stuff";
 			sourceTree = "<group>";
@@ -391,8 +395,6 @@
 				6065E46717AE1ADA003B947E /* ParseDataStore.m */,
 				7C471F2317A7639A00601C0C /* MKGeocodingService.h */,
 				7C471F2417A7639A00601C0C /* MKGeocodingService.m */,
-				7C5DE42017A0B00D00A6D635 /* FBDataStore.h */,
-				7C5DE42117A0B00D00A6D635 /* FBDataStore.m */,
 			);
 			name = "Data Abstraction Classes";
 			sourceTree = "<group>";
@@ -521,11 +523,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */,
+				7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */,
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
 				7CCF244917AB657C009855B5 /* EventTableViewCell.m in Sources */,
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
 				60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */,
-				7C5DE42217A0B00D00A6D635 /* FBDataStore.m in Sources */,
 				7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */,
 				60E093C717AC5211007CE1C8 /* FBEventsDetailsDataSource.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
@@ -535,6 +537,7 @@
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */,
 				7CBBD70017AB851700ED9DAB /* EventsCell.m in Sources */,
+				7CED113017B036CE005B533D /* FBEventStatusTableController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

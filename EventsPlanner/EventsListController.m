@@ -37,7 +37,7 @@
         _tableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableViewController tableView] setDelegate:self];
         [[_tableViewController tableView] setDataSource:_tableViewDataSource];
-        [self setTableViewController:_tableViewController];
+//        [self setTableViewController:_tableViewController];
         
 //        UIImage *backgroundImage = [UIImage imageNamed:@"lemonlime.jpg"];
 //        UIImageView *imageView = [[UIImageView alloc] initWithImage:backgroundImage];
@@ -121,36 +121,28 @@
     NSDictionary *currentEventDetails;
     
     if ([indexPath section] == hostedEvent) {
+        
         eventsArray = _hostEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
         _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithEventDetails:currentEventDetails isHost:YES];
         
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                                       style:UIBarButtonItemStyleBordered
-                                                                      target:nil
-                                                                      action:nil];
+    } else if ([indexPath section] == guestEvent) {
         
-        [_tableViewController.navigationItem setBackBarButtonItem:backButton];
-        
-        [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
-    }
-    
-    else if([indexPath section] == guestEvent){
         eventsArray = _guestEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
         _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithEventDetails:currentEventDetails isHost:NO];
         
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                       style:UIBarButtonItemStyleBordered
-                                                                      target:nil
-                                                                      action:nil];
-        [_tableViewController.navigationItem setBackBarButtonItem:backButton];
-        
-        [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
-
     }
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                   style:UIBarButtonItemStyleBordered
+                                                                  target:nil
+                                                                  action:nil];
+    [_tableViewController.navigationItem setBackBarButtonItem:backButton];
+    
+    [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
 }
 
 @end

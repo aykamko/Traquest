@@ -16,9 +16,10 @@
 #import "ActiveEventMapViewController.h"
 #import "UIImage+ImageCrop.h"
 #import "ParseDataStore.h"
-#import "MKGeocodingService.h"
+#import "FBEventStatusTableController.h"
 
-@interface FBEventDetailsViewController ()<FBFriendPickerDelegate, UITextFieldDelegate, UIAlertViewDelegate>
+@interface FBEventDetailsViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
+
 {
     BOOL _isHost;
    CLLocationCoordinate2D venueLocationCoordinate;
@@ -32,16 +33,19 @@
     UILabel *_titleLabel;
     UIImage *_originalEventImage;
     UIView *_buttonHolder;
-    FBFriendPickerViewController *_friendPicker;
     FBEventsDetailsDataSource *_dataSource;
     UITableView *_detailsTable;
     NSMutableArray *_attendingFriends;
+    
+    __strong FBEventStatusTableController *_statusTableController;
     
     __strong UIButton *_trackingButton;
 }
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 - (void)loadMapView:(id)sender;
+
+- (void)changeRsvpStatus:(id)sender;
 
 @end
 
@@ -55,7 +59,6 @@
         _eventDetails = details;
         FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
         
-        _friendPicker = [[FBFriendPickerViewController alloc] init];
         _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
         NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
         
@@ -156,7 +159,7 @@
     rsvpStatusButton.showsTouchWhenHighlighted = YES;
     [rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
     [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-    [rsvpStatusButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchDown];
+    [rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchDown];
     [rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:) forControlEvents:UIControlEventTouchUpInside];
     [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
     [rsvpStatusButton setTitle:@"RSVP Status" forState:UIControlStateNormal];
@@ -294,39 +297,61 @@
     //set button to be highlighted
     [sender setBackgroundColor: [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
 }
+
 -(void) inviteFriends: (id) sender {
+    
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    NSLog (@"Invite");
-    [_friendPicker loadData];
-    [_friendPicker setDelegate: self];
-    [_friendPicker setTitle:@"Invite Friends"];
-    [self.navigationController pushViewController:_friendPicker animated:YES];
+    FBFriendPickerViewController *friendPicker = [[FBFriendPickerViewController alloc] init];
+    
+    [friendPicker loadData];
+    [friendPicker setTitle:@"Invite Friends"];
+    [friendPicker presentModallyFromViewController:self animated:YES handler:^(FBViewController *sender, BOOL donePressed) {
+    
+        NSMutableArray *usersToInvite = [[NSMutableArray alloc] init];
+        
+        for (id<FBGraphUser> user in friendPicker.selection) {
+            [usersToInvite addObject:(NSString *)user[@"id"]];
+        }
+        
+        [[ParseDataStore sharedStore] event:_eventDetails[@"id"] inviteFriends:usersToInvite completion:nil];
+        
+    }];
+    
 }
--(void) resetButtonBackGroundColor: (id) sender {
+
+- (void)changeRsvpStatus:(id)sender
+{
+    void (^completionBlock)(NSString *newStatus) = (^(NSString *newStatus) {
+        [[ParseDataStore sharedStore] event:_eventDetails[@"id"] changeRsvpStatusTo:newStatus completion:nil];
+    });
+    
+    _statusTableController = [[FBEventStatusTableController alloc] initWithStatus:_eventDetails[@"rsvp_status"]
+                                                                       completion:completionBlock];
+    
+    [self.navigationController pushViewController:[_statusTableController presentableViewController] animated:YES];
+}
+
+- (void) resetButtonBackGroundColor: (id) sender {
     UIButton *button = (UIButton *) sender;
     NSLog(@"%u",[button state]);
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
 
-- (void)facebookViewControllerDoneWasPressed:(id)sender {
-    //Figure out how to send POST request to push the data from this to FB Server
+- (void)initFriendsIDArray
+{
+    FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+    NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
     
-    for (id<FBGraphUser> user in _friendPicker.selection) {
-        /*NSMutableString *eventPath = [[NSMutableString alloc] init];
-        [eventPath appendString:_eventDetails[@"id"]];
-        [eventPath appendString:@"/invited/"];
-        NSString *userID = user[@"id"];//[eventPath appendString:user[@"id"]];
-        FBRequest *request = [FBRequest requestForPostWithGraphPath:eventPath graphObject:[FBGraphObject graphObjectWrappingDictionary:@{@"id":userID}]];
-        [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            if(error) {
-                NSLog(@"%@", [error localizedDescription]);
-            }
-            else {
-                NSLog(@"%@", result);
-            }
-        }];*/
+    _friendsIDArray = [[NSMutableArray alloc] init];
+    
+    // Populate friendsIDArray with the ID's of
+    // everyone attending event
+    for (NSDictionary *friend in attendingFriends)
+    {
+        [_friendsIDArray addObject:(NSString *)friend[@"id"]];
+        NSLog(@"%@", friend[@"id"]);
     }
-    [_friendPicker clearSelection];
+    
 }
 
 - (void)loadMapView:(id)sender
