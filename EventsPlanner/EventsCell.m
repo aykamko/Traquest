@@ -60,6 +60,7 @@
                                                                                 constant:-kMargins];
         [_eventTitleLabel setFont:[UIFont boldSystemFontOfSize:kBigLabelFontSize]];
         [_eventTitleLabel setBackgroundColor:[UIColor clearColor]];
+        [_eventTitleLabel setTextColor:[UIColor whiteColor]];
         
         // Event Status Label properties
         [_eventStatusLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -79,6 +80,7 @@
                                                                                  constant:0];
         [_eventStatusLabel setFont:[UIFont systemFontOfSize:kSmallLabelFontSize]];
         [_eventStatusLabel setBackgroundColor:[UIColor clearColor]];
+        [_eventStatusLabel setTextColor:[UIColor whiteColor]];
         
         
         // Event Date Label properties
@@ -99,6 +101,7 @@
                                                                                 constant:0.0];
         [_eventDateLabel setFont:[UIFont systemFontOfSize:kSmallLabelFontSize]];
         [_eventDateLabel setBackgroundColor:[UIColor clearColor]];
+        [_eventDateLabel setTextColor:[UIColor whiteColor]];
         
         // Adding to superview
         [self addSubview:_eventTitleLabel];

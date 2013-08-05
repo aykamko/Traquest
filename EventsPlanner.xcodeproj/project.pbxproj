@@ -358,11 +358,11 @@
 		7CBBD70817AB85D600ED9DAB /* Event Table View Stuff */ = {
 			isa = PBXGroup;
 			children = (
-				7C78920A17A9E7B600610FB2 /* EventHeaderView.h */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
 				90130EC017A31D450038BBFB /* EventsListController.m */,
 				90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */,
 				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
+				7C78920A17A9E7B600610FB2 /* EventHeaderView.h */,
 				7C78920B17A9E7B600610FB2 /* EventHeaderView.m */,
 				7CCF244717AB657C009855B5 /* EventTableViewCell.h */,
 				7CCF244817AB657C009855B5 /* EventTableViewCell.m */,

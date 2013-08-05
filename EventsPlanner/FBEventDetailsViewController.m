@@ -14,6 +14,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "FBEventsDetailsDataSource.h"
 #import "ActiveEventMapViewController.h"
+#import "UIImage+ImageCrop.h"
 
 @interface FBEventDetailsViewController ()<FBFriendPickerDelegate>
 {
@@ -77,17 +78,16 @@
     
     //getting image for cover photo
     _originalEventImage = _eventDetails[@"cover"];
-    CGImageRef ref = CGImageCreateWithImageInRect([_originalEventImage CGImage], CGRectMake(0,_originalEventImage.size.height/4, _originalEventImage.size.width, _originalEventImage.size.height/2));
-    UIImage *croppedImage = [UIImage imageWithCGImage:ref];
-    
-    //resizing photo to fit screen
-    UIGraphicsBeginImageContextWithOptions(skeletonRect.size, NO, 0.0 );
-    [croppedImage drawInRect:skeletonRect];
-    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+    NSLog(@"YO DAQG%f, %f", _originalEventImage.size.width, _originalEventImage.size.height);
+    UIImage *scaledImage = [UIImage imageWithImage:_originalEventImage scaledToWidth:eventImageView.frame.size.width];
+    NSLog(@"%f, %f", scaledImage.size.width, scaledImage.size.height);
+
+    UIImage *croppedScaledImage = [UIImage imageWithImage:scaledImage cropRectFromCenterOfSize:eventImageView.frame.size];
+    NSLog(@"%f, %f", croppedScaledImage.size.width, croppedScaledImage.size.height);
+
+    eventImageView.image = croppedScaledImage;
     
     //adding image to mainView and adding gesture recognizer
-    [eventImageView setImage: scaledImage];
     [eventImageView setUserInteractionEnabled:YES];
     UITapGestureRecognizer *eventImageRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
     [eventImageRecognizer setNumberOfTapsRequired:1];
@@ -143,7 +143,10 @@
     NSLog(@"%@",[textFont fontName]);
     [_titleLabel setTextColor:[UIColor whiteColor]];
     [_titleLabel setFont:textFont];
-    [_titleLabel setTextAlignment:NSTextAlignmentCenter];
+    [_titleLabel setTextAlignment:NSTextAlignmentLeft];
+    CGRect tempRect = _titleLabel.frame;
+    tempRect.origin.x += margin;
+    _titleLabel.frame = tempRect;
     
     [eventImageView addSubview:_titleLabel];
     

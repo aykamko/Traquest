@@ -67,7 +67,7 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     [image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
     UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+    NSLog(@"YOOOOO %f, %f", newImage.size.width,newImage.size.height);
     return newImage;
 }
 
@@ -91,10 +91,10 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     return image;
 }
 
-+(UIImage *) overlayImage: (UIImage *) image2 overImage: (UIImage *) image1 {
++(UIImage *) overlayImage: (UIImage *) image1 overImage: (UIImage *) image2 {
     UIGraphicsBeginImageContext(image2.size);
-    [image1 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
     [image2 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
+    [image1 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
     UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return  result;

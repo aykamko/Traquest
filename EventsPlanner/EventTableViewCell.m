@@ -61,7 +61,7 @@
     UIView *translucentView = [[UIView alloc] initWithFrame:newBounds];
     [translucentView setBackgroundColor:[UIColor whiteColor]];
     [translucentView setAlpha:0.75];
-    [self addSubview:translucentView];
+    //[self addSubview:translucentView];
     
     EventsCell *cell = [[EventsCell alloc] initWithFrame:newBounds
                                                    title:_title
