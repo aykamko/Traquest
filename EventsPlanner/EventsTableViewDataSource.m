@@ -35,7 +35,6 @@
 
     static NSString *EventCellIdentifier = @"EventCell";
     EventCell *cell = (EventCell*) [tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
-    
     NSArray *eventArray;
     if (indexPath.section == 0) {
         eventArray = _hostEvents;
