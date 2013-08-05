@@ -11,9 +11,9 @@
 #define kLabelSpacer                  0.5f
 #define kMargins                      9.0f
 
-#import "EventsCell.h"
+#import "EventCellContentView.h"
 
-@implementation EventsCell
+@implementation EventCellContentView
 
 - (instancetype)initWithFrame:(CGRect)frame
                         title:(NSString *)title

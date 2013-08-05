@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 
 
-@interface EventsCell : UIView
+@interface EventCellContentView : UIView
 
 @property (nonatomic, strong) UIImage *eventImage;
 @property (nonatomic, strong) UILabel *eventTitleLabel;

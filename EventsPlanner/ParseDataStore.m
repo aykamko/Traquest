@@ -73,7 +73,6 @@
     
     
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
-    NSLog(@"I'm here, %@",_currentLocation);
     [_userPastLocations addObject:geoPoint];
     [[PFUser currentUser] saveInBackground];
 }
@@ -92,7 +91,6 @@
         if ([_friendsIDArray containsObject:friend[@"fbID"]])
         {
             [locations addObject:friend[@"location"]];
-            NSLog(@"%@",friend[@"location"]);
         }
     }
 
@@ -174,7 +172,6 @@
             NSMutableArray *guestEvents = [[NSMutableArray alloc] init];
             
             for (FBGraphObject *event in eventArray) {
-                NSLog(@"%@",event);
                 NSArray *adminArray = event[@"admins"][@"data"];
                 
                 BOOL isHost = NO;
@@ -193,7 +190,6 @@
                 CGSize defaultCoverSize = {640,320};
                 if(!event[@"cover"]) {
                     UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
-                    NSLog(@"%f, %f", mainImage.size.height, mainImage.size.width);
                     UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3] size:defaultCoverSize];
                     UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
                     UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6] withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2] vertical:NO];

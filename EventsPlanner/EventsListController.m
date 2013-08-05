@@ -141,7 +141,6 @@
                                                                   target:nil
                                                                   action:nil];
     [_tableViewController.navigationItem setBackBarButtonItem:backButton];
-    
     [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
 }
 

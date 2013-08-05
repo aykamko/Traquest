@@ -8,20 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EventTableViewCell : UITableViewCell
+@interface EventCell : UITableViewCell
 
 - (instancetype) initWithTitle:(NSString *)title
                     rsvpStatus:(NSString *)status
                           date:(NSDate *)date
                     background:(UIImage *)background
                reuseIdentifier:(NSString *)identifier;
-
-
-//used to reset information when reusing tablecells
--(void) setTitle:(NSString *)title
-          rsvpStatus:(NSString *)status
-                date:(NSDate *)date
-          background:(UIImage *)background
-     reuseIdentifier:(NSString *)identifier;
 
 @end

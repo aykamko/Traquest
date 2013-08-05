@@ -94,10 +94,8 @@
     [cell setUserInteractionEnabled:NO];
     [cell textLabel].lineBreakMode = NSLineBreakByWordWrapping;
     [cell textLabel].numberOfLines = 0;
-    NSLog(@"%f",cell.frame.size.height);
     [[cell textLabel] setTextColor:[UIColor colorWithWhite:0 alpha:0.4]];
     [[cell textLabel] setFont:[UIFont fontWithName:@"Helvetica" size:14]];
-    NSLog(@"%@",[[cell textLabel] font ]);
     
     NSString *currentKey = _relevantDetailsKeys[[indexPath row]];
     [[cell textLabel] setText: _allDetails[currentKey]];

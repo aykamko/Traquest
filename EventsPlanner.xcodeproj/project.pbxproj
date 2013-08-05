@@ -53,11 +53,11 @@
 		7C553E9417A70581006A6219 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9317A70581006A6219 /* libz.dylib */; };
 		7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9517A7058E006A6219 /* OpenGLES.framework */; };
 		7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C78920B17A9E7B600610FB2 /* EventHeaderView.m */; };
-		7CBBD70017AB851700ED9DAB /* EventsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventsCell.m */; };
+		7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */; };
 		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
 		7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CCF244517AB6384009855B5 /* Parse.framework */; };
 		7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */; };
-		7CCF244917AB657C009855B5 /* EventTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventTableViewCell.m */; };
+		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
 		7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */; };
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
@@ -139,15 +139,15 @@
 		7C553E9517A7058E006A6219 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		7C78920A17A9E7B600610FB2 /* EventHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventHeaderView.h; sourceTree = "<group>"; };
 		7C78920B17A9E7B600610FB2 /* EventHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventHeaderView.m; sourceTree = "<group>"; };
-		7CBBD6FE17AB851700ED9DAB /* EventsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsCell.h; sourceTree = "<group>"; };
-		7CBBD6FF17AB851700ED9DAB /* EventsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsCell.m; sourceTree = "<group>"; };
+		7CBBD6FE17AB851700ED9DAB /* EventCellContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCellContentView.h; sourceTree = "<group>"; };
+		7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCellContentView.m; sourceTree = "<group>"; };
 		7CBBD70117AB852800ED9DAB /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		7CBBD70217AB852800ED9DAB /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		7CBBD70D17AB987700ED9DAB /* UIImage+ImageCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageCrop.h"; sourceTree = "<group>"; };
 		7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageCrop.m"; sourceTree = "<group>"; };
 		7CCF244517AB6384009855B5 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
-		7CCF244717AB657C009855B5 /* EventTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTableViewCell.h; sourceTree = "<group>"; };
-		7CCF244817AB657C009855B5 /* EventTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventTableViewCell.m; sourceTree = "<group>"; };
+		7CCF244717AB657C009855B5 /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCell.h; sourceTree = "<group>"; };
+		7CCF244817AB657C009855B5 /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCell.m; sourceTree = "<group>"; };
 		7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed.png"; sourceTree = "<group>"; };
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
@@ -371,10 +371,10 @@
 				90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */,
 				7C78920A17A9E7B600610FB2 /* EventHeaderView.h */,
 				7C78920B17A9E7B600610FB2 /* EventHeaderView.m */,
-				7CCF244717AB657C009855B5 /* EventTableViewCell.h */,
-				7CCF244817AB657C009855B5 /* EventTableViewCell.m */,
-				7CBBD6FE17AB851700ED9DAB /* EventsCell.h */,
-				7CBBD6FF17AB851700ED9DAB /* EventsCell.m */,
+				7CCF244717AB657C009855B5 /* EventCell.h */,
+				7CCF244817AB657C009855B5 /* EventCell.m */,
+				7CBBD6FE17AB851700ED9DAB /* EventCellContentView.h */,
+				7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */,
 			);
 			name = "Event Table View Stuff";
 			sourceTree = "<group>";
@@ -525,7 +525,7 @@
 				7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */,
 				7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */,
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
-				7CCF244917AB657C009855B5 /* EventTableViewCell.m in Sources */,
+				7CCF244917AB657C009855B5 /* EventCell.m in Sources */,
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
 				60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */,
 				7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */,
@@ -536,7 +536,7 @@
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */,
-				7CBBD70017AB851700ED9DAB /* EventsCell.m in Sources */,
+				7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */,
 				7CED113017B036CE005B533D /* FBEventStatusTableController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
 			);

@@ -69,7 +69,6 @@
         for (NSDictionary *friend in attendingFriends)
         {
             [_friendsIDArray addObject:(NSString *)friend[@"id"]];
-            NSLog(@"%@", friend[@"id"]);
         }
         
         
@@ -116,12 +115,9 @@
     
     //getting image for cover photo
     _originalEventImage = _eventDetails[@"cover"];
-    NSLog(@"YO DAQG%f, %f", _originalEventImage.size.width, _originalEventImage.size.height);
     UIImage *scaledImage = [UIImage imageWithImage:_originalEventImage scaledToWidth:eventImageView.frame.size.width];
-    NSLog(@"%f, %f", scaledImage.size.width, scaledImage.size.height);
 
     UIImage *croppedScaledImage = [UIImage imageWithImage:scaledImage cropRectFromCenterOfSize:eventImageView.frame.size];
-    NSLog(@"%f, %f", croppedScaledImage.size.width, croppedScaledImage.size.height);
 
     eventImageView.image = croppedScaledImage;
     
@@ -176,9 +172,7 @@
 
     CGFloat fontSize = MIN(24,625/[eventTitle length]);
     UIFont *textFont = [UIFont fontWithName:@"Helvetica Neue" size:fontSize];
-    NSLog (@"Font families: %@", [UIFont familyNames]);
 
-    NSLog(@"%@",[textFont fontName]);
     [_titleLabel setTextColor:[UIColor whiteColor]];
     [_titleLabel setFont:textFont];
     [_titleLabel setTextAlignment:NSTextAlignmentLeft];
@@ -333,7 +327,6 @@
 
 - (void) resetButtonBackGroundColor: (id) sender {
     UIButton *button = (UIButton *) sender;
-    NSLog(@"%u",[button state]);
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
 
@@ -349,7 +342,6 @@
     for (NSDictionary *friend in attendingFriends)
     {
         [_friendsIDArray addObject:(NSString *)friend[@"id"]];
-        NSLog(@"%@", friend[@"id"]);
     }
     
 }

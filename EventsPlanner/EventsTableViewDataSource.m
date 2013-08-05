@@ -7,7 +7,7 @@
 //
 
 #import "EventsTableViewDataSource.h"
-#import "EventTableViewCell.h"
+#import "EventCell.h"
 
 @interface EventsTableViewDataSource()
 
@@ -34,7 +34,7 @@
 {
 
     static NSString *EventCellIdentifier = @"EventCell";
-    EventTableViewCell *cell = (EventTableViewCell*)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
+    EventCell *cell = (EventCell*)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     if(cell) {
         cell = nil;
     }
@@ -74,11 +74,11 @@
     // Allocating and initializing actual cell
     
     if (!cell) {
-        cell = [[EventTableViewCell alloc]initWithTitle:cellTitle
-                                                  rsvpStatus:cellRsvpStatus
-                                                        date:cellDate
-                                                  background:cellBackground
-                                             reuseIdentifier:EventCellIdentifier];
+        cell = [[EventCell alloc] initWithTitle:cellTitle
+                                              rsvpStatus:cellRsvpStatus
+                                                    date:cellDate
+                                              background:cellBackground
+                                         reuseIdentifier:EventCellIdentifier];
     }
     return  cell;
 }
