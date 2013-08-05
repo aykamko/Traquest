@@ -10,6 +10,7 @@
 #import "EventsTableViewDataSource.h"
 #import "FBEventDetailsViewController.h"
 #import "EventHeaderView.h"
+#import "ParseDataStore.h"
 
 @interface EventsListController() <UITableViewDelegate>
 
@@ -59,19 +60,19 @@
 
 -(IBAction)logUserOut:(id)sender{
     
-    [[PFFacebookUtils session] closeAndClearTokenInformation];
-    [[PFFacebookUtils session] close];
-    [PFUser logOut];
+  [[ParseDataStore sharedStore]logOutWithCompletion:^{
     [self.tableViewController.navigationController popViewControllerAnimated:YES];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another use, please logout of your Facebook App."
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another use, please logout of Facebook in your settings."
                                                     message:Nil
                                                    delegate:self
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
-    [alert show];
+      [alert show];
+  }];
     
 }
+   
 
 
 - (id)presentableViewController

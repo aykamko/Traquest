@@ -4,6 +4,7 @@
 #import <Parse/Parse.h>
 #import "ParseDataStore.h"
 #import "EventsListController.h"
+#import "ParseDataStore.h"
 
 @interface LoginViewController ()
 
@@ -78,35 +79,15 @@
 /* Login to facebook method */
 - (IBAction)loginButtonTouchHandler:(id)sender  {
     
-    // Set permissions required from the facebook user account
-    NSArray *permissionsArray = @[@"user_events"];
+    // Show loading indicator until login is finished
+    [_activityIndicator startAnimating];
     
-    // Login PFUser using facebook
-    [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-        [_activityIndicator stopAnimating]; // Hide loading indicator
-        
-        if (!user) {
-            if (!error) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error"
-                                                                message:@"Uh oh. The user cancelled the Facebook login."
-                                                               delegate:nil
-                                                      cancelButtonTitle:nil
-                                                      otherButtonTitles:@"Dismiss", nil];
-                [alert show];
-            } else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error"
-                                                                message:[error description]
-                                                               delegate:nil
-                                                      cancelButtonTitle:nil
-                                                      otherButtonTitles:@"Dismiss", nil];
-                [alert show];
-            }
-        } else {
-            [self setEventsListView];
-        }
+    [[ParseDataStore sharedStore] logInWithCompletion:^{
+        [_activityIndicator stopAnimating];
+        [self setEventsListView];
     }];
     
-    [_activityIndicator startAnimating]; // Show loading indicator until login is finished
+   
 }
 
 - (void)setEventsListView
