@@ -2,7 +2,7 @@
 
 #import "LoginViewController.h"
 #import <Parse/Parse.h>
-#import "FBDataStore.h"
+#import "ParseDataStore.h"
 #import "EventsListController.h"
 
 @interface LoginViewController ()
@@ -111,9 +111,9 @@
 
 - (void)setEventsListView
 {
-    [[FBDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
+    [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *friends) {
         
-        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
+        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents friendsArray: friends];
         
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];

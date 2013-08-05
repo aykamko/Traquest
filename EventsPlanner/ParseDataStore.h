@@ -17,7 +17,9 @@
 - (void)logInWithCompletion:(void (^)())completionBlock;
 -(void)logOutWithCompletion: (void (^)())completionBlock;
 -(void)fetchLocationDataWithCompletion:(void (^)(NSArray *userLocations)) completionBlock;
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock;
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray *friends))completionBlock;
 + (ParseDataStore *)sharedStore;
+-(void)fetchFriendsWithCompletion:(void (^)(NSArray *friends)) completionBlock;
+-(void)notifyUsersWithCompletion:(void(^)(NSArray *userLocations)) completionBlock;
 
 @end

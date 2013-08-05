@@ -54,7 +54,6 @@
 }
 
 
-// method has been moved from FBHostEventDetailsViewController
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -76,19 +75,7 @@
     
      ];
 }
-//    PFQuery *query = [PFUser query];
-//    [query whereKey:@"fbID" containedIn:_friendsIDArray];
-//    [query findObjectsInBackgroundWithBlock:^(NSArray *array, NSError *error) {
-//        for (int i = 0; i < [array count]; i++)
-//        {
-//            PFGeoPoint *geoPoint = [[array objectAtIndex:i] objectForKey:@"location"];
-//            CLLocationCoordinate2D guestLocation = CLLocationCoordinate2DMake(geoPoint.latitude, geoPoint.longitude);
-//            
-//            GMSMarker *add_annotation = [GMSMarker markerWithPosition:guestLocation];
-//            add_annotation.map = _mapView;
-//        }
-//    }];
-//}
+
 
 
 @end

@@ -12,6 +12,8 @@
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
+@property (strong, nonatomic) NSArray *friendsIDArray;
+@property (strong, nonatomic) NSMutableArray *allAttendingFriends;
 @end
 @implementation ParseDataStore
 
@@ -37,55 +39,22 @@
     return NO;
 }
 
--(id) initWithTrackingAndLocation
+- (void)startTrackingLocation
 {
-    self = [super init];
-    if (self) {
-//        if([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]])
-//        {
-//        
-            _locationManager = [[CLLocationManager alloc] init];
-        
-            [_locationManager setDelegate:self];
-            [_locationManager startMonitoringSignificantLocationChanges];
-//            
-//            [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
-//            CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(_locationDataStore.currentLocation.coordinate.latitude,_locationDataStore.currentLocation.coordinate.longitude);
-//            PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-//                                                          longitude:coordinate.longitude];
-//            
-//            
-//            [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
-//            //NSLog(@"I'm here, %@",_currentLocation);
-//            NSLog(@"curent location in Parse data store %f %f" , geoPoint.longitude, geoPoint.latitude);
-            [[PFUser currentUser] saveInBackground];
-//        }
+    if (![self isLoggedIn]) {
+        NSLog(@"Not logged in, can't track location");
+        return;
     }
-    return self;
-}
-
-
--(void)fetchLocationDataWithCompletion:(void (^)(NSArray *userLocations)) completionBlock{
-    //TODO: Make query to parse
     
+    _locationManager = [[CLLocationManager alloc] init];
     
-    CLLocationCoordinate2D coordinate1=CLLocationCoordinate2DMake(37.7, -122.55);
-    CLLocation *location1=[[CLLocation alloc]initWithLatitude:coordinate1.latitude longitude:coordinate1.longitude];
-    CLLocationCoordinate2D coordinate2=CLLocationCoordinate2DMake(37.75, -122.50);
-    CLLocation *location2=[[CLLocation alloc]initWithLatitude:coordinate2.latitude longitude:coordinate2.longitude];
-
-    CLLocationCoordinate2D coordinate3=CLLocationCoordinate2DMake(37.80, -122.45);
-    CLLocation *location3=[[CLLocation alloc]initWithLatitude:coordinate3.latitude longitude:coordinate3.longitude];
-
-    NSMutableArray *array=[[NSMutableArray alloc]init];
-    [array addObject:location1];
-    [array addObject:location2];
-    [array addObject:location3];
-    completionBlock(array);
-
-
+    [_locationManager setDelegate:self];
+    [_locationManager startMonitoringSignificantLocationChanges];
+    
+    [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
+    
+    [[PFUser currentUser] saveInBackground];
 }
-
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
@@ -100,7 +69,29 @@
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
     NSLog(@"I'm here, %@",_currentLocation);
     [_userPastLocations addObject:geoPoint];
+    [[PFUser currentUser] saveInBackground];
 }
+
+
+-(void)fetchLocationDataWithCompletion:(void (^)(NSArray *userLocations)) completionBlock{
+    NSMutableArray *locations;
+    [self fetchFriendsWithCompletion:^(NSArray *friends) {
+        PFQuery *locationQuery = [PFUser query];
+        [locationQuery whereKey: @"trackingAllowed" equalTo:@"YES"];
+        [locationQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            for (PFUser *friend in objects){
+                if ([friends containsObject:friend])
+                {
+                    [locations addObject:friend[@"locations"]];
+                }
+            }
+        }];
+        
+    }];
+    completionBlock(locations);
+}
+
+
 
 -(void)logOutWithCompletion:(void (^)())completionBlock{
     [[PFFacebookUtils session]closeAndClearTokenInformation];
@@ -140,7 +131,7 @@
 }
 
 
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray *friends))completionBlock
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
@@ -166,6 +157,8 @@
             NSArray *eventArray = fbGraphObj[@"events"][@"data"];
             NSMutableArray *hostEvents = [[NSMutableArray alloc] init];
             NSMutableArray *guestEvents = [[NSMutableArray alloc] init];
+            NSArray *friends = [[NSMutableArray alloc] init];
+            friends = fbGraphObj[@"events"][@"attending"][@"id"];
             
             for (FBGraphObject *event in eventArray) {
                 
@@ -186,12 +179,28 @@
                 }
                 
             }
-            
-            
-            completionBlock(hostEvents, guestEvents);
+            completionBlock(hostEvents, guestEvents, friends);
+            _friendsIDArray = friends;
         }
     }];
+    
 }
 
+    
+-(void)fetchFriendsWithCompletion:(void (^)(NSArray *friends)) completionBlock{
+    NSMutableArray *attendingFriends = [[NSMutableArray alloc] init];
+    PFQuery *friendsIDQuery = [PFUser query];
+    [friendsIDQuery whereKey:@"fbID" containedIn:_friendsIDArray];
+    [friendsIDQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            
+        for (PFUser *friend in objects)
+        {
+            [attendingFriends addObject:friend];
+        }
+    }];
+    completionBlock(attendingFriends);
+}
+    
+    
 
 @end

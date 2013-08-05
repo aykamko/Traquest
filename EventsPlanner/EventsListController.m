@@ -17,19 +17,21 @@
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
+@property (nonatomic, strong) NSArray *friendsArray;
 @property (nonatomic,strong) FBEventDetailsViewController *eventDetailsViewController;
 -(IBAction)logUserOut:(id)sender;
 @end
 
 @implementation EventsListController
 
-- (id)initWithHostEvents:hostEvents guestEvents:guestEvents
+- (id)initWithHostEvents:hostEvents guestEvents:guestEvents friendsArray:friendsArray
 {
     self = [super init];
     if (self) {
         
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
+        _friendsArray = friendsArray;
         _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
         _tableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
