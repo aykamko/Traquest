@@ -58,10 +58,13 @@
 {
     [super viewDidAppear:animated];
     [[ParseDataStore sharedStore]fetchLocationDataWithCompletion:^(NSArray *array){
-        for(CLLocation *obj in array){
-            GMSMarker *marker=[GMSMarker markerWithPosition:CLLocationCoordinate2DMake(obj.coordinate.latitude, obj.coordinate.longitude)];
+       
+        if(array.count > 0)
+        {
+            for(PFGeoPoint *obj in array){
+            GMSMarker *marker=[GMSMarker markerWithPosition:CLLocationCoordinate2DMake(obj.latitude, obj.longitude)];
             
-           _bounds= [_bounds includingCoordinate:obj.coordinate];
+            _bounds= [_bounds includingCoordinate:CLLocationCoordinate2DMake(obj.latitude, obj.longitude)];
             GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:_bounds
                                                      withPadding:50.0f];
             
@@ -69,7 +72,9 @@
             [_mapView moveCamera:update];
             marker.map=_mapView;
             
+            }
         }
+            
         
     }
     

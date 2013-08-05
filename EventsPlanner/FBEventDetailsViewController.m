@@ -15,6 +15,7 @@
 #import "FBEventsDetailsDataSource.h"
 #import "ActiveEventMapViewController.h"
 #import "UIImage+ImageCrop.h"
+#import "ParseDataStore.h"
 
 @interface FBEventDetailsViewController ()<FBFriendPickerDelegate>
 {
@@ -31,6 +32,7 @@
     FBFriendPickerViewController *_friendPicker;
     FBEventsDetailsDataSource *_dataSource;
     UITableView *_detailsTable;
+    NSMutableArray *_attendingFriends;
     
     __strong UIButton *_trackingButton;
 }
@@ -48,8 +50,21 @@
     if (self) {
         _isHost = isHost;
         _eventDetails = details;
+        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+        
         _friendPicker = [[FBFriendPickerViewController alloc] init];
         _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
+        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
+        
+        _friendsIDArray = [[NSMutableArray alloc] init];
+        
+        for (NSDictionary *friend in attendingFriends)
+        {
+            [_friendsIDArray addObject:(NSString *)friend[@"id"]];
+            NSLog(@"%@", friend[@"id"]);
+        }
+        
+        [[ParseDataStore sharedStore] initWithFriends:_friendsIDArray];
     }
     return self;
 }
@@ -225,7 +240,7 @@
 {
     if ((buttonIndex == 0) || (buttonIndex == 1))
     {
-            [[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:@"trackingAllowed"];
+            [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
     }
     else
     {
@@ -283,26 +298,10 @@
     [_friendPicker clearSelection];
 }
 
-
-- (void)initFriendsIDArray
-{
-    FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
-    NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
-    
-    _friendsIDArray = [[NSMutableArray alloc] init];
-    
-    // Populate friendsIDArray with the ID's of
-    // everyone attending event
-    for (NSDictionary *friend in attendingFriends)
-    {
-        [_friendsIDArray addObject:(NSString *)friend[@"id"]];
-        NSLog(@"%@", friend[@"id"]);
-    }
-    
-}
-
 - (void)loadMapView:(id)sender
 {
+    [[ParseDataStore sharedStore] startTrackingLocation];
+    
     _mapViewController = [[ActiveEventMapViewController alloc] init];
     [[self navigationController] pushViewController: _mapViewController animated:YES];
 }

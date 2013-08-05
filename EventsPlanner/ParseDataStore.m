@@ -7,6 +7,7 @@
 //
 
 #import "ParseDataStore.h"
+#import "UIImage+ImageCrop.h"
 
 @interface ParseDataStore () <CLLocationManagerDelegate>
 @property (strong, nonatomic) CLLocationManager *locationManager;
@@ -74,24 +75,30 @@
 
 
 -(void)fetchLocationDataWithCompletion:(void (^)(NSArray *userLocations)) completionBlock{
-    NSMutableArray *locations;
-    [self fetchFriendsWithCompletion:^(NSArray *friends) {
-        PFQuery *locationQuery = [PFUser query];
-        [locationQuery whereKey: @"trackingAllowed" equalTo:@"YES"];
-        [locationQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            for (PFUser *friend in objects){
-                if ([friends containsObject:friend])
-                {
-                    [locations addObject:friend[@"locations"]];
-                }
-            }
-        }];
-        
-    }];
+    NSMutableArray *locations = [[NSMutableArray alloc] init];
+
+    PFQuery *trackingQuery = [PFUser query];
+    [trackingQuery whereKey: @"trackingAllowed" equalTo:@"YES"];
+    NSArray *trackingAllowed = [[NSArray alloc] init];
+    trackingAllowed= [trackingQuery findObjects];
+    
+    for (PFUser *friend in trackingAllowed)
+    {
+        if ([_friendsIDArray containsObject:friend[@"fbID"]])
+        {
+            [locations addObject:friend[@"location"]];
+            NSLog(@"%@",friend[@"location"]);
+        }
+    }
+
+    
     completionBlock(locations);
 }
 
-
+-(void)initWithFriends:(NSArray *)friends
+{
+    _friendsIDArray = friends;
+}
 
 -(void)logOutWithCompletion:(void (^)())completionBlock{
     [[PFFacebookUtils session]closeAndClearTokenInformation];
@@ -131,7 +138,10 @@
 }
 
 
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray *friends))completionBlock
+
+
+
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
@@ -150,6 +160,7 @@
             NSString *myID = result[@"id"];
             
             // Save the logged in user's Facebook ID to parse
+
             [[PFUser currentUser] setObject:myID forKey:@"fbID"];
             [[PFUser currentUser] saveInBackground];
             
@@ -158,7 +169,7 @@
             NSMutableArray *hostEvents = [[NSMutableArray alloc] init];
             NSMutableArray *guestEvents = [[NSMutableArray alloc] init];
             NSArray *friends = [[NSMutableArray alloc] init];
-            friends = fbGraphObj[@"events"][@"attending"][@"id"];
+            friends = fbGraphObj[@"events"][@"data"];
             
             for (FBGraphObject *event in eventArray) {
                 
@@ -177,30 +188,31 @@
                 } else {
                     [guestEvents insertObject:event atIndex:0];
                 }
+                CGSize defaultCoverSize = {640,320};
+                if(!event[@"cover"]) {
+                    UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
+                    NSLog(@"%f, %f", mainImage.size.height, mainImage.size.width);
+                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.5] size:defaultCoverSize];
+                    event[@"cover"] = [UIImage overlayImage:coloring overImage:mainImage];
+                } else {
+                    UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:event[@"cover"][@"source"]]]];
+                    UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] withColor2:[UIColor colorWithWhite:1 alpha:0] vertical:NO];
+                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
+                }
                 
             }
-            completionBlock(hostEvents, guestEvents, friends);
+            
+            
+            completionBlock(hostEvents, guestEvents);
             _friendsIDArray = friends;
         }
     }];
+}
+    
+-(void) notifyUsersWithCompletion:(void (^)(NSArray *))completionBlock
+{
     
 }
 
-    
--(void)fetchFriendsWithCompletion:(void (^)(NSArray *friends)) completionBlock{
-    NSMutableArray *attendingFriends = [[NSMutableArray alloc] init];
-    PFQuery *friendsIDQuery = [PFUser query];
-    [friendsIDQuery whereKey:@"fbID" containedIn:_friendsIDArray];
-    [friendsIDQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            
-        for (PFUser *friend in objects)
-        {
-            [attendingFriends addObject:friend];
-        }
-    }];
-    completionBlock(attendingFriends);
-}
-    
-    
 
 @end

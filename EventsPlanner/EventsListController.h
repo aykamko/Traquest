@@ -15,7 +15,7 @@ typedef enum eventType {
 
 @interface EventsListController : NSObject<UITableViewDelegate>
 
-- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents friendsArray: (NSArray *) friendsArray;
+- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents;
 - (id)presentableViewController;
 
 

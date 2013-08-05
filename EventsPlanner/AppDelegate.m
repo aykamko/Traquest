@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 #import <GoogleMaps/GoogleMaps.h>
 #import "LoginViewController.h"
-#import "FBDataStore.h"
+#import "ParseDataStore.h"
 
 @implementation AppDelegate
 
@@ -31,7 +31,7 @@
     // Google Maps
     [GMSServices provideAPIKey:@"AIzaSyCYlOnjDI2_s5WPCmeQJ7IMozreNxjyDww"];
     
-    (void) [[FBDataStore alloc] init];
+    (void) [[ParseDataStore alloc] init];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor brownColor];

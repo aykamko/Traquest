@@ -111,9 +111,9 @@
 
 - (void)setEventsListView
 {
-    [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *friends) {
+    [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
         
-        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents friendsArray: friends];
+        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];
@@ -134,7 +134,7 @@
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
     [_userPastLocations addObject:geoPoint];
     
-    [[PFUser currentUser] setObject:[NSNumber numberWithBool:NO]  forKey:@"trackingAllowed"];
+    [[PFUser currentUser] setObject:@"NO" forKey:@"trackingAllowed"];
 
     
 }

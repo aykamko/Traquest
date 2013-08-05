@@ -24,14 +24,13 @@
 
 @implementation EventsListController
 
-- (id)initWithHostEvents:hostEvents guestEvents:guestEvents friendsArray:friendsArray
+- (id)initWithHostEvents:hostEvents guestEvents:guestEvents
 {
     self = [super init];
     if (self) {
         
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
-        _friendsArray = friendsArray;
         _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
         
         _tableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
