@@ -14,14 +14,14 @@
 {
     GMSMapView *_mapView;
     GMSCoordinateBounds *_bounds;
+    CLLocation *_venueLocation;
 }
 
-@property (strong, nonatomic) FBEventDetailsViewController *detailsViewController;
 @end
 
 @implementation ActiveEventMapViewController
 
-- (id) initWithFriendsDetails:(NSMutableArray *)attendingFriends
+- (id) initWithFriendsDetails:(NSMutableArray *)attendingFriends venueLocation:(CLLocation *)location
 {
     self = [super init];
     if (self) {
@@ -32,15 +32,30 @@
 
 - (void)loadView
 {
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:37.4842
-                                                            longitude:-122.1485
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:[_detailsViewController venueLocation ].coordinate.latitude
+                                                            longitude:[_detailsViewController venueLocation].coordinate.longitude
                                                                  zoom:14];
+    
+                                 
+                                 
+                                 
+                                 
     _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     
     _mapView.myLocationEnabled = YES;
-    _bounds=[[GMSCoordinateBounds alloc]initWithCoordinate:CLLocationCoordinate2DMake(37.4842, -122.1485) coordinate:CLLocationCoordinate2DMake(37.7, -122.16)];
+    
+    GMSMarker *venueMarker=[GMSMarker markerWithPosition:[_detailsViewController venueLocation].coordinate];
+    
+    
+                          
+                          
+                          
+    venueMarker.map=_mapView;
+    venueMarker.icon=[GMSMarker markerImageWithColor:[UIColor purpleColor]];
+    
     GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:_bounds
                                              withPadding:50.0f];
+  
     
     
     [_mapView moveCamera:update];

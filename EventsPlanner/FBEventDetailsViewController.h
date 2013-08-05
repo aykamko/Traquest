@@ -15,6 +15,4 @@
 
 - (id)initWithEventDetails:(NSDictionary *)details isHost: (BOOL) isHost;
 
-
-
 @end

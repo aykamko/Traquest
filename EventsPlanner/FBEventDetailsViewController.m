@@ -16,10 +16,13 @@
 #import "ActiveEventMapViewController.h"
 #import "UIImage+ImageCrop.h"
 #import "ParseDataStore.h"
+#import "MKGeocodingService.h"
 
 @interface FBEventDetailsViewController ()<FBFriendPickerDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 {
     BOOL _isHost;
+   CLLocationCoordinate2D venueLocationCoordinate;
+    NSString *_venueLocationString;
     NSDictionary *_eventDetails;
     NSMutableArray *_friendsIDArray;
     __strong ActiveEventMapViewController *_mapViewController;
@@ -56,13 +59,27 @@
         _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
         NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
         
+        
+        _venueLocationString= (NSString *)_eventDetails[@"location"];
+        
         _friendsIDArray = [[NSMutableArray alloc] init];
+        
+        MKGeocodingService *geocoder=[[MKGeocodingService alloc]init];
+        
+        [geocoder fetchGeocodeAddress:_venueLocationString completion:^(NSDictionary *geocode, NSError *error){
+            CLLocationCoordinate2D coordinate=[((CLLocation *)geocode[@"location"])coordinate];
+            venueLocationCoordinate = coordinate;
+        }];
+        
         
         for (NSDictionary *friend in attendingFriends)
         {
             [_friendsIDArray addObject:(NSString *)friend[@"id"]];
             NSLog(@"%@", friend[@"id"]);
         }
+        
+        
+        
         
         [[ParseDataStore sharedStore] initWithFriends:_friendsIDArray];
     }
@@ -198,6 +215,7 @@
         
         [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
             CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
+            venueLocationCoordinate = coordinate;
             [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
         }];
     }
@@ -322,7 +340,7 @@
 {
     [[ParseDataStore sharedStore] startTrackingLocation];
     
-    _mapViewController = [[ActiveEventMapViewController alloc] init];
+    _mapViewController = [[ActiveEventMapViewController alloc] initWithFriendsDetails:nil venueLocation:<#(CLLocation *)#>];
     [[self navigationController] pushViewController: _mapViewController animated:YES];
 }
 
