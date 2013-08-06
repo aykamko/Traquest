@@ -80,6 +80,8 @@
         
         
         FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+
+        _namesArray=[[NSMutableArray alloc]init];
         _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
         NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
 
@@ -352,6 +354,8 @@
 - (void) resetButtonBackGroundColor: (id) sender {
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
+
+
 
 - (void)loadMapView:(id)sender
 {
