@@ -12,18 +12,20 @@
 //#import "LocationDataStore.h"
 
 @interface ParseDataStore : NSObject
+
 @property (readonly, nonatomic) BOOL isLoggedIn;
 
 + (ParseDataStore *)sharedStore;
 
-- (void)logInWithCompletion:(void (^)())completionBlock;
-- (void)logOutWithCompletion:(void (^)())completionBlock;
-- (void)fetchLocationDataWithCompletion:(void (^)(NSArray *userLocations)) completionBlock;
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock;
+-(void)logInWithCompletion:(void (^)())completionBlock;
+-(void)logOutWithCompletion: (void (^)())completionBlock;
 
-- (void)notifyUsersWithCompletion:(void(^)(NSArray *userLocations)) completionBlock;
-- (void)startTrackingLocation;
-- (void)initWithFriends:(NSArray *)friendsArray;
+-(void)fetchLocationDataForIds: (NSSet *) userIds WithWithCompletion:(void (^)(NSMutableDictionary *userLocations)) completionBlock;
+-(void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock;
+
+-(void)notifyUsersWithCompletion:(void(^)(NSArray *userLocations)) completionBlock;
+
+-(void)startTrackingLocation;
 
 - (void)event:(NSString *)eventId inviteFriends:(NSArray *)freindIdArray completion:(void (^)())completionBlock;
 - (void)event:(NSString *)eventId changeRsvpStatusTo:(NSString *)status completion:(void (^)())completionBlock;

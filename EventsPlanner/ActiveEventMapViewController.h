@@ -11,8 +11,6 @@
 
 @interface ActiveEventMapViewController : UIViewController
 
-@property (strong, nonatomic) NSMutableArray *friendsIDArray;
 
-- (id)initWithFriendsDetails:(NSMutableArray *)attendingFriends venueLocationCoordinate: (CLLocationCoordinate2D )location;
-
+- (id) initWithGuests:(NSMutableSet *)attendingFriends userLocations: (NSDictionary *) userLocations venueLocation:(CLLocationCoordinate2D) venueLocation;
 @end

@@ -15,12 +15,10 @@
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
 
-@property (strong, nonatomic) NSArray *friendsIDArray;
-@property (strong, nonatomic) NSMutableArray *allAttendingFriends;
-
 @property (strong, nonatomic) NSString *myId;
 
 @end
+
 @implementation ParseDataStore
 
 + (id)allocWithZone:(struct _NSZone *)zone
@@ -77,30 +75,21 @@
     [[PFUser currentUser] saveInBackground];
 }
 
-
--(void)fetchLocationDataWithCompletion:(void (^)(NSArray *userLocations)) completionBlock{
-    NSMutableArray *locations = [[NSMutableArray alloc] init];
-
+-(void)fetchLocationDataForIds: (NSSet *) userIds WithWithCompletion:(void (^)(NSMutableDictionary *userLocations)) completionBlock{
+    
+    NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
+    
     PFQuery *trackingQuery = [PFUser query];
-    [trackingQuery whereKey: @"trackingAllowed" equalTo:@"YES"];
-    NSArray *trackingAllowed = [[NSArray alloc] init];
-    trackingAllowed= [trackingQuery findObjects];
+    [trackingQuery whereKey: @"fbID" containedIn:[userIds allObjects]];
+    [trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
+    NSArray *trackingAllowed = [trackingQuery findObjects];
     
     for (PFUser *friend in trackingAllowed)
     {
-        if ([_friendsIDArray containsObject:friend[@"fbID"]])
-        {
-            [locations addObject:friend[@"location"]];
-        }
+        [userLocations setObject:friend[@"location"] forKey:friend[@"fbID"]];
     }
-
     
-    completionBlock(locations);
-}
-
--(void)initWithFriends:(NSArray *)friends
-{
-    _friendsIDArray = friends;
+    completionBlock(userLocations);
 }
 
 -(void)logOutWithCompletion:(void (^)())completionBlock{
@@ -148,8 +137,8 @@
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
-                          @"me?fields=events.limit(1000).fields(name,id,admins.fields(id,name),"
-                          @"attending.limit(5),location,cover,owner,"
+                          @"me?fields=events.limit(1000).fields(name,admins.fields(id,name),"
+                          @"location,cover,owner,"
                           @"privacy,description,venue,picture,rsvp_status),id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {

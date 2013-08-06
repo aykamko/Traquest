@@ -24,7 +24,9 @@
    CLLocationCoordinate2D venueLocationCoordinate;
     NSString *_venueLocationString;
     NSDictionary *_eventDetails;
-    NSMutableArray *_friendsIDArray;
+    NSMutableSet *_guestsIDs;
+    NSMutableDictionary *_userLocations;
+    CLLocationCoordinate2D _venueLocation;
     __strong ActiveEventMapViewController *_mapViewController;
     
     __strong GMSMapView *_mapView;
@@ -35,6 +37,7 @@
     FBEventsDetailsDataSource *_dataSource;
     UITableView *_detailsTable;
     NSMutableArray *_attendingFriends;
+    
     
     __strong FBEventStatusTableController *_statusTableController;
     
@@ -56,24 +59,23 @@
     if (self) {
         _isHost = isHost;
         _eventDetails = details;
-        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
-        
-        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
-        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
-        
-        
-        _venueLocationString= (NSString *)_eventDetails[@"location"];
-        
-        _friendsIDArray = [[NSMutableArray alloc] init];
-        for (NSDictionary *friend in attendingFriends)
-        {
-            [_friendsIDArray addObject:(NSString *)friend[@"id"]];
+        if (!_dataSource) {
+            _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:_eventDetails];
         }
-        
-        
-        
-        
-        [[ParseDataStore sharedStore] initWithFriends:_friendsIDArray];
+        NSString *path = [NSString stringWithFormat: @"%@?fields=attending.fields(id)",details[@"id"]];
+        FBRequest *guestListRequest = [FBRequest requestForGraphPath:path];
+        _guestsIDs = [[NSMutableSet alloc] init];
+        [guestListRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            NSArray *queriedIdData = result[@"attending"][@"data"];
+            for (NSDictionary *ID in queriedIdData) {
+                [_guestsIDs addObject:ID[@"id"]];
+                NSLog(@"%@", ID[@"id"]);
+            }
+
+            [[ParseDataStore sharedStore] fetchLocationDataForIds:_guestsIDs WithWithCompletion:^(NSMutableDictionary *userLocations) {
+                _userLocations = userLocations;
+            }];
+        }];
     }
     return self;
 }
@@ -193,8 +195,7 @@
         double latitude = [latString doubleValue];
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
-        venueLocationCoordinate = coordinate;
-        
+        _venueLocation = coordinate;
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
   
     } else {
@@ -203,7 +204,7 @@
         
         [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
             CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
-            venueLocationCoordinate = coordinate;
+            _venueLocation = coordinate;
             [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
         }];
     }
@@ -261,7 +262,7 @@
     
     [geocoder fetchGeocodeAddress:locationString completion:^(NSDictionary *geocode, NSError *error) {
         CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
-        venueLocationCoordinate = coordinate;
+        _venueLocation = coordinate;
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
         if (!coordinate.latitude) {
             [alertView show];
@@ -325,31 +326,14 @@
 }
 
 - (void) resetButtonBackGroundColor: (id) sender {
-    UIButton *button = (UIButton *) sender;
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-}
-
-- (void)initFriendsIDArray
-{
-    FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
-    NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
-    
-    _friendsIDArray = [[NSMutableArray alloc] init];
-    
-    // Populate friendsIDArray with the ID's of
-    // everyone attending event
-    for (NSDictionary *friend in attendingFriends)
-    {
-        [_friendsIDArray addObject:(NSString *)friend[@"id"]];
-    }
-    
 }
 
 - (void)loadMapView:(id)sender
 {
     [[ParseDataStore sharedStore] startTrackingLocation];
     
-    _mapViewController = [[ActiveEventMapViewController alloc] initWithFriendsDetails:nil venueLocationCoordinate:venueLocationCoordinate];
+    _mapViewController = [[ActiveEventMapViewController alloc] initWithGuests:_guestsIDs userLocations:_userLocations venueLocation:_venueLocation];
     [[self navigationController] pushViewController: _mapViewController animated:YES];
 }
 

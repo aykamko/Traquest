@@ -22,9 +22,9 @@
     self = [super init];
     if (self) {
         _relevantDetailsKeys = [[NSMutableArray alloc] init];
-        _allDetails = eventDetails;
+        _allDetails = [eventDetails mutableCopy];
         _relevantDetailsKeys = [(NSArray*)@[@"location", @"privacy", @"start_time", @"description", @"owner"] mutableCopy];
-        [self parseEventDetails:eventDetails];
+        [self parseEventDetails:_allDetails];
     }
     return self;
 }
