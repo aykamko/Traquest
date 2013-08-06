@@ -27,6 +27,8 @@
     NSMutableSet *_guestsIDs;
     NSMutableDictionary *_userLocations;
     CLLocationCoordinate2D _venueLocation;
+    NSMutableDictionary *_friendsIDDictionary;
+    NSMutableArray *_namesArray;
     __strong ActiveEventMapViewController *_mapViewController;
     
     __strong GMSMapView *_mapView;
@@ -69,13 +71,35 @@
             NSArray *queriedIdData = result[@"attending"][@"data"];
             for (NSDictionary *ID in queriedIdData) {
                 [_guestsIDs addObject:ID[@"id"]];
-                NSLog(@"%@", ID[@"id"]);
             }
 
             [[ParseDataStore sharedStore] fetchLocationDataForIds:_guestsIDs WithWithCompletion:^(NSMutableDictionary *userLocations) {
                 _userLocations = userLocations;
             }];
         }];
+        
+        
+        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
+        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
+
+        _venueLocationString= (NSString *)_eventDetails[@"location"];
+        
+        _friendsIDDictionary = [[NSMutableDictionary alloc] init];
+        
+        for (int i=0; i<attendingFriends.count; i++)
+        
+            {
+                
+            [_friendsIDDictionary setObject:  (NSString *) _namesArray[i] forKey:(NSString *)([attendingFriends objectAtIndex:i][@"id"])];
+            
+            
+        }
+        
+        
+        
+        
+        [[ParseDataStore sharedStore] initWithFriends:_friendsIDDictionary];
     }
     return self;
 }
@@ -333,7 +357,7 @@
 {
     [[ParseDataStore sharedStore] startTrackingLocation];
     
-    _mapViewController = [[ActiveEventMapViewController alloc] initWithGuests:_guestsIDs userLocations:_userLocations venueLocation:_venueLocation];
+    _mapViewController = [[ActiveEventMapViewController alloc] initWithGuests:_guestsIDs userLocations:_userLocations venueLocation:_venueLocation userInfo:_friendsIDDictionary];
     [[self navigationController] pushViewController: _mapViewController animated:YES];
 }
 

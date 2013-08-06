@@ -14,6 +14,8 @@
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
+@property (strong, nonatomic) NSDictionary *friendsIDDictionary;
+@property (strong, nonatomic) NSMutableArray *allAttendingFriends;
 
 @property (strong, nonatomic) NSString *myId;
 
@@ -46,7 +48,7 @@
 - (void)startTrackingLocation
 {
     if (![self isLoggedIn]) {
-        NSLog(@"Not logged in, can't track location");
+        //NSLog(@"Not logged in, can't track location");
         return;
     }
     
@@ -76,20 +78,33 @@
 }
 
 -(void)fetchLocationDataForIds: (NSSet *) userIds WithWithCompletion:(void (^)(NSMutableDictionary *userLocations)) completionBlock{
-    
     NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
-    
     PFQuery *trackingQuery = [PFUser query];
     [trackingQuery whereKey: @"fbID" containedIn:[userIds allObjects]];
     [trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
     NSArray *trackingAllowed = [trackingQuery findObjects];
     
-    for (PFUser *friend in trackingAllowed)
+    for (PFUser *friend in trackingAllowed) //for every user that allows tracking
     {
         [userLocations setObject:friend[@"location"] forKey:friend[@"fbID"]];
+        
+            NSMutableArray *arrayTemp=[[NSMutableArray alloc]init];
+            [arrayTemp addObject:(NSString *) [_friendsIDDictionary objectForKey:friend [@"fbID"]]];
+            [arrayTemp addObject:(PFGeoPoint *)friend[@"location"] ];
+            
+            
+            NSLog(@"ermergerd lercersherns %f , %f", ((PFGeoPoint *) friend[@"location"]).latitude, ((PFGeoPoint *) friend[@"location"]).longitude);
     }
     
     completionBlock(userLocations);
+}
+
+
+
+
+-(void)initWithFriends:(NSDictionary*)friends
+{
+    _friendsIDDictionary = friends;
 }
 
 -(void)logOutWithCompletion:(void (^)())completionBlock{
