@@ -13,6 +13,6 @@
 
 @interface FBEventDetailsViewController : UIViewController <UIScrollViewDelegate>
 
-- (id)initWithEventDetails:(NSDictionary *)details isHost: (BOOL) isHost;
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost;
 
 @end

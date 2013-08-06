@@ -14,7 +14,6 @@
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
-@property (strong, nonatomic) NSDictionary *friendsIDDictionary;
 @property (strong, nonatomic) NSMutableArray *allAttendingFriends;
 
 @property (strong, nonatomic) NSString *myId;
@@ -45,7 +44,7 @@
     return NO;
 }
 
-- (void)startTrackingLocation
+- (void)startTrackingMyLocation
 {
     if (![self isLoggedIn]) {
         //NSLog(@"Not logged in, can't track location");
@@ -91,15 +90,22 @@
     }
 }
 
-
-
-
--(void)initWithFriends:(NSDictionary*)friends
+- (void)fetchGeopointsForIds:(NSArray *)guestIds completion:(void (^)(NSDictionary *userLocations))completionBlock
 {
-    _friendsIDDictionary = friends;
+    PFQuery *geopointsQuery = [PFUser query];
+    [geopointsQuery whereKey:@"fbID" containedIn:guestIds];
+    [geopointsQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
+    [geopointsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
+        for (PFUser *friend in objects) {
+            userLocations[friend[@"fbID"]] = friend[@"location"];
+        }
+        completionBlock([[NSDictionary alloc] initWithDictionary:userLocations]);
+    }];
 }
 
--(void)logOutWithCompletion:(void (^)())completionBlock{
+- (void)logOutWithCompletion:(void (^)())completionBlock
+{
     [[PFFacebookUtils session]closeAndClearTokenInformation];
     [PFUser logOut];
     completionBlock();
@@ -136,17 +142,12 @@
     }];
 }
 
-
-
-
-
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
-                          @"me?fields=events.limit(1000).fields(name,admins.fields(id,name),"
-                          @"location,cover,owner,"
-                          @"privacy,description,venue,picture,rsvp_status),id"];
+                          @"me?fields=events.limit(1000).fields(id,name,admins.fields(id,name),"
+                          @"cover,rsvp_status,start_time),id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
@@ -183,29 +184,66 @@
                 } else {
                     [guestEvents insertObject:event atIndex:0];
                 }
-                CGSize defaultCoverSize = {640,320};
+                
+                CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
                 if(!event[@"cover"]) {
                     UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
-                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3] size:defaultCoverSize];
+                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
+                                                                size:defaultCoverSize];
                     UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
-                    UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6] withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2] vertical:NO];
+                    UIImage *gradientImage = [UIImage
+                                              imageWithGradient:defaultCoverSize
+                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+                                              vertical:NO];
                     event[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
                 } else {
-                    UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:event[@"cover"][@"source"]]]];
-                    UIImage *gradientImage = [UIImage imageWithGradient:defaultCoverSize withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6] withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2] vertical:NO];
+                    NSURL *imageURL = [NSURL URLWithString:event[@"cover"][@"source"]];
+                    UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
+                    UIImage *gradientImage = [UIImage
+                                              imageWithGradient:defaultCoverSize
+                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+                                              vertical:NO];
                     event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
                 }
                 
             }
             
-            
             completionBlock(hostEvents, guestEvents);
         }
     }];
 }
-    
+
 -(void) notifyUsersWithCompletion:(void (^)(NSArray *))completionBlock
 {
+    //TODO: Parse push implementation
+}
+
+- (void)event:(NSString *)eventId fetchDetailsWithCompletion:(void (^)(NSDictionary *eventDetails))completionBlock
+{
+    NSString *graphPath = [NSString stringWithFormat:@"%@?fields=location,description,venue,owner,privacy,attending", eventId];
+    FBRequest *request = [FBRequest requestForGraphPath:graphPath];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (error) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error getting event details!"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            
+        }
+        else {
+            
+            if (completionBlock) {
+                completionBlock((NSDictionary *)result);
+            }
+            
+        }
+        
+    }];
     
 }
 

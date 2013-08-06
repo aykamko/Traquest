@@ -32,17 +32,12 @@
         
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
-        _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
+        _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents
+                                                                         guestEvents:guestEvents];
         
         _tableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableViewController tableView] setDelegate:self];
         [[_tableViewController tableView] setDataSource:_tableViewDataSource];
-//        [self setTableViewController:_tableViewController];
-        
-//        UIImage *backgroundImage = [UIImage imageNamed:@"lemonlime.jpg"];
-//        UIImageView *imageView = [[UIImageView alloc] initWithImage:backgroundImage];
-//        
-//        _tableViewController.tableView.backgroundView = imageView;
         
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
                                                                          style:UIBarButtonItemStylePlain
@@ -125,14 +120,16 @@
         eventsArray = _hostEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
-        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithEventDetails:currentEventDetails isHost:YES];
+        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
+                                                                                          isHost:YES];
         
     } else if ([indexPath section] == guestEvent) {
         
         eventsArray = _guestEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
-        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithEventDetails:currentEventDetails isHost:NO];
+        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
+                                                                                          isHost:NO];
         
     }
     

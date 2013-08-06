@@ -10,6 +10,7 @@
 #import "ActiveEventMapViewController.h"
 #import "FBEventDetailsViewController.h"
 #import "ParseDataStore.h"
+#import "Toast+UIView.h"
 
 @interface ActiveEventMapViewController (){
     
@@ -20,83 +21,103 @@
     NSMutableDictionary *_guestDetails;
 }
 
-@property (strong, nonatomic) NSMutableSet *friendIDs;
+@property (strong, nonatomic) NSMutableDictionary *friendDetailsDict;
+@property (strong, nonatomic) NSMutableDictionary *friendMarkerDict;
+
+@property (strong, nonatomic) UIView *toastSpinner;
 
 @end
 
 @implementation ActiveEventMapViewController
 
-- (id) initWithGuestDetails:(NSMutableDictionary *)details venueLocation:(CLLocationCoordinate2D) venueLocation
+- (id)initWithGuestArray:(NSArray *)guestArray venueLocation:(CLLocationCoordinate2D)venueLocation
 {
     self = [super init];
     if (self) {
-        _guestDetails = details;
+        
         _venueLocation = venueLocation;
-        _bounds=[[GMSCoordinateBounds alloc]initWithCoordinate:_venueLocation coordinate:_venueLocation];
-
+        _friendMarkerDict = [[NSMutableDictionary alloc] init];
+        
+        _friendDetailsDict = [[NSMutableDictionary alloc] init];
+        for (FBGraphObject *user in guestArray) {
+            NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
+                                                         initWithDictionary:@{ @"geopoint":[NSNull null],
+                                                                               @"name":user[@"name"] }];
+            [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
+        }
+        
+        [[ParseDataStore sharedStore] fetchGeopointsForIds:[[self friendDetailsDict] allKeys]
+                                                completion:^(NSDictionary *userLocations) {
+            for (NSString *fbId in [userLocations allKeys]) {
+                [self friendDetailsDict][fbId][@"geopoint"] = userLocations[fbId];
+            }
+            [self updateMarkersOnMap];
+        }];
+        
     }
     return self;
 }
 
-
-- (void) loadView
+- (void)loadView
 {
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_venueLocation.latitude longitude:_venueLocation.longitude zoom:14];
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_venueLocation.latitude
+                                                            longitude:_venueLocation.longitude
+                                                                 zoom:14];
                                  
     _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-    
     _mapView.myLocationEnabled = YES;
     
-    GMSMarker *venueMarker=[GMSMarker markerWithPosition:_venueLocation];
+    GMSMarker *venueMarker = [GMSMarker markerWithPosition:_venueLocation];
     
-    venueMarker.title=@"Venue Location";
-    NSLog(@"%@ asd fjdasjf halkdsjh ", _guestDetails);
-                          
-    venueMarker.map=_mapView;
-    venueMarker.icon=[GMSMarker markerImageWithColor:[UIColor purpleColor]];
+    venueMarker.title = @"Venue Location";
+    venueMarker.map = _mapView;
+    venueMarker.icon = [GMSMarker markerImageWithColor:[UIColor purpleColor]];
     
-    GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:_bounds
-                                             withPadding:50.0f];
+    _bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:_venueLocation coordinate:_venueLocation];
+    
+    GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:_bounds withPadding:50.0f];
 
     [_mapView moveCamera:update];
     self.view = _mapView;
+    
+    [self.view makeToastActivity];
 }
 
-//- (void)viewWillAppear:(BOOL)animated
-//{
-//    [self.navigationController setNavigationBarHidden:NO animated:animated];
-//    [super viewWillAppear:animated];
-//}
-
-
-
-- (void) viewDidAppear:(BOOL)animated
+- (void)updateMarkersOnMap
 {
-    [super viewDidAppear:animated];
-    
-    for(NSString *key in _guestDetails){
-    
-        NSDictionary *userDetails = _guestDetails[key];
+    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:_venueLocation
+                                                                       coordinate:_venueLocation];
+    for (NSString *fbId in [[self friendDetailsDict] allKeys]) {
         
-        
-        PFGeoPoint *location = userDetails[@"location"];
-        
-        if(fabs(location.longitude)>0 & fabs(location.longitude)>0){
-        
-        GMSMarker *marker= [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(location.latitude, location.longitude)];
-        marker.title=userDetails[@"name"];
-        marker.map=_mapView;
-
-        _bounds= [_bounds includingCoordinate:CLLocationCoordinate2DMake(location.latitude, location.longitude)];
-       
-        GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:_bounds
-                                                 withPadding:50.0f];
-           GMSCameraUpdate *update2=[GMSCameraUpdate zoomOut];
-        [_mapView moveCamera:update];
-            [_mapView moveCamera:update2];
+        PFGeoPoint *currentGeopoint = self.friendDetailsDict[fbId][@"geopoint"];
+        if ([currentGeopoint isEqual:[NSNull null]]) {
+            continue;
         }
+        
+        CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
+                                                                              currentGeopoint.longitude);
+        
+        NSString *currentName = self.friendDetailsDict[@"fbId"][@"name"];
+        GMSMarker *currentMarker = self.friendMarkerDict[@"fbId"];
+        
+        if (!currentMarker) {
+            
+            currentMarker = [GMSMarker markerWithPosition:currentCoordinate];
+            currentMarker.title = currentName;
+            currentMarker.map = _mapView;
+            self.friendMarkerDict[@"fbId"] = currentMarker;
+            
+        } else {
+            
+            currentMarker.position = currentCoordinate;
+            
+        }
+        
+        bounds = [bounds includingCoordinate:currentCoordinate];
     }
-
+    
+    [self.view hideToastActivity];
+    [_mapView moveCamera:[GMSCameraUpdate fitBounds:bounds withPadding:100.0f]];
 }
 
 @end

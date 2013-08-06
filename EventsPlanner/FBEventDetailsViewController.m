@@ -6,12 +6,9 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#import <GoogleMaps/GoogleMaps.h>
 #import "FBEventDetailsViewController.h"
+#import <GoogleMaps/GoogleMaps.h>
 #import "MKGeocodingService.h"
-#import <CoreGraphics/CoreGraphics.h>
-#import <QuartzCore/QuartzCore.h>
-#import <FacebookSDK/FacebookSDK.h>
 #import "FBEventsDetailsTableDataSource.h"
 #import "ActiveEventMapViewController.h"
 #import "UIImage+ImageCrop.h"
@@ -21,17 +18,14 @@
 static const float kLatitudeAdjustment = 0.0008;
 static const float kLongitudeAsjustment = 0;
 
-@interface FBEventDetailsViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
+@interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate>
 {
     CLLocationCoordinate2D venueLocationCoordinate;
     NSString *_venueLocationString;
-    NSDictionary *_eventDetails;
     CLLocationCoordinate2D _venueLocation;
     NSMutableDictionary *_guestDetailsDictionary;
     
     NSMutableArray *_attendingFriends;
-    
-    NSMutableDictionary *_dimensionsDict;
     
     UIScrollView *_scrollView;
     UIImageView *_coverImageView;
@@ -41,17 +35,20 @@ static const float kLongitudeAsjustment = 0;
     FBEventsDetailsTableDataSource *_dataSource;
     __strong GMSMapView *_mapView;
     
-    
     __strong FBEventStatusTableController *_statusTableController;
     
-    __strong UIButton *_trackingButton;
 }
 
 @property (nonatomic, getter = isHost) BOOL host;
 
+@property (nonatomic, strong) NSMutableDictionary *eventDetails;
 @property (nonatomic, strong) NSMutableArray *friendsIDArray;
 
+@property (nonatomic, strong) NSMutableDictionary *dimensionsDict;
+@property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
+
 @property (nonatomic, strong) UIButton *startTrackingButton;
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 - (void)loadMapView:(id)sender;
@@ -62,72 +59,35 @@ static const float kLongitudeAsjustment = 0;
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithEventDetails:(NSDictionary *)details isHost:(BOOL) isHost
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost
 {
     self = [super init];
     if (self) {
+        
         _host = isHost;
-        _eventDetails = details;
+        _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         
-        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
-        
-        _dataSource = [[FBEventsDetailsTableDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
-        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
-        
-        
-        _venueLocationString= (NSString *)_eventDetails[@"location"];
-        
-        _friendsIDArray = [[NSMutableArray alloc] init];
-        for (NSDictionary *friend in attendingFriends)
-        {
-            [_friendsIDArray addObject:(NSString *)friend[@"id"]];
-        }
-        
-        NSString *path = [NSString stringWithFormat: @"%@?fields=attending.fields(id,name)",details[@"id"]];
-        FBRequest *guestListRequest = [FBRequest requestForGraphPath:path];
-        _guestDetailsDictionary = [[NSMutableDictionary alloc] init];
-        
-        [guestListRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            
-            NSArray *queriedIdData = result[@"attending"][@"data"];
-            for (NSDictionary *userDetails in queriedIdData) {
-                
-                NSString *guestID = userDetails[@"id"];
-                NSMutableDictionary *details = [[NSMutableDictionary alloc] init];
-                details[@"name"] = userDetails[@"name"];
-                
-                [_guestDetailsDictionary setObject:details forKey: guestID];
-            }
-            [[ParseDataStore sharedStore] fetchLocationDataForIds:_guestDetailsDictionary];
-            }];
     }
     return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
-    if (!(_eventDetails[@"location"]||_eventDetails[@"venue"][@"lattitude"])) {
-        __strong UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your Event Location Was Invalid" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
-        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
-        [alert setDelegate:self];
-        UITextField *locationInputTextView = [alert textFieldAtIndex:0];
-        [locationInputTextView setPlaceholder:@"Please Enter a Location"];
-        [alert show];
-    }
-    
-    NSLog(@"%@", NSStringFromCGRect(_detailsTable.frame));
-    
-}
-
 - (void)viewDidLoad
 {
+    [self setViewPartialEventDetails];
     
+    [[ParseDataStore sharedStore] event:_eventDetails[@"id"] fetchDetailsWithCompletion:^(NSDictionary *eventDetails) {
+        [[self eventDetails] addEntriesFromDictionary:eventDetails];
+        [self setViewCompleteEventDetails];
+    }];
+}
+
+- (void)setViewPartialEventDetails
+{
     _dimensionsDict = [[NSMutableDictionary alloc]
                        initWithDictionary:@{ @"screenWidth":[NSNumber numberWithFloat:
                                                              [UIScreen mainScreen].bounds.size.width] }];
     
-    NSMutableDictionary *viewsDictionary = [[NSMutableDictionary alloc] init];
+    _viewsDictionary = [[NSMutableDictionary alloc] init];
     
     // Creating new scroll view
     _scrollView = [[UIScrollView alloc] init];
@@ -135,15 +95,15 @@ static const float kLongitudeAsjustment = 0;
     [_scrollView setBackgroundColor:[UIColor whiteColor]];
     
     [self.view addSubview:_scrollView];
-    [viewsDictionary addEntriesFromDictionary:@{ @"_scrollView":_scrollView }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_scrollView":_scrollView }];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|"
                                                                       options:0
                                                                       metrics:0
-                                                                        views:viewsDictionary]];
+                                                                        views:_viewsDictionary]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView]|"
                                                                       options:0
                                                                       metrics:0
-                                                                        views:viewsDictionary]];
+                                                                        views:_viewsDictionary]];
     
     
     // Initializing eventImageView and setting its UIImage
@@ -151,23 +111,23 @@ static const float kLongitudeAsjustment = 0;
     [_coverImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     [_scrollView addSubview:_coverImageView];
-    [viewsDictionary addEntriesFromDictionary:@{ @"_coverImageView":_coverImageView }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_coverImageView":_coverImageView }];
     [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_coverImageView]|"
                                                                         options:0
                                                                         metrics:0
-                                                                          views:viewsDictionary]];
+                                                                          views:_viewsDictionary]];
     [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_coverImageView]"
                                                                         options:0
                                                                         metrics:0
-                                                                          views:viewsDictionary]];
+                                                                          views:_viewsDictionary]];
     [_coverImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_coverImageView(120)]"
                                                                             options:0
                                                                             metrics:0
-                                                                              views:viewsDictionary]];
+                                                                              views:_viewsDictionary]];
     [_coverImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_coverImageView(screenWidth)]"
                                                                             options:0
                                                                             metrics:_dimensionsDict
-                                                                              views:viewsDictionary]];
+                                                                              views:_viewsDictionary]];
     
     //creating event title label and features
     NSString *eventTitle = [_eventDetails objectForKey:@"name"];
@@ -176,20 +136,20 @@ static const float kLongitudeAsjustment = 0;
     [_titleLabel setBackgroundColor:[UIColor clearColor]];
     [_titleLabel setText:eventTitle];
     [_titleLabel setUserInteractionEnabled:NO];
-
+    
     CGFloat fontSize = MIN(24,625/[eventTitle length]);
     UIFont *textFont = [UIFont fontWithName:@"Helvetica Neue" size:fontSize];
-
+    
     [_titleLabel setTextColor:[UIColor whiteColor]];
     [_titleLabel setFont:textFont];
     [_titleLabel setTextAlignment:NSTextAlignmentLeft];
     
     [_coverImageView addSubview:_titleLabel];
-    [viewsDictionary addEntriesFromDictionary:@{ @"_titleLabel":_titleLabel }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_titleLabel":_titleLabel }];
     [_coverImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_titleLabel]-|"
                                                                             options:0
                                                                             metrics:0
-                                                                              views:viewsDictionary]];
+                                                                              views:_viewsDictionary]];
     [_coverImageView addConstraint:[NSLayoutConstraint constraintWithItem:_coverImageView
                                                                 attribute:NSLayoutAttributeCenterY
                                                                 relatedBy:NSLayoutRelationEqual
@@ -200,7 +160,8 @@ static const float kLongitudeAsjustment = 0;
     
     // Adding tapGestureRecognizer to eventImageView
     [_coverImageView setUserInteractionEnabled:YES];
-    UITapGestureRecognizer *eventImageRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    UITapGestureRecognizer *eventImageRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(tap:)];
     [eventImageRecognizer setNumberOfTapsRequired:1];
     [_coverImageView addGestureRecognizer:eventImageRecognizer];
     
@@ -210,23 +171,23 @@ static const float kLongitudeAsjustment = 0;
     [_buttonHolder setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     [_scrollView addSubview:_buttonHolder];
-    [viewsDictionary addEntriesFromDictionary:@{ @"_buttonHolder":_buttonHolder }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_buttonHolder":_buttonHolder }];
     [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_buttonHolder]|"
                                                                         options:0
                                                                         metrics:0
-                                                                          views:viewsDictionary]];
+                                                                          views:_viewsDictionary]];
     [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_coverImageView][_buttonHolder]"
                                                                         options:0
                                                                         metrics:0
-                                                                          views:viewsDictionary]];
+                                                                          views:_viewsDictionary]];
     [_buttonHolder addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_buttonHolder(screenWidth)]"
                                                                           options:0
                                                                           metrics:_dimensionsDict
-                                                                            views:viewsDictionary]];
+                                                                            views:_viewsDictionary]];
     [_buttonHolder addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_buttonHolder(40)]"
                                                                           options:0
                                                                           metrics:0
-                                                                            views:viewsDictionary]];
+                                                                            views:_viewsDictionary]];
     
     UIButton *inviteButton = [[UIButton alloc] init];
     [inviteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -253,29 +214,57 @@ static const float kLongitudeAsjustment = 0;
     
     [_buttonHolder addSubview:inviteButton];
     [_buttonHolder addSubview:rsvpStatusButton];
-    [viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
-    [viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":rsvpStatusButton }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":rsvpStatusButton }];
     
     [_buttonHolder addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"V:|[inviteButton]|"
                                    options:0
                                    metrics:0
-                                   views:viewsDictionary]];
+                                   views:_viewsDictionary]];
     [_buttonHolder addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"V:|[rsvpStatusButton]|"
                                    options:0
                                    metrics:0
-                                   views:viewsDictionary]];
+                                   views:_viewsDictionary]];
     [_buttonHolder addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"H:|[inviteButton][rsvpStatusButton]|"
                                    options:0
                                    metrics:0
-                                   views:viewsDictionary]];
+                                   views:_viewsDictionary]];
     [_buttonHolder addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"[inviteButton(==rsvpStatusButton)]"
                                    options:0
                                    metrics:0
-                                   views:viewsDictionary]];
+                                   views:_viewsDictionary]];
+    
+    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [_spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [_scrollView addSubview:_spinner];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_spinner":_spinner }];
+    [_scrollView addConstraints:[NSLayoutConstraint
+                                 constraintsWithVisualFormat:@"V:[_buttonHolder]-20-[_spinner]"
+                                 options:0
+                                 metrics:0
+                                 views:_viewsDictionary]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:_spinner
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    [_spinner startAnimating];
+    
+}
+
+- (void)setViewCompleteEventDetails
+{
+    // Removing spinner
+    [_spinner stopAnimating];
+    [_spinner removeFromSuperview];
+    _spinner = nil;
     
     //initializing mapView and setting coordinates of location
     _mapView = [[GMSMapView alloc]
@@ -304,6 +293,9 @@ static const float kLongitudeAsjustment = 0;
         
     }
     
+    // initializing data source for table view
+    _dataSource = [[FBEventsDetailsTableDataSource alloc] initWithEventDetails:_eventDetails];
+    
     //creating table view with event details and setting data source
     _detailsTable = [[UITableView alloc] init];
     [_detailsTable setBackgroundColor:[UIColor whiteColor]];
@@ -328,7 +320,7 @@ static const float kLongitudeAsjustment = 0;
 
     
     [_scrollView addSubview:_detailsTable];
-    [viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
     
     if ([self isHost]) {
         
@@ -340,7 +332,7 @@ static const float kLongitudeAsjustment = 0;
                        forControlEvents:UIControlEventTouchUpInside];
         
         [_scrollView addSubview:_startTrackingButton];
-        [viewsDictionary addEntriesFromDictionary:@{ @"_startTrackingButton":_startTrackingButton }];
+        [_viewsDictionary addEntriesFromDictionary:@{ @"_startTrackingButton":_startTrackingButton }];
         
         NSString *verticalLayout =
             @"V:[_buttonHolder]-[_startTrackingButton(40)]-[_detailsTable(detailsTableContentHeight)]-|";
@@ -348,12 +340,12 @@ static const float kLongitudeAsjustment = 0;
                                      constraintsWithVisualFormat:verticalLayout
                                      options:0
                                      metrics:_dimensionsDict
-                                     views:viewsDictionary]];
+                                     views:_viewsDictionary]];
         [_scrollView addConstraints:[NSLayoutConstraint
                                      constraintsWithVisualFormat:@"H:|-20-[_startTrackingButton(screenWidthWithMargin)]-20-|"
                                      options:0
                                      metrics:_dimensionsDict
-                                     views:viewsDictionary]];
+                                     views:_viewsDictionary]];
         
     }
     else {
@@ -362,7 +354,7 @@ static const float kLongitudeAsjustment = 0;
                                      constraintsWithVisualFormat:@"V:[_buttonHolder]-20-[_detailsTable(detailsTableContentHeight)]-|"
                                      options:0
                                      metrics:_dimensionsDict
-                                     views:viewsDictionary]];
+                                     views:_viewsDictionary]];
         
     }
     
@@ -370,10 +362,67 @@ static const float kLongitudeAsjustment = 0;
                                      constraintsWithVisualFormat:@"H:|-20-[_detailsTable(screenWidthWithMargin)]-20-|"
                                      options:0
                                      metrics:_dimensionsDict
-                                     views:viewsDictionary]];
-    
+                                     views:_viewsDictionary]];
 }
 
+
+/*
+- (void)setViewCompleteEventDetails
+{
+        _eventDetails = eventDetails;
+        
+        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+        
+        _dataSource = [[FBEventsDetailsTableDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
+    
+        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
+        
+        
+        _venueLocationString= (NSString *)_eventDetails[@"location"];
+        
+        _friendsIDArray = [[NSMutableArray alloc] init];
+        for (NSDictionary *friend in attendingFriends)
+        {
+            [_friendsIDArray addObject:(NSString *)friend[@"id"]];
+        }
+        
+        NSString *path = [NSString stringWithFormat: @"%@?fields=attending.fields(id,name)",details[@"id"]];
+        FBRequest *guestListRequest = [FBRequest requestForGraphPath:path];
+        _guestDetailsDictionary = [[NSMutableDictionary alloc] init];
+        
+        [guestListRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            
+            NSArray *queriedIdData = result[@"attending"][@"data"];
+            for (NSDictionary *userDetails in queriedIdData) {
+                
+                NSString *guestID = userDetails[@"id"];
+                NSMutableDictionary *details = [[NSMutableDictionary alloc] init];
+                details[@"name"] = userDetails[@"name"];
+                
+                [_guestDetailsDictionary setObject:details forKey: guestID];
+            }
+//            [[ParseDataStore sharedStore] fetchLocationDataForIds:_guestDetailsDictionary];
+        }];
+    
+}
+ */
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+//    if (!(_eventDetails[@"location"]||_eventDetails[@"venue"][@"lattitude"])) {
+//        __strong UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your Event Location Was Invalid" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
+//        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
+//        [alert setDelegate:self];
+//        UITextField *locationInputTextView = [alert textFieldAtIndex:0];
+//        [locationInputTextView setPlaceholder:@"Please Enter a Location"];
+//        [alert show];
+//    }
+    
+    NSLog(@"%@", NSStringFromCGRect(_detailsTable.frame));
+    
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -388,7 +437,6 @@ static const float kLongitudeAsjustment = 0;
     
     [super viewWillAppear:animated];
 }
-
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate
 {
@@ -470,16 +518,14 @@ static const float kLongitudeAsjustment = 0;
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
 
-
-
 - (void)loadMapView:(id)sender
 {
-    [[ParseDataStore sharedStore] startTrackingLocation];
+    [[ParseDataStore sharedStore] startTrackingMyLocation];
     
-    ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc] initWithGuestDetails:_guestDetailsDictionary venueLocation:_venueLocation ];
+    ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc]
+                                                       initWithGuestArray:_eventDetails[@"attending"][@"data"]
+                                                       venueLocation:_venueLocation];
     [[self navigationController] pushViewController: mapViewController animated:YES];
 }
 
-
 @end
-;

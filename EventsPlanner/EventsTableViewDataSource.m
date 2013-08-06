@@ -18,15 +18,13 @@
 
 @implementation EventsTableViewDataSource
 
--(id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents
+- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents
 {
     self = [super init];
     if (self) {
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
-       
     }
-
     return self;
 }
 
@@ -76,7 +74,7 @@
                                  background:cellBackground
                             reuseIdentifier:EventCellIdentifier];
     
-    return  cell;
+    return cell;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

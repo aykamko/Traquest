@@ -11,7 +11,6 @@
 
 @interface ActiveEventMapViewController : UIViewController
 
-
-- (id) initWithGuestDetails:(NSMutableDictionary *)details venueLocation:(CLLocationCoordinate2D) venueLocation;
+- (id)initWithGuestArray:(NSArray *)guestArray venueLocation:(CLLocationCoordinate2D) venueLocation;
 
 @end

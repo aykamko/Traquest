@@ -12,5 +12,4 @@
 
 - (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents;
 
-
 @end

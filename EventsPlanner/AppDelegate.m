@@ -52,14 +52,20 @@
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:_loginViewController];
     
     if ([[ParseDataStore sharedStore] isLoggedIn]) {
+        
         [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents) {
+            
             _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents];
-            [(UINavigationController *)self.window.rootViewController pushViewController:[_eventsListController presentableViewController]
-                                                                                animated:YES];
+            UINavigationController *navController = (UINavigationController *)self.window.rootViewController;
+            [navController pushViewController:[_eventsListController presentableViewController] animated:YES];
             [self.window makeKeyAndVisible];
+            
         }];
+        
     } else {
+        
         [self.window makeKeyAndVisible];
+        
     }
     
     return YES;
