@@ -115,7 +115,7 @@
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
     [_userPastLocations addObject:geoPoint];
     
-    [[PFUser currentUser] setObject:@"NO" forKey:@"trackingAllowed"];
+    [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
 
     
 }

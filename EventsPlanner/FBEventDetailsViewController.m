@@ -12,34 +12,46 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/QuartzCore.h>
 #import <FacebookSDK/FacebookSDK.h>
-#import "FBEventsDetailsDataSource.h"
+#import "FBEventsDetailsTableDataSource.h"
 #import "ActiveEventMapViewController.h"
 #import "UIImage+ImageCrop.h"
 #import "ParseDataStore.h"
 #import "FBEventStatusTableController.h"
 
+static const float kLatitudeAdjustment = 0.0008;
+static const float kLongitudeAsjustment = 0;
+
 @interface FBEventDetailsViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
 {
-    BOOL _isHost;
+    CLLocationCoordinate2D venueLocationCoordinate;
+    NSString *_venueLocationString;
     NSDictionary *_eventDetails;
     CLLocationCoordinate2D _venueLocation;
     NSMutableDictionary *_guestDetailsDictionary;
     
-    //__strong ActiveEventMapViewController *_mapViewController;
-    __strong GMSMapView *_mapView;
-    __strong UIView *_mainView;
-    UILabel *_titleLabel;
-    UIImage *_originalEventImage;
-    UIView *_buttonHolder;
-    FBEventsDetailsDataSource *_dataSource;
-    UITableView *_detailsTable;
     NSMutableArray *_attendingFriends;
+    
+    NSMutableDictionary *_dimensionsDict;
+    
+    UIScrollView *_scrollView;
+    UIImageView *_coverImageView;
+    UILabel *_titleLabel;
+    UIView *_buttonHolder;
+    UITableView *_detailsTable;
+    FBEventsDetailsTableDataSource *_dataSource;
+    __strong GMSMapView *_mapView;
     
     
     __strong FBEventStatusTableController *_statusTableController;
     
     __strong UIButton *_trackingButton;
 }
+
+@property (nonatomic, getter = isHost) BOOL host;
+
+@property (nonatomic, strong) NSMutableArray *friendsIDArray;
+
+@property (nonatomic, strong) UIButton *startTrackingButton;
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 - (void)loadMapView:(id)sender;
@@ -54,9 +66,22 @@
 {
     self = [super init];
     if (self) {
-        _isHost = isHost;
+        _host = isHost;
         _eventDetails = details;
-        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:_eventDetails];
+        
+        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
+        
+        _dataSource = [[FBEventsDetailsTableDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
+        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
+        
+        
+        _venueLocationString= (NSString *)_eventDetails[@"location"];
+        
+        _friendsIDArray = [[NSMutableArray alloc] init];
+        for (NSDictionary *friend in attendingFriends)
+        {
+            [_friendsIDArray addObject:(NSString *)friend[@"id"]];
+        }
         
         NSString *path = [NSString stringWithFormat: @"%@?fields=attending.fields(id,name)",details[@"id"]];
         FBRequest *guestListRequest = [FBRequest requestForGraphPath:path];
@@ -79,7 +104,8 @@
     return self;
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
+    
     [super viewDidAppear:animated];
     if (!(_eventDetails[@"location"]||_eventDetails[@"venue"][@"lattitude"])) {
         __strong UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your Event Location Was Invalid" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
@@ -89,84 +115,65 @@
         [locationInputTextView setPlaceholder:@"Please Enter a Location"];
         [alert show];
     }
+    
+    NSLog(@"%@", NSStringFromCGRect(_detailsTable.frame));
+    
 }
 
 - (void)viewDidLoad
 {
     
-    //initialzing dimension values that are re-used in creating new children
-    CGPoint origin = self.view.frame.origin;
-    CGSize frameSize = self.view.frame.size;
-    CGRect largeRect = {origin,{frameSize.width,frameSize.height}};
-    CGRect skeletonRect = CGRectMake(origin.x,origin.y, frameSize.width, 0); //re-used for init -ing direct children of mainView
-    CGFloat margin = frameSize.width/20;
+    _dimensionsDict = [[NSMutableDictionary alloc]
+                       initWithDictionary:@{ @"screenWidth":[NSNumber numberWithFloat:
+                                                             [UIScreen mainScreen].bounds.size.width] }];
     
-    //creating new scrollview and setting as skeleton of mainView
-    UIScrollView *newScrollView = [[UIScrollView alloc] initWithFrame:largeRect];
-    _mainView = [[UIView alloc] initWithFrame:largeRect];
-    [newScrollView setContentSize:largeRect.size];
-    self.view = newScrollView;
-    [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:_mainView];
+    NSMutableDictionary *viewsDictionary = [[NSMutableDictionary alloc] init];
     
-    //initialzing cover photo
-    skeletonRect.size.height = frameSize.width/3; //arbitrary chosen height for cover photo as function of width
-    UIImageView *eventImageView = [[UIImageView alloc] initWithFrame:skeletonRect];
+    // Creating new scroll view
+    _scrollView = [[UIScrollView alloc] init];
+    [_scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [_scrollView setBackgroundColor:[UIColor whiteColor]];
     
-    //getting image for cover photo
-    _originalEventImage = _eventDetails[@"cover"];
-    UIImage *scaledImage = [UIImage imageWithImage:_originalEventImage scaledToWidth:eventImageView.frame.size.width];
-
-    UIImage *croppedScaledImage = [UIImage imageWithImage:scaledImage cropRectFromCenterOfSize:eventImageView.frame.size];
-
-    eventImageView.image = croppedScaledImage;
+    [self.view addSubview:_scrollView];
+    [viewsDictionary addEntriesFromDictionary:@{ @"_scrollView":_scrollView }];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:viewsDictionary]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView]|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:viewsDictionary]];
     
-    //adding image to mainView and adding gesture recognizer
-    [eventImageView setUserInteractionEnabled:YES];
-    UITapGestureRecognizer *eventImageRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
-    [eventImageRecognizer setNumberOfTapsRequired:1];
-    [eventImageView addGestureRecognizer:eventImageRecognizer];
     
-    [_mainView addSubview:eventImageView];
-
-    //resizing skeletonRect
-    skeletonRect.origin.y += skeletonRect.size.height;
-    skeletonRect.size.height = frameSize.width/8;
+    // Initializing eventImageView and setting its UIImage
+    _coverImageView = [[UIImageView alloc] init];
+    [_coverImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    //initializing buttonHolder
-    _buttonHolder = [[UIView alloc] initWithFrame:skeletonRect];
-    [_mainView addSubview:_buttonHolder];
-    CGRect buttonSkeletonRect = {{0,0},{frameSize.width/2,frameSize.width/8}};
-    skeletonRect.origin.y += skeletonRect.size.height + margin;
-    
-    //creating Invite Friends Button features
-    UIButton *inviteButton = [[UIButton alloc] initWithFrame:buttonSkeletonRect];
-    inviteButton.showsTouchWhenHighlighted = YES;
-    [inviteButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    [inviteButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-    [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-    [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
-    [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:) forControlEvents:UIControlEventTouchUpOutside];
-    [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
-    
-    //creating RSVP Status button, need to figure out if writing from FB SDK is possible
-    buttonSkeletonRect.origin.x += buttonSkeletonRect.size.width;
-    UIButton *rsvpStatusButton = [[UIButton alloc] initWithFrame:buttonSkeletonRect];
-    rsvpStatusButton.showsTouchWhenHighlighted = YES;
-    [rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-    [rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchDown];
-    [rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:) forControlEvents:UIControlEventTouchUpInside];
-    [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-    [rsvpStatusButton setTitle:@"RSVP Status" forState:UIControlStateNormal];
-    
-    //add buttons to view
-    [_buttonHolder addSubview:inviteButton];
-    [_buttonHolder addSubview:rsvpStatusButton];
+    [_scrollView addSubview:_coverImageView];
+    [viewsDictionary addEntriesFromDictionary:@{ @"_coverImageView":_coverImageView }];
+    [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_coverImageView]|"
+                                                                        options:0
+                                                                        metrics:0
+                                                                          views:viewsDictionary]];
+    [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_coverImageView]"
+                                                                        options:0
+                                                                        metrics:0
+                                                                          views:viewsDictionary]];
+    [_coverImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_coverImageView(120)]"
+                                                                            options:0
+                                                                            metrics:0
+                                                                              views:viewsDictionary]];
+    [_coverImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_coverImageView(screenWidth)]"
+                                                                            options:0
+                                                                            metrics:_dimensionsDict
+                                                                              views:viewsDictionary]];
     
     //creating event title label and features
     NSString *eventTitle = [_eventDetails objectForKey:@"name"];
-    _titleLabel = [[UILabel alloc] initWithFrame: eventImageView.frame];
+    _titleLabel = [[UILabel alloc] init];
+    [_titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [_titleLabel setBackgroundColor:[UIColor clearColor]];
     [_titleLabel setText:eventTitle];
     [_titleLabel setUserInteractionEnabled:NO];
 
@@ -176,15 +183,103 @@
     [_titleLabel setTextColor:[UIColor whiteColor]];
     [_titleLabel setFont:textFont];
     [_titleLabel setTextAlignment:NSTextAlignmentLeft];
-    CGRect tempRect = _titleLabel.frame;
-    tempRect.origin.x += margin;
-    _titleLabel.frame = tempRect;
     
-    [eventImageView addSubview:_titleLabel];
+    [_coverImageView addSubview:_titleLabel];
+    [viewsDictionary addEntriesFromDictionary:@{ @"_titleLabel":_titleLabel }];
+    [_coverImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_titleLabel]-|"
+                                                                            options:0
+                                                                            metrics:0
+                                                                              views:viewsDictionary]];
+    [_coverImageView addConstraint:[NSLayoutConstraint constraintWithItem:_coverImageView
+                                                                attribute:NSLayoutAttributeCenterY
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:_titleLabel
+                                                                attribute:NSLayoutAttributeCenterY
+                                                               multiplier:1.0
+                                                                 constant:0]];
+    
+    // Adding tapGestureRecognizer to eventImageView
+    [_coverImageView setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *eventImageRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    [eventImageRecognizer setNumberOfTapsRequired:1];
+    [_coverImageView addGestureRecognizer:eventImageRecognizer];
+    
+    
+    _buttonHolder = [[UIView alloc] init];
+    [_buttonHolder setBackgroundColor:[UIColor whiteColor]];
+    [_buttonHolder setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [_scrollView addSubview:_buttonHolder];
+    [viewsDictionary addEntriesFromDictionary:@{ @"_buttonHolder":_buttonHolder }];
+    [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_buttonHolder]|"
+                                                                        options:0
+                                                                        metrics:0
+                                                                          views:viewsDictionary]];
+    [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_coverImageView][_buttonHolder]"
+                                                                        options:0
+                                                                        metrics:0
+                                                                          views:viewsDictionary]];
+    [_buttonHolder addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_buttonHolder(screenWidth)]"
+                                                                          options:0
+                                                                          metrics:_dimensionsDict
+                                                                            views:viewsDictionary]];
+    [_buttonHolder addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_buttonHolder(40)]"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:viewsDictionary]];
+    
+    UIButton *inviteButton = [[UIButton alloc] init];
+    [inviteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    inviteButton.showsTouchWhenHighlighted = YES;
+    [inviteButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+    [inviteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+    [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
+    [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:)
+           forControlEvents:UIControlEventTouchUpOutside];
+    [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
+    
+    UIButton *rsvpStatusButton = [[UIButton alloc] init];
+    [rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    rsvpStatusButton.showsTouchWhenHighlighted = YES;
+    [rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+    [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
+    [rsvpStatusButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+    [rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchUpInside];
+    [rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:)
+               forControlEvents:UIControlEventTouchUpOutside];
+    [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
+    [rsvpStatusButton setTitle:@"RSVP Status" forState:UIControlStateNormal];
+    
+    [_buttonHolder addSubview:inviteButton];
+    [_buttonHolder addSubview:rsvpStatusButton];
+    [viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
+    [viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":rsvpStatusButton }];
+    
+    [_buttonHolder addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"V:|[inviteButton]|"
+                                   options:0
+                                   metrics:0
+                                   views:viewsDictionary]];
+    [_buttonHolder addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"V:|[rsvpStatusButton]|"
+                                   options:0
+                                   metrics:0
+                                   views:viewsDictionary]];
+    [_buttonHolder addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"H:|[inviteButton][rsvpStatusButton]|"
+                                   options:0
+                                   metrics:0
+                                   views:viewsDictionary]];
+    [_buttonHolder addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"[inviteButton(==rsvpStatusButton)]"
+                                   options:0
+                                   metrics:0
+                                   views:viewsDictionary]];
     
     //initializing mapView and setting coordinates of location
-    skeletonRect.size.height = frameSize.width/2;
-    _mapView = [[GMSMapView alloc] initWithFrame:skeletonRect];
+    _mapView = [[GMSMapView alloc]
+                initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
     
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
@@ -206,48 +301,101 @@
             _venueLocation = coordinate;
             [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
         }];
-    }
-    
-    skeletonRect.origin.x +=margin;
-    //if it is a host, add a button to start tracking
-    if (_isHost) {
-        skeletonRect.size = CGSizeMake(frameSize.width-2*margin, frameSize.width/5);
-        _trackingButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [_trackingButton setBackgroundColor:[UIColor purpleColor]];
-        _trackingButton.frame = skeletonRect;
-        skeletonRect.origin.y += skeletonRect.size.height;
-        [_trackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
-        [_trackingButton addTarget:self action:@selector(loadMapView:) forControlEvents:UIControlEventTouchUpInside];
-        [_mainView addSubview:_trackingButton];
+        
     }
     
     //creating table view with event details and setting data source
-    skeletonRect.size = CGSizeMake(frameSize.width-2*margin,frameSize.width);
-    _detailsTable = [[UITableView alloc] initWithFrame:skeletonRect style:UITableViewStylePlain];
+    _detailsTable = [[UITableView alloc] init];
+    [_detailsTable setBackgroundColor:[UIColor whiteColor]];
+    [_detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_detailsTable setDataSource:_dataSource];
     [_detailsTable setTableHeaderView:_mapView];
     
     //setting some UI aspects of tableview
-    skeletonRect.size.height = _detailsTable.contentSize.height;
-    _detailsTable.frame = skeletonRect;
     [_detailsTable.layer setCornerRadius:3];
     [_detailsTable.layer setBorderWidth:0.5];
-    [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3]CGColor]];
+    [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3] CGColor]];
     [_detailsTable setUserInteractionEnabled:NO];
     [_detailsTable setScrollEnabled:NO];
     
-    [_mainView addSubview:_detailsTable];
+    [_dimensionsDict
+     addEntriesFromDictionary:@{ @"screenWidthWithMargin":[NSNumber numberWithFloat:
+                                                           ([UIScreen mainScreen].bounds.size.width - 40.0)],
+                                 
+                                 @"detailsTableContentHeight":[NSNumber numberWithFloat:
+                                                               [_detailsTable contentSize].height] }];
     
-    [super viewDidLoad];
+
+    
+    [_scrollView addSubview:_detailsTable];
+    [viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
+    
+    if ([self isHost]) {
+        
+        _startTrackingButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [_startTrackingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [_startTrackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
+        [_startTrackingButton addTarget:self
+                                 action:@selector(loadMapView:)
+                       forControlEvents:UIControlEventTouchUpInside];
+        
+        [_scrollView addSubview:_startTrackingButton];
+        [viewsDictionary addEntriesFromDictionary:@{ @"_startTrackingButton":_startTrackingButton }];
+        
+        NSString *verticalLayout =
+            @"V:[_buttonHolder]-[_startTrackingButton(40)]-[_detailsTable(detailsTableContentHeight)]-|";
+        [_scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:verticalLayout
+                                     options:0
+                                     metrics:_dimensionsDict
+                                     views:viewsDictionary]];
+        [_scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:@"H:|-20-[_startTrackingButton(screenWidthWithMargin)]-20-|"
+                                     options:0
+                                     metrics:_dimensionsDict
+                                     views:viewsDictionary]];
+        
+    }
+    else {
+        
+        [_scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:@"V:[_buttonHolder]-20-[_detailsTable(detailsTableContentHeight)]-|"
+                                     options:0
+                                     metrics:_dimensionsDict
+                                     views:viewsDictionary]];
+        
+    }
+    
+        [_scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:@"H:|-20-[_detailsTable(screenWidthWithMargin)]-20-|"
+                                     options:0
+                                     metrics:_dimensionsDict
+                                     views:viewsDictionary]];
+    
 }
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+    UIImage *baseEventImage = _eventDetails[@"cover"];
+    UIImage *scaledImage = [UIImage imageWithImage:baseEventImage
+                                     scaledToWidth:[_dimensionsDict[@"screenWidth"] floatValue]];
+    UIImage *croppedScaleImage = [UIImage imageWithImage:scaledImage
+                                cropRectFromCenterOfSize:CGSizeMake(scaledImage.size.width, 120)];
+    
+    [_coverImageView setImage:croppedScaleImage];
+    
+    [super viewWillAppear:animated];
+}
+
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate
 {
-        GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:coordinate.latitude
-                                                                longitude:coordinate.longitude
+        GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:coordinate.latitude + kLatitudeAdjustment
+                                                                longitude:coordinate.longitude + kLongitudeAsjustment
                                                                      zoom:14];
         [_mapView setCamera:camera];
-        _mapView.myLocationEnabled = YES;
     
         GMSMarker *marker = [[GMSMarker alloc] init];
         marker.position = coordinate;
@@ -275,13 +423,9 @@
     }];
 }
 
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
-	return _mainView;
+-(void) tap: (UIGestureRecognizer*) gr {
+    //push new popover view with full image
 }
-
-
 
 -(void) startButtonTouch: (id) sender {
     //set button to be highlighted
@@ -311,6 +455,7 @@
 
 - (void)changeRsvpStatus:(id)sender
 {
+    [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
     void (^completionBlock)(NSString *newStatus) = (^(NSString *newStatus) {
         [[ParseDataStore sharedStore] event:_eventDetails[@"id"] changeRsvpStatusTo:newStatus completion:nil];
     });
@@ -337,3 +482,4 @@
 
 
 @end
+;

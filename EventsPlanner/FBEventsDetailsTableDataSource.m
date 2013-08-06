@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#import "FBEventsDetailsDataSource.h"
+#import "FBEventsDetailsTableDataSource.h"
 
-@interface FBEventsDetailsDataSource () {
+@interface FBEventsDetailsTableDataSource () {
     NSMutableArray *_relevantDetailsKeys;
     NSMutableDictionary *_allDetails;
 }
 
 @end
 
-@implementation FBEventsDetailsDataSource
+@implementation FBEventsDetailsTableDataSource
 
 - (id)initWithEventDetails: (NSMutableDictionary *) eventDetails
 {
@@ -91,6 +91,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
+    
     [cell setUserInteractionEnabled:NO];
     [cell textLabel].lineBreakMode = NSLineBreakByWordWrapping;
     [cell textLabel].numberOfLines = 0;
