@@ -21,16 +21,11 @@
 @interface FBEventDetailsViewController ()<UITextFieldDelegate, UIAlertViewDelegate>
 {
     BOOL _isHost;
-   CLLocationCoordinate2D venueLocationCoordinate;
-    NSString *_venueLocationString;
     NSDictionary *_eventDetails;
-    NSMutableSet *_guestsIDs;
-    NSMutableDictionary *_userLocations;
     CLLocationCoordinate2D _venueLocation;
-    NSMutableDictionary *_friendsIDDictionary;
-    NSMutableArray *_namesArray;
-    __strong ActiveEventMapViewController *_mapViewController;
+    NSMutableDictionary *_guestDetailsDictionary;
     
+    //__strong ActiveEventMapViewController *_mapViewController;
     __strong GMSMapView *_mapView;
     __strong UIView *_mainView;
     UILabel *_titleLabel;
@@ -61,47 +56,25 @@
     if (self) {
         _isHost = isHost;
         _eventDetails = details;
-        if (!_dataSource) {
-            _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:_eventDetails];
-        }
-        NSString *path = [NSString stringWithFormat: @"%@?fields=attending.fields(id)",details[@"id"]];
+        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:_eventDetails];
+        
+        NSString *path = [NSString stringWithFormat: @"%@?fields=attending.fields(id,name)",details[@"id"]];
         FBRequest *guestListRequest = [FBRequest requestForGraphPath:path];
-        _guestsIDs = [[NSMutableSet alloc] init];
+        _guestDetailsDictionary = [[NSMutableDictionary alloc] init];
+        
         [guestListRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            
             NSArray *queriedIdData = result[@"attending"][@"data"];
-            for (NSDictionary *ID in queriedIdData) {
-                [_guestsIDs addObject:ID[@"id"]];
-            }
-
-            [[ParseDataStore sharedStore] fetchLocationDataForIds:_guestsIDs WithWithCompletion:^(NSMutableDictionary *userLocations) {
-                _userLocations = userLocations;
-            }];
-        }];
-        
-        
-        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
-
-        _namesArray=[[NSMutableArray alloc]init];
-        _dataSource = [[FBEventsDetailsDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
-        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
-
-        _venueLocationString= (NSString *)_eventDetails[@"location"];
-        
-        _friendsIDDictionary = [[NSMutableDictionary alloc] init];
-        
-        for (int i=0; i<attendingFriends.count; i++)
-        
-            {
+            for (NSDictionary *userDetails in queriedIdData) {
                 
-            [_friendsIDDictionary setObject:  (NSString *) _namesArray[i] forKey:(NSString *)([attendingFriends objectAtIndex:i][@"id"])];
-            
-            
-        }
-        
-        
-        
-        
-        [[ParseDataStore sharedStore] initWithFriends:_friendsIDDictionary];
+                NSString *guestID = userDetails[@"id"];
+                NSMutableDictionary *details = [[NSMutableDictionary alloc] init];
+                details[@"name"] = userDetails[@"name"];
+                
+                [_guestDetailsDictionary setObject:details forKey: guestID];
+            }
+            [[ParseDataStore sharedStore] fetchLocationDataForIds:_guestDetailsDictionary];
+            }];
     }
     return self;
 }
@@ -308,10 +281,7 @@
 	return _mainView;
 }
 
--(void) tap: (UIGestureRecognizer*) gr {
-    NSLog(@"%@", _mapViewController);
-    //push new popover view with full image
-}
+
 
 -(void) startButtonTouch: (id) sender {
     //set button to be highlighted
@@ -361,8 +331,8 @@
 {
     [[ParseDataStore sharedStore] startTrackingLocation];
     
-    _mapViewController = [[ActiveEventMapViewController alloc] initWithGuests:_guestsIDs userLocations:_userLocations venueLocation:_venueLocation userInfo:_friendsIDDictionary];
-    [[self navigationController] pushViewController: _mapViewController animated:YES];
+    ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc] initWithGuestDetails:_guestDetailsDictionary venueLocation:_venueLocation ];
+    [[self navigationController] pushViewController: mapViewController animated:YES];
 }
 
 

@@ -11,14 +11,13 @@
 #import "FBEventDetailsViewController.h"
 #import "ParseDataStore.h"
 
-@interface ActiveEventMapViewController ()
-{   NSArray *_attendingNames;
+@interface ActiveEventMapViewController (){
+    
     GMSMapView *_mapView;
     GMSCoordinateBounds *_bounds;
-    NSDictionary *_userLocations;
+    
     CLLocationCoordinate2D _venueLocation;
-    CLLocationCoordinate2D _venueLocationCoordinate;
-    NSMutableDictionary *_friendsIDDictionary;
+    NSMutableDictionary *_guestDetails;
 }
 
 @property (strong, nonatomic) NSMutableSet *friendIDs;
@@ -27,14 +26,14 @@
 
 @implementation ActiveEventMapViewController
 
-- (id) initWithGuests:(NSMutableSet *)attendingFriends userLocations: (NSDictionary *) userLocations venueLocation:(CLLocationCoordinate2D) venueLocation userInfo: (NSMutableDictionary *)UserInfo
+- (id) initWithGuestDetails:(NSMutableDictionary *)details venueLocation:(CLLocationCoordinate2D) venueLocation
 {
     self = [super init];
     if (self) {
-        _friendsIDDictionary = UserInfo;
-        _friendIDs = attendingFriends;
-        _userLocations = userLocations;
+        _guestDetails = details;
         _venueLocation = venueLocation;
+        _bounds=[[GMSCoordinateBounds alloc]initWithCoordinate:_venueLocation coordinate:_venueLocation];
+
     }
     return self;
 }
@@ -49,9 +48,9 @@
     _mapView.myLocationEnabled = YES;
     
     GMSMarker *venueMarker=[GMSMarker markerWithPosition:_venueLocation];
-    _bounds=[[GMSCoordinateBounds alloc]initWithCoordinate:CLLocationCoordinate2DMake(_mapView.myLocation.coordinate.latitude, _mapView.myLocation.coordinate.longitude)  coordinate:_venueLocationCoordinate];
     
     venueMarker.title=@"Venue Location";
+    NSLog(@"%@ asd fjdasjf halkdsjh ", _guestDetails);
                           
     venueMarker.map=_mapView;
     venueMarker.icon=[GMSMarker markerImageWithColor:[UIColor purpleColor]];
@@ -63,11 +62,11 @@
     self.view = _mapView;
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self.navigationController setNavigationBarHidden:NO animated:animated];
-    [super viewWillAppear:animated];
-}
+//- (void)viewWillAppear:(BOOL)animated
+//{
+//    [self.navigationController setNavigationBarHidden:NO animated:animated];
+//    [super viewWillAppear:animated];
+//}
 
 
 
@@ -75,64 +74,29 @@
 {
     [super viewDidAppear:animated];
     
-    for(NSString *key in _userLocations){
+    for(NSString *key in _guestDetails){
+    
+        NSDictionary *userDetails = _guestDetails[key];
         
-        PFGeoPoint *location = _userLocations[key];
         
-        CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(location.latitude, location.longitude);
+        PFGeoPoint *location = userDetails[@"location"];
         
-        GMSMarker *marker=[GMSMarker markerWithPosition:coordinates];
+        if(fabs(location.longitude)>0 & fabs(location.longitude)>0){
         
-        _bounds= [_bounds includingCoordinate:coordinates];
+        GMSMarker *marker= [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(location.latitude, location.longitude)];
+        marker.title=userDetails[@"name"];
+        marker.map=_mapView;
+
+        _bounds= [_bounds includingCoordinate:CLLocationCoordinate2DMake(location.latitude, location.longitude)];
+       
         GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:_bounds
                                                  withPadding:50.0f];
-        
-        
+           GMSCameraUpdate *update2=[GMSCameraUpdate zoomOut];
         [_mapView moveCamera:update];
-        marker.map=_mapView;
-        
-    }
-
-    /*
-    [[ParseDataStore sharedStore]fetchLocationDataWithCompletion:^(NSArray *array){
-        if(array.count > 0)
-=======
-   
-    [[ParseDataStore sharedStore]fetchLocationDataWithCompletion:^(NSDictionary *dict){
-        if(dict.count > 0)
->>>>>>> markers
-        {
-            
-            
-            for(NSString *key in dict){
-            //for(PFGeoPoint *obj in dict){
-                if([[dict objectForKey:key] objectAtIndex:1]){
-                    
-                    PFGeoPoint *obj= [[PFGeoPoint alloc] init];
-                    obj = [[dict objectForKey:key]objectAtIndex:1];
-                    
-                    _bounds= [_bounds includingCoordinate:CLLocationCoordinate2DMake(obj.latitude, obj.longitude)];
-                    
-                    GMSMarker *marker=[GMSMarker markerWithPosition:CLLocationCoordinate2DMake(obj.latitude, obj.longitude)];
-                    marker.title=[[dict objectForKey:key]objectAtIndex:0];
-            
-                    marker.map=_mapView;
-                    GMSCameraUpdate *update = [GMSCameraUpdate fitBounds:_bounds
-                                                             withPadding:50.0f];
-
-                    [_mapView moveCamera:update];
-                }
-            }
-        }
-            
-        else if (dict.count == 0){
-            GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_venueLocationCoordinate.latitude longitude:_venueLocationCoordinate.longitude zoom:14];
-        _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-        
+            [_mapView moveCamera:update2];
         }
     }
-    
-     ];*/
+
 }
 
 @end

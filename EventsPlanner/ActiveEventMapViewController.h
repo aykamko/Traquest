@@ -12,8 +12,6 @@
 @interface ActiveEventMapViewController : UIViewController
 
 
-@property (strong, nonatomic) NSMutableDictionary *friendsIDDictionary;
+- (id) initWithGuestDetails:(NSMutableDictionary *)details venueLocation:(CLLocationCoordinate2D) venueLocation;
 
-
-- (id) initWithGuests:(NSMutableSet *)attendingFriends userLocations: (NSDictionary *) userLocations venueLocation:(CLLocationCoordinate2D) venueLocation userInfo: (NSMutableDictionary *)userInfo;
 @end

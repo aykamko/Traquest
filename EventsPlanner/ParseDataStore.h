@@ -19,14 +19,14 @@
 
 -(void)logInWithCompletion:(void (^)())completionBlock;
 -(void)logOutWithCompletion: (void (^)())completionBlock;
--(void)fetchLocationDataForIds: (NSSet *) userIds WithWithCompletion:(void (^)(NSMutableDictionary *userLocations)) completionBlock;
+
+-(void)fetchLocationDataForIds: (NSMutableDictionary *) guestDetails;
 -(void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock;
+
 -(void)notifyUsersWithCompletion:(void(^)(NSArray *userLocations)) completionBlock;
 -(void)startTrackingLocation;
-- (void)event:(NSString *)eventId inviteFriends:(NSArray *)freindIdArray completion:(void (^)())completionBlock;
-- (void)event:(NSString *)eventId changeRsvpStatusTo:(NSString *)status completion:(void (^)())completionBlock;
--(void)fetchLocationDataWithCompletion:(void (^)(NSDictionary*userInfo)) completionBlock;
 
--(void)initWithFriends:(NSDictionary *)friendsArray;
+-(void)event:(NSString *)eventId inviteFriends:(NSArray *)freindIdArray completion:(void (^)())completionBlock;
+-(void)event:(NSString *)eventId changeRsvpStatusTo:(NSString *)status completion:(void (^)())completionBlock;
 
 @end

@@ -77,26 +77,18 @@
     [[PFUser currentUser] saveInBackground];
 }
 
--(void)fetchLocationDataForIds: (NSSet *) userIds WithWithCompletion:(void (^)(NSMutableDictionary *userLocations)) completionBlock{
-    NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
+-(void)fetchLocationDataForIds: (NSDictionary *) guestDetails
+{    
     PFQuery *trackingQuery = [PFUser query];
-    [trackingQuery whereKey: @"fbID" containedIn:[userIds allObjects]];
+    [trackingQuery whereKey: @"fbID" containedIn:[guestDetails allKeys]];
     [trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
-    NSArray *trackingAllowed = [trackingQuery findObjects];
     
-    for (PFUser *friend in trackingAllowed) //for every user that allows tracking
+    NSArray *users = [trackingQuery findObjects];
+    for (PFUser *friend in users) //for every user that allows tracking
     {
-        [userLocations setObject:friend[@"location"] forKey:friend[@"fbID"]];
-        
-            NSMutableArray *arrayTemp=[[NSMutableArray alloc]init];
-            [arrayTemp addObject:(NSString *) [_friendsIDDictionary objectForKey:friend [@"fbID"]]];
-            [arrayTemp addObject:(PFGeoPoint *)friend[@"location"] ];
-            
-            
-            NSLog(@"ermergerd lercersherns %f , %f", ((PFGeoPoint *) friend[@"location"]).latitude, ((PFGeoPoint *) friend[@"location"]).longitude);
+        NSString *friendID = friend[@"fbID"];
+        guestDetails[friendID][@"location"] = friend[@"location"];
     }
-    
-    completionBlock(userLocations);
 }
 
 
