@@ -14,41 +14,34 @@
 {
     GMSMapView *_mapView;
     GMSCoordinateBounds *_bounds;
-    CLLocation *_venueLocation;
+    CLLocationCoordinate2D _venueLocationCoordinate;
 }
 
 @end
 
 @implementation ActiveEventMapViewController
 
-- (id) initWithFriendsDetails:(NSMutableArray *)attendingFriends venueLocation:(CLLocation *)location
+- (id) initWithFriendsDetails:(NSMutableArray *)attendingFriends venueLocationCoordinate:(CLLocationCoordinate2D )location
 {
     self = [super init];
     if (self) {
         _friendsIDArray = attendingFriends;
+        _venueLocationCoordinate=location;
     }
     return self;
 }
 
 - (void)loadView
 {
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:[_detailsViewController venueLocation ].coordinate.latitude
-                                                            longitude:[_detailsViewController venueLocation].coordinate.longitude
-                                                                 zoom:14];
-    
-                                 
-                                 
-                                 
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_venueLocationCoordinate.latitude longitude:_venueLocationCoordinate.longitude zoom:14];
                                  
     _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     
     _mapView.myLocationEnabled = YES;
     
-    GMSMarker *venueMarker=[GMSMarker markerWithPosition:[_detailsViewController venueLocation].coordinate];
+    GMSMarker *venueMarker=[GMSMarker markerWithPosition:_venueLocationCoordinate];
     
     
-                          
-                          
                           
     venueMarker.map=_mapView;
     venueMarker.icon=[GMSMarker markerImageWithColor:[UIColor purpleColor]];
@@ -72,8 +65,8 @@
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+   
     [[ParseDataStore sharedStore]fetchLocationDataWithCompletion:^(NSArray *array){
-       
         if(array.count > 0)
         {
             for(PFGeoPoint *obj in array){
@@ -89,8 +82,13 @@
             
             }
         }
-            
         
+            
+        else if (array.count == 0){
+            GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_venueLocationCoordinate.latitude longitude:_venueLocationCoordinate.longitude zoom:14];
+        _mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+        
+        }
     }
     
      ];

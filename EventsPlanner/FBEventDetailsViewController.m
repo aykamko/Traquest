@@ -63,15 +63,6 @@
         _venueLocationString= (NSString *)_eventDetails[@"location"];
         
         _friendsIDArray = [[NSMutableArray alloc] init];
-        
-        MKGeocodingService *geocoder=[[MKGeocodingService alloc]init];
-        
-        [geocoder fetchGeocodeAddress:_venueLocationString completion:^(NSDictionary *geocode, NSError *error){
-            CLLocationCoordinate2D coordinate=[((CLLocation *)geocode[@"location"])coordinate];
-            venueLocationCoordinate = coordinate;
-        }];
-        
-        
         for (NSDictionary *friend in attendingFriends)
         {
             [_friendsIDArray addObject:(NSString *)friend[@"id"]];
@@ -206,6 +197,7 @@
         double latitude = [latString doubleValue];
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+        venueLocationCoordinate = coordinate;
         
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
   
@@ -273,6 +265,7 @@
     
     [geocoder fetchGeocodeAddress:locationString completion:^(NSDictionary *geocode, NSError *error) {
         CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
+        venueLocationCoordinate = coordinate;
         [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
         if (!coordinate.latitude) {
             [alertView show];
@@ -340,7 +333,7 @@
 {
     [[ParseDataStore sharedStore] startTrackingLocation];
     
-    _mapViewController = [[ActiveEventMapViewController alloc] initWithFriendsDetails:nil venueLocation:<#(CLLocation *)#>];
+    _mapViewController = [[ActiveEventMapViewController alloc] initWithFriendsDetails:nil venueLocationCoordinate:venueLocationCoordinate];
     [[self navigationController] pushViewController: _mapViewController animated:YES];
 }
 

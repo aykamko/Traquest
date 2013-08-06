@@ -13,6 +13,6 @@
 
 @property (strong, nonatomic) NSMutableArray *friendsIDArray;
 
-- (id)initWithFriendsDetails:(NSMutableArray *)attendingFriends venueLocation: (CLLocation *)location;
+- (id)initWithFriendsDetails:(NSMutableArray *)attendingFriends venueLocationCoordinate: (CLLocationCoordinate2D )location;
 
 @end
