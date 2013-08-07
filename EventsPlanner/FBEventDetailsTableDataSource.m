@@ -6,30 +6,40 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#import "FBEventsDetailsTableDataSource.h"
+#import "FBEventDetailsTableDataSource.h"
 
-@interface FBEventsDetailsTableDataSource () {
-    NSMutableArray *_relevantDetailsKeys;
-    NSMutableDictionary *_allDetails;
-}
+@interface FBEventDetailsTableDataSource ()
+
+@property (nonatomic, strong) NSMutableArray *mutableOrderedDetailsKeys;
+@property (nonatomic, strong) NSMutableDictionary *mutableDetailsDict;
 
 @end
 
-@implementation FBEventsDetailsTableDataSource
+@implementation FBEventDetailsTableDataSource
 
 - (id)initWithEventDetails: (NSMutableDictionary *) eventDetails
 {
     self = [super init];
     if (self) {
-        _relevantDetailsKeys = [[NSMutableArray alloc] init];
-        _allDetails = [eventDetails mutableCopy];
-        _relevantDetailsKeys = [(NSArray*)@[@"location", @"privacy", @"start_time", @"description", @"owner"] mutableCopy];
-        [self parseEventDetails:_allDetails];
+        _mutableOrderedDetailsKeys = [[NSMutableArray alloc] init];
+        _mutableDetailsDict = [eventDetails mutableCopy];
+        _mutableOrderedDetailsKeys = [@[@"location", @"privacy", @"start_time", @"description", @"owner"] mutableCopy];
+        [self parseEventDetails:_mutableDetailsDict];
     }
     return self;
 }
 
--(void) parseEventDetails: (NSMutableDictionary *) details {
+- (NSArray *)orderedDetailsKeys
+{
+    return [NSArray arrayWithArray:self.mutableOrderedDetailsKeys];
+}
+
+- (NSDictionary *)detailsDict
+{
+    return [NSDictionary dictionaryWithDictionary:self.mutableDetailsDict];
+}
+
+- (void)parseEventDetails:(NSMutableDictionary *)details {
     
     details[@"location"] = details[@"location"]? details[@"location"]:@" ";
     
@@ -38,7 +48,7 @@
     NSString *startTime = details[@"start_time"];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZ"];
-    NSDate *date =[formatter dateFromString:startTime];
+    NSDate *date = [formatter dateFromString:startTime];
     NSString *dateString = @"";
     if(!date) {
         [formatter setDateFormat:@"YYYY-MM-dd"];
@@ -54,7 +64,7 @@
     details[@"start_time"] = dateString;
     
     if (!details[@"description"]){
-        [_relevantDetailsKeys removeObject:@"description"];
+        [_mutableOrderedDetailsKeys removeObject:@"description"];
     }
     
     NSArray *array = details[@"admins"][@"data"];
@@ -80,11 +90,11 @@
     details[@"owner"] = hostString;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_relevantDetailsKeys count];
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [_mutableOrderedDetailsKeys count];
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"UITableViewCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -97,13 +107,15 @@
     [cell textLabel].numberOfLines = 0;
     [[cell textLabel] setTextColor:[UIColor colorWithWhite:0 alpha:0.4]];
     [[cell textLabel] setFont:[UIFont fontWithName:@"Helvetica" size:14]];
-    NSString *currentKey = _relevantDetailsKeys[[indexPath row]];
-    [[cell textLabel] setText: _allDetails[currentKey]];
+    NSString *currentKey = _mutableOrderedDetailsKeys[[indexPath row]];
+    NSString *currentText = _mutableDetailsDict[currentKey];
+    [[cell textLabel] setText: currentText];
+    
     return cell;
 }
 
--(void) updateObject: (NSString *) value forKey: (NSString *) key {
-    [_allDetails setObject:value forKey:key];
+- (void) updateObject: (NSString *) value forKey: (NSString *) key {
+    [_mutableDetailsDict setObject:value forKey:key];
 }
 
 @end

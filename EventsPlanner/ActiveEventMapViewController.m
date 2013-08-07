@@ -12,6 +12,8 @@
 #import "ParseDataStore.h"
 #import "Toast+UIView.h"
 
+static const NSInteger UpdateFrequencyInSeconds = 3.0;
+
 @interface ActiveEventMapViewController (){
     
     GMSMapView *_mapView;
@@ -21,6 +23,10 @@
     UISegmentedControl *_segment;
 }
 
+@property (nonatomic) BOOL updateCamera;
+@property (strong, nonatomic) NSTimer *timer;
+
+@property (strong, nonatomic) NSString *eventId;
 @property (strong, nonatomic) NSMutableDictionary *friendDetailsDict;
 @property (strong, nonatomic) NSMutableDictionary *friendMarkerDict;
 
@@ -39,6 +45,7 @@
         [icon setImage:image];
         
         _venueLocation = venueLocation;
+        _eventId = eventId;
         _friendMarkerDict = [[NSMutableDictionary alloc] init];
         
         _friendDetailsDict = [[NSMutableDictionary alloc] init];
@@ -52,19 +59,15 @@
             [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
         }
         
-        [[ParseDataStore sharedStore] fetchGeopointsForIds:[[self friendDetailsDict] allKeys] eventId:eventId
-                                                completion:^(NSDictionary *userLocations) {
-            for (NSString *fbId in [userLocations allKeys]) {
-                [self friendDetailsDict][fbId][@"geopoint"] = userLocations[fbId];
-            }
-            [self updateMarkersOnMap];
-        }];
-        
-        [[ParseDataStore sharedStore] allowTrackingForEvent:eventId identity:YES];
-        
+        self.updateCamera = YES;
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
+                                                      target:self
+                                                    selector:@selector(updateMarkers:)
+                                                    userInfo:@{ @"updateCamera":@YES }
+                                                     repeats:YES];
+        [self.timer fire];
         
     }
-    
     
     return self;
 }
@@ -91,61 +94,74 @@
     [_mapView moveCamera:update];
     self.view = _mapView;
     
-    [self.view makeToastActivity];
-
-    
-   
 }
 
-- (void)updateMarkersOnMap
+- (void)updateMarkers:(id)sender
 {
-    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:_venueLocation
-                                                                       coordinate:_venueLocation];
-    for (NSString *fbId in [[self friendDetailsDict] allKeys]) {
-        
-        PFGeoPoint *currentGeopoint = self.friendDetailsDict[fbId][@"geopoint"];
-        if ([currentGeopoint isEqual:[NSNull null]]) {
-            continue;
+    [[ParseDataStore sharedStore] fetchGeopointsForIds:[[self friendDetailsDict] allKeys]
+                                               eventId:[self eventId]
+                                            completion:^(NSDictionary *userLocations) {
+       
+        GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:_venueLocation
+                                                                           coordinate:_venueLocation];
+                                                
+        for (NSString *fbId in [userLocations allKeys]) {
+            
+            if ([fbId isEqualToString:[[ParseDataStore sharedStore] myId]]) {
+                continue;
+            }
+            
+            [self friendDetailsDict][fbId][@"geopoint"] = userLocations[fbId];
+            PFGeoPoint *currentGeopoint = self.friendDetailsDict[fbId][@"geopoint"];
+            
+            CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
+                                                                                  currentGeopoint.longitude);
+            
+            NSString *currentName = self.friendDetailsDict[fbId][@"name"];
+            GMSMarker *currentMarker = self.friendMarkerDict[fbId];
+            
+            if (!currentMarker) {
+            
+                currentMarker = [GMSMarker markerWithPosition:currentCoordinate];
+                currentMarker.animated = NO;
+                currentMarker.title = currentName;
+                currentMarker.map = _mapView;
+                self.friendMarkerDict[fbId] = currentMarker;
+                
+            } else {
+                
+                currentMarker.position = currentCoordinate;
+                
+            }
+            
+            bounds = [bounds includingCoordinate:currentCoordinate];
         }
         
-        CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
-                                                                              currentGeopoint.longitude);
+        [self.view hideToastActivity];
         
-        NSString *currentName = self.friendDetailsDict[fbId][@"name"];
-        GMSMarker *currentMarker = self.friendMarkerDict[fbId];
-    
-        
-        if (!currentMarker) {
-            
-            currentMarker = [GMSMarker markerWithPosition:currentCoordinate];
-            currentMarker.icon= self.friendDetailsDict[fbId][@"userPic"];
-            currentMarker.title = currentName;
-            currentMarker.map = _mapView;
-            self.friendMarkerDict[fbId] = currentMarker;
-            
-        } else {
-            
-            currentMarker.position = currentCoordinate;
-            
+        if (self.updateCamera) {
+            [_mapView moveCamera:[GMSCameraUpdate fitBounds:bounds withPadding:100.0f]];
+            self.updateCamera = NO;
         }
         
-        bounds = [bounds includingCoordinate:currentCoordinate];
-    }
-    
-    [self.view hideToastActivity];
-    [_mapView moveCamera:[GMSCameraUpdate fitBounds:bounds withPadding:100.0f]];
+    }];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.timer invalidate];
+    self.timer = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-}
-
-
--(void)viewDidLoad{
-    [super viewDidLoad];
-
+<<<<<<< HEAD
+=======
+    NSLog(@"BERTERM ERF SCRERN %@", NSStringFromCGRect(self.view.frame));
+    NSLog(@"center: %f", self.view.center.x );
     
-
+>>>>>>> 74a141f... Added NSTimer to pull from Parse at 15 seconds intervals.
 }
+
 @end

@@ -18,6 +18,7 @@ extern NSString * const trackingData;
 @interface ParseDataStore : NSObject
 
 @property (readonly, nonatomic) BOOL isLoggedIn;
+@property (strong, nonatomic) NSString *myId;
 
 + (ParseDataStore *)sharedStore;
 

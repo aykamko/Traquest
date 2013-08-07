@@ -14,7 +14,7 @@
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */; };
-		60E093C717AC5211007CE1C8 /* FBEventsDetailsTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C517AC5211007CE1C8 /* FBEventsDetailsTableDataSource.m */; };
+		60E093C717AC5211007CE1C8 /* FBEventDetailsTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C517AC5211007CE1C8 /* FBEventDetailsTableDataSource.m */; };
 		760BDC3317A9D3D4008A1877 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */; };
 		768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */; };
 		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
@@ -54,12 +54,15 @@
 		7C553E9217A70578006A6219 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9117A70578006A6219 /* libicucore.dylib */; };
 		7C553E9417A70581006A6219 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9317A70581006A6219 /* libz.dylib */; };
 		7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9517A7058E006A6219 /* OpenGLES.framework */; };
+		7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6F2C0A17B45AD2004DE35A /* FBEventDetailsTableDelegate.m */; };
 		7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C78920B17A9E7B600610FB2 /* EventHeaderView.m */; };
 		7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */; };
 		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
 		7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CCF244517AB6384009855B5 /* Parse.framework */; };
 		7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
+		7CE05FCE17B33BDB004BF47C /* tracking-button-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */; };
+		7CE05FCF17B33BDB004BF47C /* tracking-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */; };
 		7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */; };
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
@@ -95,8 +98,8 @@
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
 		60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsViewController.m; sourceTree = "<group>"; };
-		60E093C417AC5211007CE1C8 /* FBEventsDetailsTableDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventsDetailsTableDataSource.h; sourceTree = "<group>"; };
-		60E093C517AC5211007CE1C8 /* FBEventsDetailsTableDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventsDetailsTableDataSource.m; sourceTree = "<group>"; };
+		60E093C417AC5211007CE1C8 /* FBEventDetailsTableDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsTableDataSource.h; sourceTree = "<group>"; };
+		60E093C517AC5211007CE1C8 /* FBEventDetailsTableDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsTableDataSource.m; sourceTree = "<group>"; };
 		760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
 		768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
@@ -143,6 +146,8 @@
 		7C553E9117A70578006A6219 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		7C553E9317A70581006A6219 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		7C553E9517A7058E006A6219 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		7C6F2C0917B45AD2004DE35A /* FBEventDetailsTableDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsTableDelegate.h; sourceTree = "<group>"; };
+		7C6F2C0A17B45AD2004DE35A /* FBEventDetailsTableDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsTableDelegate.m; sourceTree = "<group>"; };
 		7C78920A17A9E7B600610FB2 /* EventHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventHeaderView.h; sourceTree = "<group>"; };
 		7C78920B17A9E7B600610FB2 /* EventHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventHeaderView.m; sourceTree = "<group>"; };
 		7CBBD6FE17AB851700ED9DAB /* EventCellContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCellContentView.h; sourceTree = "<group>"; };
@@ -154,6 +159,8 @@
 		7CCF244517AB6384009855B5 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		7CCF244717AB657C009855B5 /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCell.h; sourceTree = "<group>"; };
 		7CCF244817AB657C009855B5 /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCell.m; sourceTree = "<group>"; };
+		7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button-pressed@2x.png"; sourceTree = "<group>"; };
+		7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button@2x.png"; sourceTree = "<group>"; };
 		7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed.png"; sourceTree = "<group>"; };
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
@@ -332,8 +339,10 @@
 			children = (
 				60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */,
 				60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */,
-				60E093C417AC5211007CE1C8 /* FBEventsDetailsTableDataSource.h */,
-				60E093C517AC5211007CE1C8 /* FBEventsDetailsTableDataSource.m */,
+				60E093C417AC5211007CE1C8 /* FBEventDetailsTableDataSource.h */,
+				60E093C517AC5211007CE1C8 /* FBEventDetailsTableDataSource.m */,
+				7C6F2C0917B45AD2004DE35A /* FBEventDetailsTableDelegate.h */,
+				7C6F2C0A17B45AD2004DE35A /* FBEventDetailsTableDelegate.m */,
 				7CED112E17B036CE005B533D /* FBEventStatusTableController.h */,
 				7CED112F17B036CE005B533D /* FBEventStatusTableController.m */,
 				7CED113117B03A6D005B533D /* FBEventStatusViewDataSource.h */,
@@ -356,9 +365,10 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */,
+				7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */,
 				909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */,
 				909A265717B2F44500F67AB8 /* listFinal@2x.png */,
-				60AF6D4317B2C04600991386 /* Default-568h@2x.png */,
 				6065E46417ACA3C8003B947E /* eventCoverPhoto.png */,
 				904838DD17A9AB1400042357 /* stickynote.png */,
 				90164D2217A8939800E5A564 /* firstBackground.png */,
@@ -476,7 +486,7 @@
 				ORGANIZATIONNAME = FBU;
 				TargetAttributes = {
 					7C418C6217A082030084330C = {
-						DevelopmentTeam = 6GHC6QVH5E;
+						DevelopmentTeam = 32LFZTM64W;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -512,6 +522,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				909A265817B2F44500F67AB8 /* listFinal@2x.png in Resources */,
+				7CE05FCF17B33BDB004BF47C /* tracking-button@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				904838DE17A9AB1400042357 /* stickynote.png in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
@@ -521,6 +532,7 @@
 				90164D2317A8939800E5A564 /* firstBackground.png in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
 				909A265A17B2F4F600F67AB8 /* MarkerFinal@2x.png in Resources */,
+				7CE05FCE17B33BDB004BF47C /* tracking-button-pressed@2x.png in Resources */,
 				6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
@@ -551,13 +563,14 @@
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
 				60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */,
 				7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */,
-				60E093C717AC5211007CE1C8 /* FBEventsDetailsTableDataSource.m in Sources */,
+				60E093C717AC5211007CE1C8 /* FBEventDetailsTableDataSource.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
 				768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */,
 				7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */,
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */,
+				7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */,
 				7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */,
 				7CED113017B036CE005B533D /* FBEventStatusTableController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
@@ -638,7 +651,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv6";
+				VALID_ARCHS = armv7;
 			};
 			name = Debug;
 		};
@@ -673,7 +686,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv6";
+				VALID_ARCHS = armv7;
 			};
 			name = Release;
 		};

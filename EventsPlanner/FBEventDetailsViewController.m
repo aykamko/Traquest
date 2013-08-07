@@ -10,12 +10,15 @@
 #import "FBEventDetailsViewController.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import "MKGeocodingService.h"
-#import "FBEventsDetailsTableDataSource.h"
+#import "FBEventDetailsTableDataSource.h"
 #import "ActiveEventMapViewController.h"
 #import "UIImage+ImageCrop.h"
 #import "ParseDataStore.h"
 #import "FBEventStatusTableController.h"
+#import "FBEventDetailsTableDelegate.h"
 
+static const float TrackingButtonFontSize = 20.0;
+static const float TableViewSideMargin = 12.0;
 static const float kLatitudeAdjustment = 0.0008;
 static const float kLongitudeAsjustment = 0;
 
@@ -28,7 +31,7 @@ static const float kLongitudeAsjustment = 0;
     UILabel *_titleLabel;
     UIView *_buttonHolder;
     UITableView *_detailsTable;
-    FBEventsDetailsTableDataSource *_dataSource;
+    FBEventDetailsTableDataSource *_dataSource;
     __strong GMSMapView *_mapView;
     
     __strong FBEventStatusTableController *_statusTableController;
@@ -47,6 +50,8 @@ static const float kLongitudeAsjustment = 0;
 @property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
 @property (nonatomic, strong) UIButton *startTrackingButton;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
+
+@property (nonatomic, strong) FBEventDetailsTableDelegate *detailsTableDelegate;
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 - (void)loadMapView:(id)sender;
@@ -291,13 +296,15 @@ static const float kLongitudeAsjustment = 0;
     }
     
     // initializing data source for table view
-    _dataSource = [[FBEventsDetailsTableDataSource alloc] initWithEventDetails:_eventDetails];
+    _dataSource = [[FBEventDetailsTableDataSource alloc] initWithEventDetails:_eventDetails];
+    _detailsTableDelegate = [[FBEventDetailsTableDelegate alloc] init];
     
     //creating table view with event details and setting data source
     _detailsTable = [[UITableView alloc] init];
     [_detailsTable setBackgroundColor:[UIColor whiteColor]];
     [_detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_detailsTable setDataSource:_dataSource];
+    [_detailsTable setDelegate:_detailsTableDelegate];
     [_detailsTable setTableHeaderView:_mapView];
     
     //setting some UI aspects of tableview
@@ -309,7 +316,10 @@ static const float kLongitudeAsjustment = 0;
     
     [_dimensionsDict
      addEntriesFromDictionary:@{ @"screenWidthWithMargin":[NSNumber numberWithFloat:
-                                                           ([UIScreen mainScreen].bounds.size.width - 40.0)],
+                                                           ([UIScreen mainScreen].bounds.size.width -
+                                                                (TableViewSideMargin * 2))],
+                                 
+                                 @"sideMargin":[NSNumber numberWithFloat:TableViewSideMargin],
                                  
                                  @"detailsTableContentHeight":[NSNumber numberWithFloat:
                                                                [_detailsTable contentSize].height] }];
@@ -321,9 +331,28 @@ static const float kLongitudeAsjustment = 0;
     
     if ([self isHost]) {
         
-        _startTrackingButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        _startTrackingButton = [[UIButton alloc] init];
+        
+        UIImage *buttonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
+                                                                 pathForResource:@"tracking-button@2x"
+                                                                 ofType:@"png"]];
+        UIImage *buttonImage = [buttonBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
+        UIImage *buttonPressedBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
+                                                                        pathForResource:@"tracking-button-pressed@2x"
+                                                                        ofType:@"png"]];
+        UIImage *buttonPressedImage = [buttonPressedBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
+        
+        [_dimensionsDict addEntriesFromDictionary:
+            @{ @"trackingButtonImageHeight":[NSNumber numberWithFloat:buttonBaseImage.size.height] }];
+        
+        [_startTrackingButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
+        [_startTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateSelected];
+        [_startTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+        
         [_startTrackingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
         [_startTrackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
+        [[_startTrackingButton titleLabel] setFont:[UIFont boldSystemFontOfSize:TrackingButtonFontSize]];
+        
         [_startTrackingButton addTarget:self
                                  action:@selector(promptGuestsForTracking:)
                        forControlEvents:UIControlEventTouchUpInside];
@@ -332,14 +361,14 @@ static const float kLongitudeAsjustment = 0;
         [_viewsDictionary addEntriesFromDictionary:@{ @"_startTrackingButton":_startTrackingButton }];
         
         NSString *verticalLayout =
-            @"V:[_buttonHolder]-[_startTrackingButton(40)]-[_detailsTable(detailsTableContentHeight)]-|";
+            @"V:[_buttonHolder]-[_startTrackingButton(trackingButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
         [_scrollView addConstraints:[NSLayoutConstraint
                                      constraintsWithVisualFormat:verticalLayout
                                      options:0
                                      metrics:_dimensionsDict
                                      views:_viewsDictionary]];
         [_scrollView addConstraints:[NSLayoutConstraint
-                                     constraintsWithVisualFormat:@"H:|-20-[_startTrackingButton(screenWidthWithMargin)]-20-|"
+                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[_startTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
                                      options:0
                                      metrics:_dimensionsDict
                                      views:_viewsDictionary]];
@@ -348,7 +377,7 @@ static const float kLongitudeAsjustment = 0;
     else {
         
         [_scrollView addConstraints:[NSLayoutConstraint
-                                     constraintsWithVisualFormat:@"V:[_buttonHolder]-20-[_detailsTable(detailsTableContentHeight)]-|"
+                                     constraintsWithVisualFormat:@"V:[_buttonHolder]-(sideMargin)-[_detailsTable(detailsTableContentHeight)]-|"
                                      options:0
                                      metrics:_dimensionsDict
                                      views:_viewsDictionary]];
@@ -356,17 +385,26 @@ static const float kLongitudeAsjustment = 0;
     }
     
         [_scrollView addConstraints:[NSLayoutConstraint
-                                     constraintsWithVisualFormat:@"H:|-20-[_detailsTable(screenWidthWithMargin)]-20-|"
+                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[_detailsTable(screenWidthWithMargin)]-(sideMargin)-|"
                                      options:0
                                      metrics:_dimensionsDict
                                      views:_viewsDictionary]];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
-    
-}
+//- (void)viewDidAppear:(BOOL)animated {
+//    
+//    [super viewDidAppear:animated];
+//    
+//    if (!(_eventDetails[@"location"]||_eventDetails[@"venue"][@"lattitude"])) {
+//        __strong UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your Event Location Was Invalid" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
+//        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
+//        [alert setDelegate:self];
+//        UITextField *locationInputTextView = [alert textFieldAtIndex:0];
+//        [locationInputTextView setPlaceholder:@"Please Enter a Location"];
+//        [alert show];
+//    }
+//    
+//}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -380,6 +418,17 @@ static const float kLongitudeAsjustment = 0;
     [_coverImageView setImage:croppedScaleImage];
     
     [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [super viewDidAppear:animated];
+        UITableViewCell *cell = [_detailsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+        NSLog(@"%@", cell.contentView.subviews);
+    });
 }
 
 - (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate
@@ -464,6 +513,7 @@ static const float kLongitudeAsjustment = 0;
 
 - (void)loadMapView:(id)sender
 {
+    [[ParseDataStore sharedStore] startTrackingMyLocationWithID:self.eventDetails[@"id"]];
     UIViewController *statsController = [[UIViewController alloc]init];
     statsController.view=[[UIView alloc]init];
     

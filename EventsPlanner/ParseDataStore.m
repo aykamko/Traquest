@@ -24,7 +24,6 @@ NSString * const trackingData = @"trackingDictionary";
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) NSMutableArray *allAttendingFriends;
 
-@property (strong, nonatomic) NSString *myId;
 
 @end
 
