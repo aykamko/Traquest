@@ -1,3 +1,4 @@
+
 //
 //  FBEventDetailsViewController.m
 //  EventsPlanner
@@ -37,6 +38,10 @@ static const float kLongitudeAsjustment = 0;
     
     __strong FBEventStatusTableController *_statusTableController;
     
+
+    UITabBarItem *_item;
+    UIImage *_briefcase;
+
 }
 
 @property (nonatomic, getter = isHost) BOOL host;
@@ -521,11 +526,26 @@ static const float kLongitudeAsjustment = 0;
 - (void)loadMapView:(id)sender
 {
     [[ParseDataStore sharedStore] startTrackingMyLocation];
+    UIViewController *statsController = [[UIViewController alloc]init];
+    statsController.view=[[UIView alloc]init];
     
+    _item= [statsController tabBarItem];
+    _briefcase= [UIImage imageNamed:@"listFinal.png"];
+    [_item setImage:_briefcase];
+
+    
+    
+    UITabBarController *tabBarController=[[UITabBarController alloc]init];
     ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc]
                                                        initWithGuestArray:_eventDetails[@"attending"][@"data"]
                                                        venueLocation:_venueLocation];
-    [[self navigationController] pushViewController: mapViewController animated:YES];
+    [statsController setTitle:@"Stats"];
+    
+    
+    [mapViewController setTitle:@"Map"];
+    
+    [tabBarController setViewControllers:@[mapViewController, statsController]];
+    [[self navigationController] pushViewController:tabBarController animated:YES];
 }
 
 @end

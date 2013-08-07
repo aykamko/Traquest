@@ -222,7 +222,7 @@
 
 - (void)event:(NSString *)eventId fetchDetailsWithCompletion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
-    NSString *graphPath = [NSString stringWithFormat:@"%@?fields=location,description,venue,owner,privacy,attending", eventId];
+    NSString *graphPath = [NSString stringWithFormat:@"%@?fields=location,description,venue,owner,privacy,attending.fields(id,name,picture)", eventId];
     FBRequest *request = [FBRequest requestForGraphPath:graphPath];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
