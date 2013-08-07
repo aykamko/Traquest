@@ -46,7 +46,7 @@
                                                            error:&error];
     
     NSArray *results = [json objectForKey:@"results"];
-    NSDictionary *result = [results firstObject]; //objectAtIndex:0];
+    NSDictionary *result = [results objectAtIndex:0];
     NSString *address = [result objectForKey:@"formatted_address"];
     NSDictionary *geometry = [result objectForKey:@"geometry"];
     NSDictionary *locationDict = [geometry objectForKey:@"location"];

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */ = {isa = PBXBuildFile; fileRef = 6065E46417ACA3C8003B947E /* eventCoverPhoto.png */; };
 		6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6065E46717AE1ADA003B947E /* ParseDataStore.m */; };
+		60AF6D4417B2C04600991386 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 60AF6D4317B2C04600991386 /* Default-568h@2x.png */; };
+		60AF6D4617B2C07100991386 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60AF6D4517B2C07100991386 /* StoreKit.framework */; };
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */; };
@@ -87,6 +89,8 @@
 		6065E46417ACA3C8003B947E /* eventCoverPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eventCoverPhoto.png; sourceTree = "<group>"; };
 		6065E46617AE1ADA003B947E /* ParseDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDataStore.h; sourceTree = "<group>"; };
 		6065E46717AE1ADA003B947E /* ParseDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDataStore.m; sourceTree = "<group>"; };
+		60AF6D4317B2C04600991386 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		60AF6D4517B2C07100991386 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
@@ -175,6 +179,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60AF6D4617B2C07100991386 /* StoreKit.framework in Frameworks */,
 				7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */,
 				7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */,
 				7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */,
@@ -224,6 +229,7 @@
 			children = (
 				909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */,
 				909A265717B2F44500F67AB8 /* listFinal@2x.png */,
+				60AF6D4317B2C04600991386 /* Default-568h@2x.png */,
 				7C418C6C17A082030084330C /* EventsPlanner */,
 				7C418C8517A082030084330C /* EventsPlannerTests */,
 				7C418C6517A082030084330C /* Frameworks */,
@@ -243,6 +249,7 @@
 		7C418C6517A082030084330C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				60AF6D4517B2C07100991386 /* StoreKit.framework */,
 				7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */,
 				7CCF244517AB6384009855B5 /* Parse.framework */,
 				7698B93117AAE8AB00D351BF /* GoogleMaps.framework */,
@@ -517,6 +524,7 @@
 				6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
+				60AF6D4417B2C04600991386 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

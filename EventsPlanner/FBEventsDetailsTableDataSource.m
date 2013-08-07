@@ -61,7 +61,7 @@
     NSString *hostString  = @"";
     if(array) {
         if ([array count]>2) {
-            NSString *firstAdmin = [array firstObject][@"name"];
+            NSString *firstAdmin = [array objectAtIndex:0][@"name"];
             hostString = [NSString stringWithFormat:@"Hosted by %@ and %d others",firstAdmin,[array count]-1];
         } else {
             NSMutableString *namesString = [[NSMutableString alloc] init];
