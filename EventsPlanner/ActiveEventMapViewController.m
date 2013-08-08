@@ -18,7 +18,6 @@
     GMSCoordinateBounds *_bounds;
     
     CLLocationCoordinate2D _venueLocation;
-    NSMutableDictionary *_guestDetails;
     UISegmentedControl *_segment;
 }
 
@@ -31,7 +30,7 @@
 
 @implementation ActiveEventMapViewController
 
-- (id)initWithGuestArray:(NSArray *)guestArray venueLocation:(CLLocationCoordinate2D)venueLocation
+- (id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation
 {
     self = [super init];
     if (self) {
@@ -53,13 +52,15 @@
             [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
         }
         
-        [[ParseDataStore sharedStore] fetchGeopointsForIds:[[self friendDetailsDict] allKeys]
+        [[ParseDataStore sharedStore] fetchGeopointsForIds:[[self friendDetailsDict] allKeys] eventId:eventId
                                                 completion:^(NSDictionary *userLocations) {
             for (NSString *fbId in [userLocations allKeys]) {
                 [self friendDetailsDict][fbId][@"geopoint"] = userLocations[fbId];
             }
             [self updateMarkersOnMap];
         }];
+        
+        [[ParseDataStore sharedStore] allowTrackingForEvent:eventId identity:YES];
         
         
     }
@@ -138,11 +139,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSLog(@"BERTERM ERF SCRERN %@", NSStringFromCGRect(self.view.frame));
-    NSLog(@"center: %f", self.view.center.x );
-    
-
-
 }
 
 

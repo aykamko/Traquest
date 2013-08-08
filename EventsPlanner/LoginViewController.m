@@ -28,15 +28,13 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    _allUsers = [PFObject objectWithClassName:@"allUsers"];
 
     self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"firstBackground.png"]];
 
     // Check if user is cached and linked to Facebook, if so, bypass login
     [self drawLayout];
-    if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+    if ([[ParseDataStore sharedStore] isLoggedIn]) {
         [self setEventsListView];
-        [self getUserLocation];
     }
 
 }
@@ -53,19 +51,6 @@
     [self.navigationController.navigationBar setTranslucent:NO];
     [super viewWillDisappear:animated];
 }
-
-- (void)getUserLocation
-{
-    if ([PFUser currentUser])
-    {
-        _locationManager = [[CLLocationManager alloc] init];
-        
-        [_locationManager setDelegate:self];
-        [_locationManager startUpdatingLocation];
-       
-    }
-}
-
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
@@ -114,10 +99,9 @@
 
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
     [_userPastLocations addObject:geoPoint];
-    
-    [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
-
-    
+ 
+        
+    [[PFUser currentUser] saveInBackground];
 }
 
 

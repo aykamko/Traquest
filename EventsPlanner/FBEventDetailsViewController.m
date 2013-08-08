@@ -21,12 +21,7 @@ static const float kLongitudeAsjustment = 0;
 
 @interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate>
 {
-    CLLocationCoordinate2D venueLocationCoordinate;
-    NSString *_venueLocationString;
     CLLocationCoordinate2D _venueLocation;
-    NSMutableDictionary *_guestDetailsDictionary;
-    
-    NSMutableArray *_attendingFriends;
     
     UIScrollView *_scrollView;
     UIImageView *_coverImageView;
@@ -47,11 +42,9 @@ static const float kLongitudeAsjustment = 0;
 @property (nonatomic, getter = isHost) BOOL host;
 
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
-@property (nonatomic, strong) NSMutableArray *friendsIDArray;
 
 @property (nonatomic, strong) NSMutableDictionary *dimensionsDict;
 @property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
-
 @property (nonatomic, strong) UIButton *startTrackingButton;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
@@ -68,7 +61,6 @@ static const float kLongitudeAsjustment = 0;
 {
     self = [super init];
     if (self) {
-        
         _host = isHost;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         
@@ -80,7 +72,7 @@ static const float kLongitudeAsjustment = 0;
 {
     [self setViewPartialEventDetails];
     
-    [[ParseDataStore sharedStore] event:_eventDetails[@"id"] fetchDetailsWithCompletion:^(NSDictionary *eventDetails) {
+    [[ParseDataStore sharedStore] fetchEventDetailsWithEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
         [[self eventDetails] addEntriesFromDictionary:eventDetails];
         [self setViewCompleteEventDetails];
     }];
@@ -333,7 +325,7 @@ static const float kLongitudeAsjustment = 0;
         [_startTrackingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
         [_startTrackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
         [_startTrackingButton addTarget:self
-                                 action:@selector(loadMapView:)
+                                 action:@selector(promptGuestsForTracking:)
                        forControlEvents:UIControlEventTouchUpInside];
         
         [_scrollView addSubview:_startTrackingButton];
@@ -370,62 +362,9 @@ static const float kLongitudeAsjustment = 0;
                                      views:_viewsDictionary]];
 }
 
-
-/*
-- (void)setViewCompleteEventDetails
-{
-        _eventDetails = eventDetails;
-        
-        FBGraphObject *fbGraphObj = (FBGraphObject *)_eventDetails;
-        
-        _dataSource = [[FBEventsDetailsTableDataSource alloc] initWithEventDetails:[[NSMutableDictionary alloc] initWithDictionary:details]];
-    
-        NSArray *attendingFriends = fbGraphObj[@"attending"][@"data"];
-        
-        
-        _venueLocationString= (NSString *)_eventDetails[@"location"];
-        
-        _friendsIDArray = [[NSMutableArray alloc] init];
-        for (NSDictionary *friend in attendingFriends)
-        {
-            [_friendsIDArray addObject:(NSString *)friend[@"id"]];
-        }
-        
-        NSString *path = [NSString stringWithFormat: @"%@?fields=attending.fields(id,name)",details[@"id"]];
-        FBRequest *guestListRequest = [FBRequest requestForGraphPath:path];
-        _guestDetailsDictionary = [[NSMutableDictionary alloc] init];
-        
-        [guestListRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            
-            NSArray *queriedIdData = result[@"attending"][@"data"];
-            for (NSDictionary *userDetails in queriedIdData) {
-                
-                NSString *guestID = userDetails[@"id"];
-                NSMutableDictionary *details = [[NSMutableDictionary alloc] init];
-                details[@"name"] = userDetails[@"name"];
-                
-                [_guestDetailsDictionary setObject:details forKey: guestID];
-            }
-//            [[ParseDataStore sharedStore] fetchLocationDataForIds:_guestDetailsDictionary];
-        }];
-    
-}
- */
-
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    
-//    if (!(_eventDetails[@"location"]||_eventDetails[@"venue"][@"lattitude"])) {
-//        __strong UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your Event Location Was Invalid" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
-//        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
-//        [alert setDelegate:self];
-//        UITextField *locationInputTextView = [alert textFieldAtIndex:0];
-//        [locationInputTextView setPlaceholder:@"Please Enter a Location"];
-//        [alert show];
-//    }
-    
-    NSLog(@"%@", NSStringFromCGRect(_detailsTable.frame));
     
 }
 
@@ -500,7 +439,7 @@ static const float kLongitudeAsjustment = 0;
             [usersToInvite addObject:(NSString *)user[@"id"]];
         }
         
-        [[ParseDataStore sharedStore] event:_eventDetails[@"id"] inviteFriends:usersToInvite completion:nil];
+        [[ParseDataStore sharedStore] inviteFriendsToEvent:_eventDetails[@"id"] withFriends:usersToInvite completion:nil];
         
     }];
     
@@ -510,7 +449,7 @@ static const float kLongitudeAsjustment = 0;
 {
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
     void (^completionBlock)(NSString *newStatus) = (^(NSString *newStatus) {
-        [[ParseDataStore sharedStore] event:_eventDetails[@"id"] changeRsvpStatusTo:newStatus completion:nil];
+        [[ParseDataStore sharedStore] changeRSVPStatusToEvent:_eventDetails[@"id"] newStatus:newStatus completion:nil];
     });
     
     _statusTableController = [[FBEventStatusTableController alloc] initWithStatus:_eventDetails[@"rsvp_status"]
@@ -525,20 +464,16 @@ static const float kLongitudeAsjustment = 0;
 
 - (void)loadMapView:(id)sender
 {
-    [[ParseDataStore sharedStore] startTrackingMyLocation];
     UIViewController *statsController = [[UIViewController alloc]init];
     statsController.view=[[UIView alloc]init];
     
     _item= [statsController tabBarItem];
     _briefcase= [UIImage imageNamed:@"listFinal.png"];
     [_item setImage:_briefcase];
-
-    
     
     UITabBarController *tabBarController=[[UITabBarController alloc]init];
     ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc]
-                                                       initWithGuestArray:_eventDetails[@"attending"][@"data"]
-                                                       venueLocation:_venueLocation];
+                                                       initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
     [statsController setTitle:@"Stats"];
     
     
@@ -546,6 +481,11 @@ static const float kLongitudeAsjustment = 0;
     
     [tabBarController setViewControllers:@[mapViewController, statsController]];
     [[self navigationController] pushViewController:tabBarController animated:YES];
+}
+
+-(void) promptGuestsForTracking: (id) sender {
+    [self loadMapView:nil];
+    [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
 }
 
 @end

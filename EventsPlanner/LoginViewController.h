@@ -4,8 +4,6 @@
 #import <CoreLocation/CoreLocation.h>
 #import <Parse/Parse.h>
 
-@interface LoginViewController : UIViewController <CLLocationManagerDelegate>
-
-@property PFObject *allUsers;
+@interface LoginViewController : UIViewController 
 
 @end

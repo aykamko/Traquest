@@ -15,8 +15,7 @@
 
 static const BOOL debugTracking = YES;
 
-@interface AppDelegate ()<CLLocationManagerDelegate>  {
-    CLLocationManager *locationManager;
+@interface AppDelegate ()  {
     NSTimer *_locationTrackingTimer;
 }
 
@@ -42,9 +41,7 @@ static const BOOL debugTracking = YES;
     [PFFacebookUtils initializeFacebook];
     
     // Parse Push setup
-//    [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
-    locationManager = [[CLLocationManager alloc] init];
-    [locationManager setDelegate:self];
+    [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
     
     // Google Maps
     [GMSServices provideAPIKey:@"AIzaSyCYlOnjDI2_s5WPCmeQJ7IMozreNxjyDww"];
@@ -80,7 +77,6 @@ static const BOOL debugTracking = YES;
 
 // Parse Push setup
 
-/*
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
     // Store the deviceToken in the current installation and save it to Parse.
@@ -93,24 +89,17 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
 }
-*/
 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [_locationTrackingTimer invalidate];
-    [locationManager startMonitoringSignificantLocationChanges];
+    [[ParseDataStore sharedStore] startTrackingLocation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    [locationManager stopMonitoringSignificantLocationChanges];
-    
-    [locationManager startUpdatingLocation];
-//    NSTimeInterval time = 15.0;
-//    _locationTrackingTimer = [NSTimer scheduledTimerWithTimeInterval:time target:self selector:@selector(updateLocation:)userInfo:nil repeats:YES];
-//    [_locationTrackingTimer fire];
-    
+    [[ParseDataStore sharedStore] stopTrackingLocation];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -124,17 +113,4 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void)applicationWillResignActive:(UIApplication *)application
 {
 }
-
-- (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations {
-    if(locations && [[ParseDataStore sharedStore] isLoggedIn]) {
-        PFGeoPoint *location = [PFGeoPoint geoPointWithLocation:[locations objectAtIndex:0]];
-        [[PFUser currentUser] setObject:location forKey:@"location"];
-        [[PFUser currentUser] saveInBackground];
-    }
-}
-
--(void) updateLocation: (NSTimer *) timer {
-    [locationManager stopUpdatingLocation];
-}
-
 @end
