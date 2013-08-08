@@ -46,8 +46,13 @@
 
 - (void)startTrackingMyLocation
 {
-    if (![self isLoggedIn]) {
+    BOOL locationDisabled = ![CLLocationManager locationServicesEnabled];
+    if (![self isLoggedIn]||locationDisabled) {
         //NSLog(@"Not logged in, can't track location");
+        return;
+    }
+    BOOL allowedEventsTracking = [[PFUser currentUser][@"trackingAllowed"] count]>0;
+    if (!allowedEventsTracking) {
         return;
     }
     
@@ -108,6 +113,8 @@
 {
     [[PFFacebookUtils session]closeAndClearTokenInformation];
     [PFUser logOut];
+    [_locationManager stopUpdatingLocation];
+    [_locationManager stopMonitoringSignificantLocationChanges];
     completionBlock();
 }
 

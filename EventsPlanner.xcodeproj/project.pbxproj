@@ -89,7 +89,7 @@
 		6065E46417ACA3C8003B947E /* eventCoverPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eventCoverPhoto.png; sourceTree = "<group>"; };
 		6065E46617AE1ADA003B947E /* ParseDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDataStore.h; sourceTree = "<group>"; };
 		6065E46717AE1ADA003B947E /* ParseDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDataStore.m; sourceTree = "<group>"; };
-		60AF6D4317B2C04600991386 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		60AF6D4317B2C04600991386 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		60AF6D4517B2C07100991386 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -168,8 +168,8 @@
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
 		90164D2217A8939800E5A564 /* firstBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = firstBackground.png; sourceTree = "<group>"; };
 		904838DD17A9AB1400042357 /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
-		909A265717B2F44500F67AB8 /* listFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "listFinal@2x.png"; sourceTree = "<group>"; };
-		909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MarkerFinal@2x.png"; sourceTree = "<group>"; };
+		909A265717B2F44500F67AB8 /* listFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "listFinal@2x.png"; path = "../listFinal@2x.png"; sourceTree = "<group>"; };
+		909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "MarkerFinal@2x.png"; path = "../MarkerFinal@2x.png"; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -227,9 +227,6 @@
 		7C418C5A17A082030084330C = {
 			isa = PBXGroup;
 			children = (
-				909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */,
-				909A265717B2F44500F67AB8 /* listFinal@2x.png */,
-				60AF6D4317B2C04600991386 /* Default-568h@2x.png */,
 				7C418C6C17A082030084330C /* EventsPlanner */,
 				7C418C8517A082030084330C /* EventsPlannerTests */,
 				7C418C6517A082030084330C /* Frameworks */,
@@ -359,6 +356,9 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */,
+				909A265717B2F44500F67AB8 /* listFinal@2x.png */,
+				60AF6D4317B2C04600991386 /* Default-568h@2x.png */,
 				6065E46417ACA3C8003B947E /* eventCoverPhoto.png */,
 				904838DD17A9AB1400042357 /* stickynote.png */,
 				90164D2217A8939800E5A564 /* firstBackground.png */,
@@ -634,8 +634,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv6";
