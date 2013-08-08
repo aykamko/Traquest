@@ -44,7 +44,7 @@
     return NO;
 }
 
-- (void)startTrackingMyLocation
+- (void)startTrackingMyLocationWithID:(NSString *) eventId
 {
     if (![self isLoggedIn]) {
         //NSLog(@"Not logged in, can't track location");
@@ -56,8 +56,16 @@
     [_locationManager setDelegate:self];
     [_locationManager startMonitoringSignificantLocationChanges];
     
-    [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+    [dic setValue:@"YES" forKey:eventId];
+    NSArray *arr = @[dic];
+    [[PFUser currentUser] setObject:arr forKey:@"trackingIsAllowed"];
     
+    [[PFUser currentUser] saveInBackground];
+}
+
+-(void) stopTrackingMyLocationWithID: (NSString *) eventId {
+    [[PFUser currentUser] removeObjectForKey:eventId];
     [[PFUser currentUser] saveInBackground];
 }
 
@@ -70,35 +78,26 @@
     PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
                                                   longitude:coordinate.longitude];
     
+
     
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
     [_userPastLocations addObject:geoPoint];
     [[PFUser currentUser] saveInBackground];
 }
 
--(void)fetchLocationDataForIds: (NSDictionary *) guestDetails
-{    
-    PFQuery *trackingQuery = [PFUser query];
-    [trackingQuery whereKey: @"fbID" containedIn:[guestDetails allKeys]];
-    [trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
-    
-    NSArray *users = [trackingQuery findObjects];
-    for (PFUser *friend in users) //for every user that allows tracking
-    {
-        NSString *friendID = friend[@"fbID"];
-        guestDetails[friendID][@"location"] = friend[@"location"];
-    }
-}
-
-- (void)fetchGeopointsForIds:(NSArray *)guestIds completion:(void (^)(NSDictionary *userLocations))completionBlock
+- (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock
 {
     PFQuery *geopointsQuery = [PFUser query];
+//    NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
     [geopointsQuery whereKey:@"fbID" containedIn:guestIds];
-    [geopointsQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
     [geopointsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
         for (PFUser *friend in objects) {
-            userLocations[friend[@"fbID"]] = friend[@"location"];
+            
+//            if (friend[@"trackingDict"][eventId])
+//            {
+            [userLocations setObject:friend[@"location"] forKey:friend[@"fbID"]];
+//            }
         }
         completionBlock([[NSDictionary alloc] initWithDictionary:userLocations]);
     }];
@@ -215,9 +214,38 @@
     }];
 }
 
--(void) notifyUsersWithCompletion:(void (^)(NSArray *))completionBlock
+-(void) notifyUsersWithCompletion:(NSString *)eventId guestArray:(NSArray*)guestArray completion:(void (^)())completionBlock
 {
-    //TODO: Parse push implementation
+    NSMutableArray *usersAttendingEvent = [[NSMutableArray alloc] init];
+    NSMutableArray *guestIds = [[NSMutableArray alloc] init];
+    
+    for (id obj in guestArray)
+    {
+        [guestIds addObject:obj[@"id"]];
+    }
+    PFQuery *userQuery  = [PFUser query];
+    if(!completionBlock)
+    {
+        [userQuery findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
+            for (PFUser *user in users)
+            {
+                [[PFInstallation currentInstallation] setObject:user[@"fbID"] forKey:@"user"];
+                [[PFInstallation currentInstallation] save];
+                
+                if ([guestIds containsObject:user[@"fbID"]])
+                {
+                    [usersAttendingEvent addObject:user];
+                }
+            }
+        }];
+    
+        PFQuery *installationQuery = [PFInstallation query];
+        [installationQuery whereKey:@"user" containedIn:usersAttendingEvent];
+        PFPush *trackingAllowedNotification = [[PFPush alloc] init];
+        [trackingAllowedNotification setQuery:installationQuery];
+        [trackingAllowedNotification setMessage:@"Do you want to let the Host see where you are?"];
+        [trackingAllowedNotification sendPushInBackground];
+   }
 }
 
 - (void)event:(NSString *)eventId fetchDetailsWithCompletion:(void (^)(NSDictionary *eventDetails))completionBlock

@@ -31,7 +31,7 @@
 
 @implementation ActiveEventMapViewController
 
-- (id)initWithGuestArray:(NSArray *)guestArray venueLocation:(CLLocationCoordinate2D)venueLocation
+- (id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation
 {
     self = [super init];
     if (self) {
@@ -53,7 +53,7 @@
             [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
         }
         
-        [[ParseDataStore sharedStore] fetchGeopointsForIds:[[self friendDetailsDict] allKeys]
+        [[ParseDataStore sharedStore] fetchGeopointsForIds:[[self friendDetailsDict] allKeys] eventId:eventId
                                                 completion:^(NSDictionary *userLocations) {
             for (NSString *fbId in [userLocations allKeys]) {
                 [self friendDetailsDict][fbId][@"geopoint"] = userLocations[fbId];

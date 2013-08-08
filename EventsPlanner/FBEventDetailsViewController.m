@@ -538,7 +538,6 @@ static const float kLongitudeAsjustment = 0;
     UITabBarController *tabBarController=[[UITabBarController alloc]init];
     ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc]
                                                        initWithGuestArray:_eventDetails[@"attending"][@"data"]
-                                                       venueLocation:_venueLocation];
     [statsController setTitle:@"Stats"];
     
     
