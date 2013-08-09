@@ -11,7 +11,7 @@
 #import <Parse/PFUser.h>
 
 extern NSString * const facebookID;
-extern NSString * const location;
+extern NSString * const locationKey;
 extern NSString * const trackingData;
 
 @interface ParseDataStore : NSObject

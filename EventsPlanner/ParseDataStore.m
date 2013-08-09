@@ -11,7 +11,7 @@
 
 #pragma mark Parse String Keys
 
-NSString * const location = @"location";
+NSString * const locationKey = @"location";
 NSString * const facebookID = @"fbID";
 NSString * const trackingData = @"trackingDictionary";
 
@@ -643,7 +643,6 @@ NSString * const trackingData = @"trackingDictionary";
             completionBlock();
         }
     }];
-        
 
 }
 
