@@ -55,7 +55,7 @@
 		7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9517A7058E006A6219 /* OpenGLES.framework */; };
 		7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6F2C0A17B45AD2004DE35A /* FBEventDetailsTableDelegate.m */; };
 		7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C78920B17A9E7B600610FB2 /* EventHeaderView.m */; };
-		7CA1428717B5C99400C8D02A /* AnnotationPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 90202D0117B5BE0C00C0CA66 /* AnnotationPoint.m */; };
+		7CA1428717B5C99400C8D02A /* FBIdAnnotationPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */; };
 		7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */; };
 		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
 		7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CCF244517AB6384009855B5 /* Parse.framework */; };
@@ -171,8 +171,8 @@
 		90130EBF17A31D450038BBFB /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsListController.h; sourceTree = "<group>"; };
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
 		90164D2217A8939800E5A564 /* firstBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = firstBackground.png; sourceTree = "<group>"; };
-		90202D0017B5BE0C00C0CA66 /* AnnotationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationPoint.h; sourceTree = "<group>"; };
-		90202D0117B5BE0C00C0CA66 /* AnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationPoint.m; sourceTree = "<group>"; };
+		90202D0017B5BE0C00C0CA66 /* FBIdAnnotationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBIdAnnotationPoint.h; sourceTree = "<group>"; };
+		90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIdAnnotationPoint.m; sourceTree = "<group>"; };
 		904838DD17A9AB1400042357 /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
@@ -353,8 +353,8 @@
 			children = (
 				768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */,
 				768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */,
-				90202D0017B5BE0C00C0CA66 /* AnnotationPoint.h */,
-				90202D0117B5BE0C00C0CA66 /* AnnotationPoint.m */,
+				90202D0017B5BE0C00C0CA66 /* FBIdAnnotationPoint.h */,
+				90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */,
 				90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */,
 				90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */,
 			);
@@ -548,7 +548,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7CA1428717B5C99400C8D02A /* AnnotationPoint.m in Sources */,
+				7CA1428717B5C99400C8D02A /* FBIdAnnotationPoint.m in Sources */,
 				7C4D20AB17B232AB0064C227 /* Toast+UIView.m in Sources */,
 				7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */,
 				7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */,

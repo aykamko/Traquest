@@ -8,8 +8,9 @@
 
 #import <MapKit/MapKit.h>
 
-@interface AnnotationPoint : MKPointAnnotation
+@interface FBIdAnnotationPoint : MKPointAnnotation
+
 @property (nonatomic,strong) NSString *fbId;
--(id)initWithFbId: (NSString *) fbId;
+- (id)initWithFbId:(NSString *) fbId;
 
 @end

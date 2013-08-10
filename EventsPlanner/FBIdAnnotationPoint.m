@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 FBU. All rights reserved.
 //
 
-#import "AnnotationPoint.h"
+#import "FBIdAnnotationPoint.h"
 
-@implementation AnnotationPoint
+@implementation FBIdAnnotationPoint
+
 -(id)initWithFbId: (NSString *) fbId
 {
     self = [super init];
@@ -18,10 +19,6 @@
     
     return self;
 }
-
-
-
-
 
 @end
 

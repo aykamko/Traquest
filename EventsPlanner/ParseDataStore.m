@@ -35,12 +35,15 @@ NSString * const trackingData = @"trackingDictionary";
 {
     self = [super init];
     if (self) {
+        
         _locationManager = [[CLLocationManager alloc] init];
         [_locationManager setDelegate:self];
         CLLocationDistance distance = 50.0;
         [_locationManager setDistanceFilter:distance];
         [_locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
+        
     }
+    
     return self;
 }
 
@@ -75,19 +78,15 @@ NSString * const trackingData = @"trackingDictionary";
         return;
     }
     
-    _locationManager = [[CLLocationManager alloc] init];
-    
-    [_locationManager setDelegate:self];
     [_locationManager startMonitoringSignificantLocationChanges];
     
-  //  [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
-    
-    [[PFUser currentUser] saveInBackground];
+//    [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
+//    [[PFUser currentUser] saveInBackground];
 }
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
-    CLLocation* location = [locations lastObject];
+    CLLocation *location = [locations lastObject];
     
     CLLocationCoordinate2D coordinate = [location coordinate];
     _currentLocation = location;
