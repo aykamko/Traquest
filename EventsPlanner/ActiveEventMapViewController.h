@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import <MapKit/MapKit.h>
 
-@interface ActiveEventMapViewController : UIViewController
+@interface ActiveEventMapViewController : UIViewController<CLLocationManagerDelegate, MKMapViewDelegate>
 
 - (id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D) venueLocation;
 

@@ -25,14 +25,14 @@ static const float kLongitudeAsjustment = 0;
 @interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate>
 {
     CLLocationCoordinate2D _venueLocation;
-    
+    UITabBarController *_tabBarController;
     UIScrollView *_scrollView;
     UIImageView *_coverImageView;
     UILabel *_titleLabel;
     UIView *_buttonHolder;
     UITableView *_detailsTable;
     FBEventDetailsTableDataSource *_dataSource;
-    __strong GMSMapView *_mapView;
+    __strong MKMapView *_mapView;
     
     __strong FBEventStatusTableController *_statusTableController;
     
@@ -53,7 +53,6 @@ static const float kLongitudeAsjustment = 0;
 
 @property (nonatomic, strong) FBEventDetailsTableDelegate *detailsTableDelegate;
 
-- (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate;
 - (void)loadMapView:(id)sender;
 
 - (void)changeRsvpStatus:(id)sender;
@@ -269,8 +268,8 @@ static const float kLongitudeAsjustment = 0;
     _spinner = nil;
     
     //initializing mapView and setting coordinates of location
-    _mapView = [[GMSMapView alloc]
-                initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
+    _mapView = [[MKMapView alloc]
+               initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
     
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
@@ -281,8 +280,13 @@ static const float kLongitudeAsjustment = 0;
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         _venueLocation = coordinate;
-        [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
-  
+       [_mapView setMapType:MKMapTypeStandard];
+        //[_mapView setCenterCoordinate:_venueLocation animated:NO];
+        MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
+        annot.coordinate = _venueLocation;
+        [self updateMapZoomLocation:_venueLocation];
+        [_mapView addAnnotation:annot];
+        
     } else {
         
         MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
@@ -290,7 +294,13 @@ static const float kLongitudeAsjustment = 0;
         [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
             CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
             _venueLocation = coordinate;
-            [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
+           // [_mapView setCenterCoordinate:_venueLocation];
+            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
+            annot.coordinate = _venueLocation;
+            [self updateMapZoomLocation:_venueLocation];
+
+            [_mapView addAnnotation:annot];
+
         }];
         
     }
@@ -420,29 +430,6 @@ static const float kLongitudeAsjustment = 0;
     [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [super viewDidAppear:animated];
-        UITableViewCell *cell = [_detailsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
-        NSLog(@"%@", cell.contentView.subviews);
-    });
-}
-
-- (void)moveMapCameraAndPlaceMarkerAtCoordinate:(CLLocationCoordinate2D)coordinate
-{
-        GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:coordinate.latitude + kLatitudeAdjustment
-                                                                longitude:coordinate.longitude + kLongitudeAsjustment
-                                                                     zoom:14];
-        [_mapView setCamera:camera];
-    
-        GMSMarker *marker = [[GMSMarker alloc] init];
-        marker.position = coordinate;
-        marker.map = _mapView;
-}
-
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     NSString *locationString = [alertView textFieldAtIndex:0].text;
@@ -451,15 +438,29 @@ static const float kLongitudeAsjustment = 0;
     [geocoder fetchGeocodeAddress:locationString completion:^(NSDictionary *geocode, NSError *error) {
         CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
         _venueLocation = coordinate;
-        [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
         if (!coordinate.latitude) {
             [alertView show];
+           // [_mapView setCenterCoordinate:_venueLocation];
+            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
+            annot.coordinate = _venueLocation;
+            [self updateMapZoomLocation:_venueLocation];
+
+            [_mapView addAnnotation:annot];
+
+
         }
         else {
-            [self moveMapCameraAndPlaceMarkerAtCoordinate:coordinate];
             [_eventDetails setValue:locationString forKey:@"location"];
             [_dataSource updateObject:locationString forKey:@"location"];
             [_detailsTable reloadData];
+            //[_mapView setCenterCoordinate:_venueLocation];
+            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
+            annot.coordinate = _venueLocation;
+            [self updateMapZoomLocation:_venueLocation];
+
+            [_mapView addAnnotation:annot];
+            
+
         }
     }];
 }
@@ -513,7 +514,6 @@ static const float kLongitudeAsjustment = 0;
 
 - (void)loadMapView:(id)sender
 {
-    [[ParseDataStore sharedStore] startTrackingMyLocationWithID:self.eventDetails[@"id"]];
     UIViewController *statsController = [[UIViewController alloc]init];
     statsController.view=[[UIView alloc]init];
     
@@ -521,7 +521,7 @@ static const float kLongitudeAsjustment = 0;
     _briefcase= [UIImage imageNamed:@"listFinal.png"];
     [_item setImage:_briefcase];
     
-    UITabBarController *tabBarController=[[UITabBarController alloc]init];
+    _tabBarController=[[UITabBarController alloc]init];
     ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc]
                                                        initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
     [statsController setTitle:@"Stats"];
@@ -529,13 +529,24 @@ static const float kLongitudeAsjustment = 0;
     
     [mapViewController setTitle:@"Map"];
     
-    [tabBarController setViewControllers:@[mapViewController, statsController]];
-    [[self navigationController] pushViewController:tabBarController animated:YES];
+    [_tabBarController setViewControllers:@[mapViewController, statsController]];
+    [[self navigationController] pushViewController:_tabBarController animated:YES];
 }
 
 -(void) promptGuestsForTracking: (id) sender {
     [self loadMapView:nil];
     [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
+}
+
+-(void)updateMapZoomLocation: (CLLocationCoordinate2D) location{
+    MKCoordinateRegion region;
+    region.center.latitude = location.latitude;
+    region.center.longitude = location.longitude;
+    region.span.latitudeDelta = 0.007;
+    region.span.longitudeDelta = 0.007;
+    [_mapView setRegion:region animated:NO];
+    
+    
 }
 
 @end

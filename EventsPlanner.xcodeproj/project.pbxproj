@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */ = {isa = PBXBuildFile; fileRef = 6065E46417ACA3C8003B947E /* eventCoverPhoto.png */; };
 		6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6065E46717AE1ADA003B947E /* ParseDataStore.m */; };
-		60AF6D4417B2C04600991386 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 60AF6D4317B2C04600991386 /* Default-568h@2x.png */; };
 		60AF6D4617B2C07100991386 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60AF6D4517B2C07100991386 /* StoreKit.framework */; };
 		60D520AD17A18EE9009CD642 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D520AC17A18EE9009CD642 /* Icon.png */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
@@ -56,6 +55,7 @@
 		7C553E9617A7058E006A6219 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C553E9517A7058E006A6219 /* OpenGLES.framework */; };
 		7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6F2C0A17B45AD2004DE35A /* FBEventDetailsTableDelegate.m */; };
 		7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C78920B17A9E7B600610FB2 /* EventHeaderView.m */; };
+		7CA1428717B5C99400C8D02A /* AnnotationPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 90202D0117B5BE0C00C0CA66 /* AnnotationPoint.m */; };
 		7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */; };
 		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
 		7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CCF244517AB6384009855B5 /* Parse.framework */; };
@@ -73,8 +73,6 @@
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
 		90164D2317A8939800E5A564 /* firstBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 90164D2217A8939800E5A564 /* firstBackground.png */; };
 		904838DE17A9AB1400042357 /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 904838DD17A9AB1400042357 /* stickynote.png */; };
-		909A265817B2F44500F67AB8 /* listFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A265717B2F44500F67AB8 /* listFinal@2x.png */; };
-		909A265A17B2F4F600F67AB8 /* MarkerFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
 
@@ -92,7 +90,6 @@
 		6065E46417ACA3C8003B947E /* eventCoverPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eventCoverPhoto.png; sourceTree = "<group>"; };
 		6065E46617AE1ADA003B947E /* ParseDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDataStore.h; sourceTree = "<group>"; };
 		6065E46717AE1ADA003B947E /* ParseDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDataStore.m; sourceTree = "<group>"; };
-		60AF6D4317B2C04600991386 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		60AF6D4517B2C07100991386 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -174,9 +171,9 @@
 		90130EBF17A31D450038BBFB /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsListController.h; sourceTree = "<group>"; };
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
 		90164D2217A8939800E5A564 /* firstBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = firstBackground.png; sourceTree = "<group>"; };
+		90202D0017B5BE0C00C0CA66 /* AnnotationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationPoint.h; sourceTree = "<group>"; };
+		90202D0117B5BE0C00C0CA66 /* AnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationPoint.m; sourceTree = "<group>"; };
 		904838DD17A9AB1400042357 /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
-		909A265717B2F44500F67AB8 /* listFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "listFinal@2x.png"; path = "../listFinal@2x.png"; sourceTree = "<group>"; };
-		909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "MarkerFinal@2x.png"; path = "../MarkerFinal@2x.png"; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -356,6 +353,8 @@
 			children = (
 				768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */,
 				768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */,
+				90202D0017B5BE0C00C0CA66 /* AnnotationPoint.h */,
+				90202D0117B5BE0C00C0CA66 /* AnnotationPoint.m */,
 				90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */,
 				90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */,
 			);
@@ -367,8 +366,6 @@
 			children = (
 				7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */,
 				7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */,
-				909A265917B2F4F600F67AB8 /* MarkerFinal@2x.png */,
-				909A265717B2F44500F67AB8 /* listFinal@2x.png */,
 				6065E46417ACA3C8003B947E /* eventCoverPhoto.png */,
 				904838DD17A9AB1400042357 /* stickynote.png */,
 				90164D2217A8939800E5A564 /* firstBackground.png */,
@@ -486,7 +483,6 @@
 				ORGANIZATIONNAME = FBU;
 				TargetAttributes = {
 					7C418C6217A082030084330C = {
-						DevelopmentTeam = 32LFZTM64W;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -521,7 +517,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				909A265817B2F44500F67AB8 /* listFinal@2x.png in Resources */,
 				7CE05FCF17B33BDB004BF47C /* tracking-button@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				904838DE17A9AB1400042357 /* stickynote.png in Resources */,
@@ -531,12 +526,10 @@
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
 				90164D2317A8939800E5A564 /* firstBackground.png in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
-				909A265A17B2F4F600F67AB8 /* MarkerFinal@2x.png in Resources */,
 				7CE05FCE17B33BDB004BF47C /* tracking-button-pressed@2x.png in Resources */,
 				6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
-				60AF6D4417B2C04600991386 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,6 +548,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CA1428717B5C99400C8D02A /* AnnotationPoint.m in Sources */,
 				7C4D20AB17B232AB0064C227 /* Toast+UIView.m in Sources */,
 				7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */,
 				7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */,

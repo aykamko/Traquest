@@ -69,6 +69,65 @@ NSString * const trackingData = @"trackingDictionary";
     return NO;
 }
 
+- (void)startTrackingMyLocation
+{
+    if (![self isLoggedIn]) {
+        return;
+    }
+    
+    _locationManager = [[CLLocationManager alloc] init];
+    
+    [_locationManager setDelegate:self];
+    [_locationManager startMonitoringSignificantLocationChanges];
+    
+  //  [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
+    
+    [[PFUser currentUser] saveInBackground];
+}
+
+- (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
+{
+    CLLocation* location = [locations lastObject];
+    
+    CLLocationCoordinate2D coordinate = [location coordinate];
+    _currentLocation = location;
+    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
+                                                  longitude:coordinate.longitude];
+    
+    
+    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
+    [_userPastLocations addObject:geoPoint];
+    [[PFUser currentUser] saveInBackground];
+}
+
+-(void)fetchLocationDataForIds: (NSDictionary *) guestDetails
+{    
+    PFQuery *trackingQuery = [PFUser query];
+    [trackingQuery whereKey: @"fbID" containedIn:[guestDetails allKeys]];
+    //[trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
+    
+    NSArray *users = [trackingQuery findObjects];
+    for (PFUser *friend in users) //for every user that allows tracking
+    {
+        NSString *friendID = friend[@"fbID"];
+        guestDetails[friendID][@"location"] = friend[@"location"];
+    }
+}
+
+- (void)fetchGeopointsForIds:(NSArray *)guestIds completion:(void (^)(NSDictionary *userLocations))completionBlock
+{
+    PFQuery *geopointsQuery = [PFUser query];
+    [geopointsQuery whereKey:@"fbID" containedIn:guestIds];
+    //[geopointsQuery whereKey:@"Allowed" equalTo:@"YES"];
+    [geopointsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
+        for (PFUser *friend in objects) {
+            userLocations[friend[@"fbID"]] = friend[@"location"];
+        }
+        completionBlock([[NSDictionary alloc] initWithDictionary:userLocations]);
+    }];
+}
+
 - (void)logInWithCompletion:(void (^)())completionBlock
 {
     
@@ -182,22 +241,6 @@ NSString * const trackingData = @"trackingDictionary";
     [[PFUser currentUser] saveInBackground];
 }
 
-- (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
-{
-    CLLocation* location = [locations lastObject];
-    
-    CLLocationCoordinate2D coordinate = [location coordinate];
-    _currentLocation = location;
-    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-                                                  longitude:coordinate.longitude];
-    
-    
-    
-    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
-    [_userPastLocations addObject:geoPoint];
-    [[PFUser currentUser] saveInBackground];
-}
-
 #pragma mark Facebook Request
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
 {
@@ -276,7 +319,7 @@ NSString * const trackingData = @"trackingDictionary";
 
 - (void)fetchEventDetailsWithEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
-    NSString *graphPath = [NSString stringWithFormat:@"%@?fields=location,description,venue,owner,privacy,attending.fields(id,name,picture)", eventId];
+    NSString *graphPath = [NSString stringWithFormat:@"%@?fields=location,description,venue,owner,privacy,attending.fields(id,name,picture.height(100).width(100))", eventId];
     FBRequest *request = [FBRequest requestForGraphPath:graphPath];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
