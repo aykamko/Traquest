@@ -18,6 +18,9 @@
 		768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */; };
 		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
 		7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */; };
+		7C162C8D17BAB8D00043CAA9 /* NSDate+ExtraStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */; };
+		7C2CFFC817B9B386003A2C8F /* CreateEventPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */; };
+		7C2CFFCB17B9C8F4003A2C8F /* CreateEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2CFFCA17B9C8F4003A2C8F /* CreateEventModel.m */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
 		7C418C6917A082030084330C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6817A082030084330C /* CoreGraphics.framework */; };
 		7C418C6B17A082030084330C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6A17A082030084330C /* UIKit.framework */; };
@@ -56,6 +59,8 @@
 		7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6F2C0A17B45AD2004DE35A /* FBEventDetailsTableDelegate.m */; };
 		7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C78920B17A9E7B600610FB2 /* EventHeaderView.m */; };
 		7CA1428717B5C99400C8D02A /* FBIdAnnotationPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */; };
+		7CA1428B17B5FC2300C8D02A /* CreateEventTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CA1428A17B5FC2300C8D02A /* CreateEventTableViewDataSource.m */; };
+		7CA1429117B6D79A00C8D02A /* CreateEventController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CA1429017B6D79A00C8D02A /* CreateEventController.m */; };
 		7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */; };
 		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
 		7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CCF244517AB6384009855B5 /* Parse.framework */; };
@@ -67,6 +72,10 @@
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
 		7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */; };
+		7CE691E317B6E34700D3D8AB /* CreateEventTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */; };
+		7CE691E917B6EE2C00D3D8AB /* GraphicsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E817B6EE2C00D3D8AB /* GraphicsConstants.m */; };
+		7CE691EE17B74F5700D3D8AB /* CreateEventPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691ED17B74F5700D3D8AB /* CreateEventPrivacyViewController.m */; };
+		7CE691F117B82BD300D3D8AB /* CreateEventFriendPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691F017B82BD300D3D8AB /* CreateEventFriendPickerViewController.m */; };
 		7CED113017B036CE005B533D /* FBEventStatusTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED112F17B036CE005B533D /* FBEventStatusTableController.m */; };
 		7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
@@ -102,6 +111,12 @@
 		768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
 		7698B93117AAE8AB00D351BF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		7C162C8B17BAB8D00043CAA9 /* NSDate+ExtraStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+ExtraStuff.h"; sourceTree = "<group>"; };
+		7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+ExtraStuff.m"; sourceTree = "<group>"; };
+		7C2CFFC617B9B386003A2C8F /* CreateEventPlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventPlacePickerViewController.h; sourceTree = "<group>"; };
+		7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventPlacePickerViewController.m; sourceTree = "<group>"; };
+		7C2CFFC917B9C8F4003A2C8F /* CreateEventModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventModel.h; sourceTree = "<group>"; };
+		7C2CFFCA17B9C8F4003A2C8F /* CreateEventModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventModel.m; sourceTree = "<group>"; };
 		7C418C6317A082030084330C /* EventsPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C418C6617A082030084330C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7C418C6817A082030084330C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -147,6 +162,10 @@
 		7C6F2C0A17B45AD2004DE35A /* FBEventDetailsTableDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsTableDelegate.m; sourceTree = "<group>"; };
 		7C78920A17A9E7B600610FB2 /* EventHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventHeaderView.h; sourceTree = "<group>"; };
 		7C78920B17A9E7B600610FB2 /* EventHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventHeaderView.m; sourceTree = "<group>"; };
+		7CA1428917B5FC2300C8D02A /* CreateEventTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventTableViewDataSource.h; sourceTree = "<group>"; };
+		7CA1428A17B5FC2300C8D02A /* CreateEventTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventTableViewDataSource.m; sourceTree = "<group>"; };
+		7CA1428F17B6D79A00C8D02A /* CreateEventController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventController.h; sourceTree = "<group>"; };
+		7CA1429017B6D79A00C8D02A /* CreateEventController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventController.m; sourceTree = "<group>"; };
 		7CBBD6FE17AB851700ED9DAB /* EventCellContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCellContentView.h; sourceTree = "<group>"; };
 		7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCellContentView.m; sourceTree = "<group>"; };
 		7CBBD70117AB852800ED9DAB /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -162,6 +181,14 @@
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
 		7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small@2x.png"; sourceTree = "<group>"; };
+		7CE691E117B6E34700D3D8AB /* CreateEventTimePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventTimePickerViewController.h; sourceTree = "<group>"; };
+		7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventTimePickerViewController.m; sourceTree = "<group>"; };
+		7CE691E717B6EE2C00D3D8AB /* GraphicsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicsConstants.h; sourceTree = "<group>"; };
+		7CE691E817B6EE2C00D3D8AB /* GraphicsConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphicsConstants.m; sourceTree = "<group>"; };
+		7CE691EC17B74F5700D3D8AB /* CreateEventPrivacyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventPrivacyViewController.h; sourceTree = "<group>"; };
+		7CE691ED17B74F5700D3D8AB /* CreateEventPrivacyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventPrivacyViewController.m; sourceTree = "<group>"; };
+		7CE691EF17B82BD300D3D8AB /* CreateEventFriendPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventFriendPickerViewController.h; sourceTree = "<group>"; };
+		7CE691F017B82BD300D3D8AB /* CreateEventFriendPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventFriendPickerViewController.m; sourceTree = "<group>"; };
 		7CED112E17B036CE005B533D /* FBEventStatusTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventStatusTableController.h; sourceTree = "<group>"; };
 		7CED112F17B036CE005B533D /* FBEventStatusTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventStatusTableController.m; sourceTree = "<group>"; };
 		7CED113117B03A6D005B533D /* FBEventStatusViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventStatusViewDataSource.h; sourceTree = "<group>"; };
@@ -288,8 +315,10 @@
 		7C418C6C17A082030084330C /* EventsPlanner */ = {
 			isa = PBXGroup;
 			children = (
+				7CE691E617B6EE0C00D3D8AB /* Constants */,
 				7CBBD71017AB987B00ED9DAB /* Categories */,
 				7CBBD70917AB860F00ED9DAB /* App Delegate */,
+				7CA1428817B5FA0900C8D02A /* New Event View Stuff */,
 				7CBBD70817AB85D600ED9DAB /* Event Table View Stuff */,
 				7CBBD70517AB857400ED9DAB /* Detail View Stuff */,
 				7CBBD70B17AB863C00ED9DAB /* Login View Stuff */,
@@ -328,6 +357,27 @@
 				7C418C8817A082030084330C /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7CA1428817B5FA0900C8D02A /* New Event View Stuff */ = {
+			isa = PBXGroup;
+			children = (
+				7CA1428F17B6D79A00C8D02A /* CreateEventController.h */,
+				7CA1429017B6D79A00C8D02A /* CreateEventController.m */,
+				7C2CFFC917B9C8F4003A2C8F /* CreateEventModel.h */,
+				7C2CFFCA17B9C8F4003A2C8F /* CreateEventModel.m */,
+				7CA1428917B5FC2300C8D02A /* CreateEventTableViewDataSource.h */,
+				7CA1428A17B5FC2300C8D02A /* CreateEventTableViewDataSource.m */,
+				7CE691EF17B82BD300D3D8AB /* CreateEventFriendPickerViewController.h */,
+				7CE691F017B82BD300D3D8AB /* CreateEventFriendPickerViewController.m */,
+				7CE691E117B6E34700D3D8AB /* CreateEventTimePickerViewController.h */,
+				7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */,
+				7C2CFFC617B9B386003A2C8F /* CreateEventPlacePickerViewController.h */,
+				7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */,
+				7CE691EC17B74F5700D3D8AB /* CreateEventPrivacyViewController.h */,
+				7CE691ED17B74F5700D3D8AB /* CreateEventPrivacyViewController.m */,
+			);
+			name = "New Event View Stuff";
 			sourceTree = "<group>";
 		};
 		7CBBD70517AB857400ED9DAB /* Detail View Stuff */ = {
@@ -431,8 +481,19 @@
 				7C4D20AA17B232AB0064C227 /* Toast+UIView.m */,
 				7CBBD70D17AB987700ED9DAB /* UIImage+ImageCrop.h */,
 				7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */,
+				7C162C8B17BAB8D00043CAA9 /* NSDate+ExtraStuff.h */,
+				7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */,
 			);
 			name = Categories;
+			sourceTree = "<group>";
+		};
+		7CE691E617B6EE0C00D3D8AB /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				7CE691E717B6EE2C00D3D8AB /* GraphicsConstants.h */,
+				7CE691E817B6EE2C00D3D8AB /* GraphicsConstants.m */,
+			);
+			name = Constants;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -445,6 +506,7 @@
 				7C418C5F17A082030084330C /* Sources */,
 				7C418C6017A082030084330C /* Frameworks */,
 				7C418C6117A082030084330C /* Resources */,
+				7CB8C14817B6DB56002C9684 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -543,20 +605,43 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		7CB8C14817B6DB56002C9684 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "KEYWORDS=\"TODO:|FIXME:|\\?\\?\\?:|\\!\\!\\!:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | perl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		7C418C5F17A082030084330C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C2CFFC817B9B386003A2C8F /* CreateEventPlacePickerViewController.m in Sources */,
 				7CA1428717B5C99400C8D02A /* FBIdAnnotationPoint.m in Sources */,
 				7C4D20AB17B232AB0064C227 /* Toast+UIView.m in Sources */,
 				7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */,
+				7CE691EE17B74F5700D3D8AB /* CreateEventPrivacyViewController.m in Sources */,
 				7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */,
+				7CE691E917B6EE2C00D3D8AB /* GraphicsConstants.m in Sources */,
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
 				7CCF244917AB657C009855B5 /* EventCell.m in Sources */,
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
+				7C162C8D17BAB8D00043CAA9 /* NSDate+ExtraStuff.m in Sources */,
 				60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */,
 				7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */,
+				7CA1428B17B5FC2300C8D02A /* CreateEventTableViewDataSource.m in Sources */,
+				7CE691E317B6E34700D3D8AB /* CreateEventTimePickerViewController.m in Sources */,
 				60E093C717AC5211007CE1C8 /* FBEventDetailsTableDataSource.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
 				768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */,
@@ -564,7 +649,10 @@
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */,
+				7CA1429117B6D79A00C8D02A /* CreateEventController.m in Sources */,
+				7CE691F117B82BD300D3D8AB /* CreateEventFriendPickerViewController.m in Sources */,
 				7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */,
+				7C2CFFCB17B9C8F4003A2C8F /* CreateEventModel.m in Sources */,
 				7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */,
 				7CED113017B036CE005B533D /* FBEventStatusTableController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
@@ -625,8 +713,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ashwin Murthy (LZ7K9T2379)";
-				"CODE_SIGN_IDENTITY[sdk=iphonesimulator6.0]" = "iPhone Developer: Ashwin Murthy (LZ7K9T2379)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphonesimulator6.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -644,6 +732,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 			};
@@ -665,8 +754,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ashwin Murthy (LZ7K9T2379)";
-				"CODE_SIGN_IDENTITY[sdk=iphonesimulator6.0]" = "iPhone Developer: Ashwin Murthy (LZ7K9T2379)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphonesimulator6.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -678,6 +767,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;

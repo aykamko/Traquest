@@ -59,10 +59,12 @@ static const BOOL debugTracking = YES;
         
         [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvent, NSArray *noReplyEvents) {
             
-            _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttendingEvent];
-            [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
+            _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents
+                                                                         guestEvents:guestEvents
+                                                                       noReplyEvents:noReplyEvents
+                                                                      maybeAttending:maybeAttendingEvent];
             
-            [[[_eventsListController presentableViewController] navigationItem] setRightBarButtonItem:_eventsListController.logoutButton];
+            [[self.eventsListController presentableViewController] navigationItem].hidesBackButton = YES;
             
             UINavigationController *navController = (UINavigationController *)self.window.rootViewController;
             [navController pushViewController:[_eventsListController presentableViewController] animated:YES];
@@ -91,7 +93,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
 
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [PFPush handlePush:userInfo];
+    if (application.applicationState != UIApplicationStateActive) {
+        [PFPush handlePush:userInfo];
+    } else {
+        UIAlertView *pushAlert = [[UIAlertView alloc] initWithTitle:@"Title"
+                                                            message:@"Message"
+                                                           delegate:self
+                                                  cancelButtonTitle:@"No"
+                                                  otherButtonTitles:@"Yes", @"Anonomously", nil];
+        [pushAlert show];
+    }
 }
 
 
@@ -106,15 +117,16 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[ParseDataStore sharedStore] stopTrackingMyLocation];
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-}
+//- (void)applicationWillEnterForeground:(UIApplication *)application
+//{
+//}
+//
+//- (void)applicationWillTerminate:(UIApplication *)application
+//{
+//}
+//
+//- (void)applicationWillResignActive:(UIApplication *)application
+//{
+//}
 
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-}
-
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-}
 @end

@@ -22,12 +22,13 @@ NSString * const trackingData = @"trackingDictionary";
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) NSMutableArray *allAttendingFriends;
 
+@property (copy, nonatomic) void (^locationCompletionBlock)(CLLocation *location);
 
 @end
 
 @implementation ParseDataStore
 
-#pragma mark -Class Methods
+#pragma mark - Class Methods
 
 - (id)init
 {
@@ -74,6 +75,11 @@ NSString * const trackingData = @"trackingDictionary";
 {
     CLLocation *location = [locations lastObject];
     
+    if (self.locationCompletionBlock) {
+        [self.locationManager stopUpdatingLocation];
+        self.locationCompletionBlock(location);
+    }
+    
     CLLocationCoordinate2D coordinate = [location coordinate];
     _currentLocation = location;
     PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
@@ -116,7 +122,6 @@ NSString * const trackingData = @"trackingDictionary";
 
 - (void)logInWithCompletion:(void (^)())completionBlock
 {
-    
     // Set permissions required from the facebook user account
     NSArray *permissionsArray = @[@"user_events", @"friends_events", @"create_event", @"rsvp_event"];
     
@@ -194,6 +199,19 @@ NSString * const trackingData = @"trackingDictionary";
 
 #pragma mark Location tracking
 
+- (void)fetchLocationWithCompletion:(void (^)(CLLocation *))completionBlock
+{
+    
+    if (!completionBlock) {
+        NSLog(@"No completion block for fetching location!");
+        return;
+    }
+    
+    self.locationCompletionBlock = completionBlock;
+    [self.locationManager startUpdatingLocation];
+    
+}
+
 - (void)startTrackingMyLocation
 {
     if (![self isLoggedIn]) {
@@ -211,7 +229,8 @@ NSString * const trackingData = @"trackingDictionary";
     [_locationManager stopMonitoringSignificantLocationChanges];
 }
 
-- (void) allowTrackingForEvent: (NSString *) eventId identity: (BOOL) identity {
+- (void)allowTrackingForEvent:(NSString *)eventId identity:(BOOL)identity
+{
     NSData *oldData = [[PFUser currentUser] objectForKey:trackingData];
     NSMutableDictionary *trackingDictionary = [NSJSONSerialization JSONObjectWithData:oldData options:NSJSONReadingMutableContainers error:nil];
     
@@ -435,6 +454,47 @@ NSString * const trackingData = @"trackingDictionary";
     
 }
 
+- (void)fetchPartialEventDetailsForNewEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
+{
+    NSString *graphPath = [NSString stringWithFormat:
+                                  @"%@?fields=id,name,admins.fields(id,name),cover,start_time", eventId];
+    
+    FBRequest *request = [FBRequest requestForGraphPath:graphPath];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        if (error) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error getting event details!"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            
+        } else {
+            
+            CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
+            UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
+            UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
+                                                        size:defaultCoverSize];
+            UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
+            UIImage *gradientImage = [UIImage
+                                      imageWithGradient:defaultCoverSize
+                                      withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+                                      withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+                                      vertical:NO];
+            result[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
+            
+            
+            if (completionBlock) {
+                completionBlock((NSDictionary *)result);
+            }
+            
+        }
+        
+    }];
+}
+
 #pragma mark Parse Request
 
 - (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock
@@ -527,6 +587,34 @@ NSString * const trackingData = @"trackingDictionary";
     }];
 }
 
+
+- (void)createEventWithParameters:(NSDictionary *)eventParameters
+                       completion:(void (^)(NSString *newEventId))completionBlock;
+{
+    NSString *graphPath = [NSString stringWithFormat:@"%@/events", self.myId];
+    FBRequest *newEventRequest = [FBRequest requestWithGraphPath:graphPath
+                                                      parameters:eventParameters
+                                                      HTTPMethod:@"POST"];
+    [newEventRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        if (error) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            
+        } else {
+            
+            if (completionBlock) {
+                completionBlock((NSString *)result[@"id"]);
+            }
+            
+        }
+    }];
+}
 
 #pragma mark Push Notifications
 -(void) notifyUsersWithCompletion:(NSString *)eventId guestArray:(NSArray*)guestArray completion:(void (^)())completionBlock

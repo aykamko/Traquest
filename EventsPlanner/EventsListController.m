@@ -11,6 +11,7 @@
 #import "FBEventDetailsViewController.h"
 #import "EventHeaderView.h"
 #import "ParseDataStore.h"
+#import "CreateEventController.h"
 
 @interface EventsListController() <UITableViewDelegate>
 
@@ -26,19 +27,27 @@
 @property (nonatomic, strong) EventsTableViewDataSource *tableMaybeViewDataSource;
 @property (nonatomic, strong) EventsTableViewDataSource *tableNoReplyViewDataSource;
 
-
 @property (nonatomic, strong) UITabBarController *tabBarController;
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
 @property (nonatomic, strong) NSArray *noReplyEvents;
 @property (nonatomic, strong) NSArray *maybeAttending;
 @property (nonatomic, strong) NSArray *friendsArray;
-@property (nonatomic,strong) FBEventDetailsViewController *eventDetailsViewController;
+@property (nonatomic, strong) FBEventDetailsViewController *eventDetailsViewController;
+@property (nonatomic, strong) CreateEventController *createEventController;
+
+@property (nonatomic, strong) UIBarButtonItem *logoutButton;
+
+- (IBAction)logUserOut:(id)sender;
+
 @end
 
 @implementation EventsListController
 
-- (id)initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttending
+- (id)initWithHostEvents:(NSArray *)hostEvents
+             guestEvents:(NSArray *)guestEvents
+           noReplyEvents:(NSArray *)noReplyEvents
+          maybeAttending:(NSArray *)maybeAttending
 {
     self = [super init];
     if (self) {
@@ -57,8 +66,6 @@
         
         UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
         footer.backgroundColor = [UIColor clearColor];
-
-
         
         _tableHostViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableHostViewController tableView] setDelegate:self];
@@ -98,11 +105,20 @@
       
         [_tabBarController setViewControllers:@[_tableHostViewController,_tableGuestViewController,_tableMaybeViewController,_tableNoReplyViewController]];
 
-
-        _logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
-                                                         style:UIBarButtonItemStylePlain
-                                                        target:self
-                                                        action:@selector(logUserOut:)];
+        UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+                                                                         style:UIBarButtonItemStyleBordered
+                                                                        target:self
+                                                                        action:@selector(logUserOut:)];
+        self.tabBarController.navigationItem.leftBarButtonItem = logoutButton;
+        
+        UIBarButtonItem *newEventButton = [[UIBarButtonItem alloc] initWithTitle:@"+"
+                                                                           style:UIBarButtonItemStyleBordered
+                                                                          target:self
+                                                                          action:@selector(makeNewEvent:)];
+        self.tabBarController.navigationItem.rightBarButtonItem = newEventButton;
+        
+        self.tabBarController.navigationItem.hidesBackButton = YES;
+        self.tableViewController.navigationController.navigationBar.translucent = NO;
         
     }
     return self;
@@ -111,7 +127,7 @@
 - (IBAction)logUserOut:(id)sender{
     
   [[ParseDataStore sharedStore]logOutWithCompletion:^{
-    [self.tableViewController.navigationController popViewControllerAnimated:YES];
+    [self.tabBarController.navigationController popViewControllerAnimated:YES];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another user, please logout of Facebook in your settings."
                                                     message:Nil
@@ -122,8 +138,32 @@
   }];
     
 }
-   
 
+- (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost hasReplied:(BOOL)replied
+{
+    self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
+                                                                                            isHost:isHost
+                                                                                        hasReplied:replied];
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                   style:UIBarButtonItemStyleBordered
+                                                                  target:nil
+                                                                  action:nil];
+    [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
+    
+    [self.tabBarController.navigationController pushViewController:_eventDetailsViewController animated:YES];
+}
+
+- (IBAction)makeNewEvent:(id)sender
+{
+    self.createEventController = [[CreateEventController alloc] initWithListController:self];
+    
+    //TODO: set navigation bar translucency from within CreateEventController
+    self.tableViewController.navigationController.navigationBar.translucent = NO;
+    [self.tableViewController.navigationController
+             pushViewController:self.createEventController.presentableViewController
+             animated:YES];
+}
 
 - (id)presentableViewController
 {
@@ -156,63 +196,30 @@
         eventsArray = _hostEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
-        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
-                                                                                          isHost:YES hasReplied:YES];
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                       style:UIBarButtonItemStyleBordered
-                                                                      target:nil
-                                                                      action:nil];
-        [_tableHostViewController.navigationItem setBackBarButtonItem:backButton];
-        [[_tableHostViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isHost:YES hasReplied:YES];
         
     } else if ([_tabBarController selectedIndex] == 1) {
         
         eventsArray = _guestEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
-        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
-                                                                                          isHost:NO hasReplied:YES];
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                       style:UIBarButtonItemStyleBordered
-                                                                      target:nil
-                                                                      action:nil];
-        [_tableGuestViewController.navigationItem setBackBarButtonItem:backButton];
-        [[_tableGuestViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isHost:NO hasReplied:YES];
+        
     } else if ([_tabBarController selectedIndex] == 2) {
         
         eventsArray = _maybeAttending;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
-        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
-                                                                                            isHost:NO hasReplied:YES];
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                       style:UIBarButtonItemStyleBordered
-                                                                      target:nil
-                                                                      action:nil];
-        [_tableMaybeViewController.navigationItem setBackBarButtonItem:backButton];
-        [[_tableMaybeViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
-    }
-    else if ([_tabBarController selectedIndex]== 3) {
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isHost:NO hasReplied:YES];
+        
+    } else if ([_tabBarController selectedIndex] == 3) {
         
         eventsArray = _noReplyEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
-        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
-                                                                                            isHost:NO hasReplied:NO];
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                       style:UIBarButtonItemStyleBordered
-                                                                      target:nil
-                                                                      action:nil];
-        [_tableNoReplyViewController.navigationItem setBackBarButtonItem:backButton];
-        [[_tableNoReplyViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isHost:NO hasReplied:NO];
     }
     
-//    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-//                                                                   style:UIBarButtonItemStyleBordered
-//                                                                  target:nil
-//                                                                  action:nil];
-//    [_tableViewController.navigationItem setBackBarButtonItem:backButton];
-//    [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
 }
 
 @end

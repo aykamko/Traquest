@@ -80,12 +80,13 @@
 {
     [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvents, NSArray *noReplyEvents) {
         
-        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttendingEvents];
+        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents
+                                                                     guestEvents:guestEvents
+                                                                   noReplyEvents:noReplyEvents
+                                                                  maybeAttending:maybeAttendingEvents];
         
         
         [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
-        
-        [[[_eventsListController presentableViewController] navigationItem] setRightBarButtonItem:_eventsListController.logoutButton];
 
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];

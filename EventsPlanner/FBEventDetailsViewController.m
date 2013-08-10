@@ -476,6 +476,12 @@ static const float kLongitudeAsjustment = 0;
 {
     
     UIImage *baseEventImage = _eventDetails[@"cover"];
+    
+    if (!baseEventImage) {
+        _eventDetails[@"cover"] = [UIImage imageNamed:@"eventCoverPhoto.png"];
+        baseEventImage = _eventDetails[@"cover"];
+    }
+    
     UIImage *scaledImage = [UIImage imageWithImage:baseEventImage
                                      scaledToWidth:[_dimensionsDict[@"screenWidth"] floatValue]];
     UIImage *croppedScaleImage = [UIImage imageWithImage:scaledImage
@@ -602,11 +608,14 @@ static const float kLongitudeAsjustment = 0;
     ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc]
                                                        initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
     [statsController setTitle:@"Stats"];
-    
-    
     [mapViewController setTitle:@"Map"];
     
     [_tabBarController setViewControllers:@[mapViewController, statsController]];
+    UIBarButtonItem *backToDetailsButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
+                                                                            style:UIBarButtonItemStyleBordered
+                                                                           target:nil
+                                                                           action:nil];
+    [self.navigationItem setBackBarButtonItem:backToDetailsButton];
     [[self navigationController] pushViewController:_tabBarController animated:YES];
 }
 
