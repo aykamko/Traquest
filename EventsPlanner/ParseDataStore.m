@@ -106,12 +106,13 @@ NSString * const trackingData = @"trackingDictionary";
     [trackingQuery whereKey: @"fbID" containedIn:[guestDetails allKeys]];
     //[trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
     
-    NSArray *users = [trackingQuery findObjects];
-    for (PFUser *friend in users) //for every user that allows tracking
-    {
-        NSString *friendID = friend[@"fbID"];
-        guestDetails[friendID][@"location"] = friend[@"location"];
-    }
+    [trackingQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        for (PFUser *friend in objects) //for every user that allows tracking
+        {
+            NSString *friendID = friend[@"fbID"];
+            guestDetails[friendID][@"location"] = friend[@"location"];
+        }
+    }];;
 }
 
 - (void)fetchGeopointsForIds:(NSArray *)guestIds completion:(void (^)(NSDictionary *userLocations))completionBlock
@@ -453,8 +454,7 @@ NSString * const trackingData = @"trackingDictionary";
             for (PFUser *user in users)
             {
                 [[PFInstallation currentInstallation] setObject:user forKey:@"user"];
-                [[PFInstallation currentInstallation] save];
-                
+                [[PFInstallation currentInstallation] saveInBackground];
 
             }
             
