@@ -26,10 +26,10 @@ extern NSString * const trackingData;
 - (void)logOutWithCompletion:(void (^)())completionBlock;
 
 
-- (void)startTrackingLocation;
--(void) stopTrackingLocation;
-- (void) allowTrackingForEvent: (NSString *) eventId identity: (BOOL) identity;
--(void) disallowTrackingForEvent: (NSString *) eventId;
+- (void)startTrackingMyLocation;
+- (void)stopTrackingMyLocation;
+- (void)allowTrackingForEvent: (NSString *) eventId identity: (BOOL) identity;
+- (void)disallowTrackingForEvent: (NSString *) eventId;
 
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock;
 - (void)fetchEventDetailsWithEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;

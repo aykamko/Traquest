@@ -15,8 +15,6 @@ NSString * const location = @"location";
 NSString * const facebookID = @"fbID";
 NSString * const trackingData = @"trackingDictionary";
 
-// = facebookID;
-
 @interface ParseDataStore () <CLLocationManagerDelegate>
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
@@ -70,18 +68,6 @@ NSString * const trackingData = @"trackingDictionary";
         return YES;
     
     return NO;
-}
-
-- (void)startTrackingMyLocation
-{
-    if (![self isLoggedIn]) {
-        return;
-    }
-    
-    [_locationManager startMonitoringSignificantLocationChanges];
-    
-//    [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
-//    [[PFUser currentUser] saveInBackground];
 }
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
@@ -163,21 +149,34 @@ NSString * const trackingData = @"trackingDictionary";
                 [idRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                     
                     if (error) {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Connect To Facebook" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
+                        
+                        UIAlertView *alert = [[UIAlertView alloc]
+                                              initWithTitle:@"Could Not Connect To Facebook"
+                                              message:nil
+                                              delegate:nil
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:@"Dismiss", nil];
                         [alert show];
-                    }
-                    else {
+                        
+                    } else {
+                        
                         [[PFUser currentUser] setObject:result[@"id"] forKey:facebookID];
+                        
                     }
-                    
-                    NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] init];
-                    NSData *data = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:NSJSONWritingPrettyPrinted error:nil];
-                    [[PFUser currentUser] setObject:data forKey:trackingData];
-                    
-                    [[PFUser currentUser] saveInBackground];
-                    
                 }];
+                
+                NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] init];
+                NSData *data = [NSJSONSerialization dataWithJSONObject:mutableDictionary
+                                                               options:NSJSONWritingPrettyPrinted
+                                                                 error:nil];
+                [[PFUser currentUser] setObject:data forKey:trackingData];
+                [[PFUser currentUser] saveInBackground];
+                
             }
+            
+            [[PFInstallation currentInstallation] setObject:[PFUser currentUser] forKey:@"user"];
+            [[PFInstallation currentInstallation] saveInBackground];
+            
             completionBlock();
         }
         
@@ -186,7 +185,7 @@ NSString * const trackingData = @"trackingDictionary";
 
 - (void)logOutWithCompletion:(void (^)())completionBlock
 {
-    [[PFFacebookUtils session]closeAndClearTokenInformation];
+    [[PFFacebookUtils session] closeAndClearTokenInformation];
     [PFUser logOut];
     [_locationManager stopUpdatingLocation];
     [_locationManager stopMonitoringSignificantLocationChanges];
@@ -195,23 +194,20 @@ NSString * const trackingData = @"trackingDictionary";
 
 #pragma mark Location tracking
 
-- (void)startTrackingLocation
+- (void)startTrackingMyLocation
 {
-    BOOL locationDisabled = ![CLLocationManager locationServicesEnabled];
-    if (![self isLoggedIn]||locationDisabled) {
+    if (![self isLoggedIn]) {
         return;
     }
     
-    NSArray *eventArray = [PFUser currentUser][@"trackingIsAllowed"];
+    [_locationManager startMonitoringSignificantLocationChanges];
     
-    BOOL allowedEventsTracking = [[eventArray objectAtIndex: 0] count]>0;
-    if (false){//!allowedEventsTracking) {
-        return;
-    }
-    [_locationManager startUpdatingLocation];
+//    [[PFUser currentUser] setObject:@"YES" forKey:@"trackingAllowed"];
+//    [[PFUser currentUser] saveInBackground];
 }
 
--(void) stopTrackingLocation {
+
+- (void)stopTrackingMyLocation {
     [_locationManager stopMonitoringSignificantLocationChanges];
 }
 
@@ -232,7 +228,7 @@ NSString * const trackingData = @"trackingDictionary";
     [eventsDict removeObjectForKey:eventId];
     
     if ([eventsDict count]==0) {
-        [[ParseDataStore sharedStore] stopTrackingLocation];
+        [[ParseDataStore sharedStore] stopTrackingMyLocation];
     }
     
     NSData *eventData = [NSJSONSerialization dataWithJSONObject:eventsDict options:NSJSONWritingPrettyPrinted error:nil];
@@ -445,31 +441,24 @@ NSString * const trackingData = @"trackingDictionary";
         [guestIds addObject:obj[@"id"]];
     }
     
-    PFQuery *userQuery  = [PFUser query];
+    PFQuery *userQuery = [PFUser query];
     [userQuery whereKey:facebookID containedIn:guestIds];
-    if(!completionBlock)
-    {
-        [userQuery findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
-            for (PFUser *user in users)
-            {
-                [[PFInstallation currentInstallation] setObject:user forKey:@"user"];
-                [[PFInstallation currentInstallation] saveInBackground];
-
-            }
-            
-            PFQuery *installationQuery = [PFInstallation query];
-            [installationQuery whereKey:@"user" containedIn:users];
-            PFPush *trackingAllowedNotification = [[PFPush alloc] init];
-            [trackingAllowedNotification setQuery:installationQuery];
-            [trackingAllowedNotification setMessage:@"Do you want to let the Host see where you are?"];
-            [trackingAllowedNotification sendPushInBackground];
-            
-            if (completionBlock) {
-                completionBlock();
-            }
-        }];
-
-   }
+    
+    PFQuery *installationQuery = [PFInstallation query];
+    [installationQuery whereKey:@"user" matchesQuery:userQuery];
+    
+    PFPush *trackingAllowedNotification = [[PFPush alloc] init];
+    [trackingAllowedNotification setQuery:installationQuery];
+    [trackingAllowedNotification setMessage:@"Do you want to let the Host see where you are?"];
+    [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"push succeded");
+        }
+        if (completionBlock) {
+            completionBlock();
+        }
+    }];
+        
 
 }
 

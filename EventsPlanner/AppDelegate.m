@@ -94,12 +94,12 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [_locationTrackingTimer invalidate];
-    [[ParseDataStore sharedStore] startTrackingLocation];
+    [[ParseDataStore sharedStore] startTrackingMyLocation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    [[ParseDataStore sharedStore] stopTrackingLocation];
+    [[ParseDataStore sharedStore] stopTrackingMyLocation];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

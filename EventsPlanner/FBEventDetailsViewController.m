@@ -535,7 +535,7 @@ static const float kLongitudeAsjustment = 0;
 
 -(void) promptGuestsForTracking: (id) sender {
     [self loadMapView:nil];
-//    [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
+    [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
 }
 
 -(void)updateMapZoomLocation: (CLLocationCoordinate2D) location{
