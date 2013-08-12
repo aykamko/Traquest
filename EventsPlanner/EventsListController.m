@@ -16,8 +16,10 @@
 
 @property (nonatomic, strong) UITableViewController *tableViewController;
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
+@property (nonatomic, strong) UITabBarController *tabBarController;
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
+@property (nonatomic, strong) NSArray *noReplyEvents;
 @property (nonatomic, strong) NSArray *friendsArray;
 @property (nonatomic,strong) FBEventDetailsViewController *eventDetailsViewController;
 -(IBAction)logUserOut:(id)sender;
@@ -25,19 +27,26 @@
 
 @implementation EventsListController
 
-- (id)initWithHostEvents:hostEvents guestEvents:guestEvents
+- (id)initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:(NSArray *)noReplyEvents
 {
     self = [super init];
     if (self) {
         
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
+        _noReplyEvents = noReplyEvents;
         _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents
-                                                                         guestEvents:guestEvents];
+                                                                         guestEvents:guestEvents
+                                                                        noReplyEvents:noReplyEvents];
         
         _tableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableViewController tableView] setDelegate:self];
         [[_tableViewController tableView] setDataSource:_tableViewDataSource];
+        
+
+        
+
+        
         
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
                                                                          style:UIBarButtonItemStylePlain
@@ -56,7 +65,7 @@
   [[ParseDataStore sharedStore]logOutWithCompletion:^{
     [self.tableViewController.navigationController popViewControllerAnimated:YES];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another use, please logout of Facebook in your settings."
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another user, please logout of Facebook in your settings."
                                                     message:Nil
                                                    delegate:self
                                           cancelButtonTitle:@"OK"
@@ -101,11 +110,14 @@
         } case 1: {
             headerText = @"Events You're Invited To";
             break;
-        } default: {
+        }  case 2: {
+            headerText = @"Events You Haven't Replied To";
+            break;
+        }
+        default: {
             headerText = @"";
         }
     }
-    
     [headerView setText:headerText];
     return headerView;
 }
@@ -115,30 +127,54 @@
     NSArray *eventsArray;
     NSDictionary *currentEventDetails;
     
-    if ([indexPath section] == hostedEvent) {
+    if (indexPath.section == 0) {
         
         eventsArray = _hostEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
         _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
-                                                                                          isHost:YES];
+                                                                                          isHost:YES hasReplied:YES];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                       style:UIBarButtonItemStyleBordered
+                                                                      target:nil
+                                                                      action:nil];
+        [_tableViewController.navigationItem setBackBarButtonItem:backButton];
+        [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
         
-    } else if ([indexPath section] == guestEvent) {
+    } else if (indexPath.section == 1) {
         
         eventsArray = _guestEvents;
         currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
         
         _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
-                                                                                          isHost:NO];
+                                                                                          isHost:NO hasReplied:YES];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                       style:UIBarButtonItemStyleBordered
+                                                                      target:nil
+                                                                      action:nil];
+        [_tableViewController.navigationItem setBackBarButtonItem:backButton];
+        [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
+    } else if (indexPath.section == 2) {
         
+        eventsArray = _noReplyEvents;
+        currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
+        
+        _eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:currentEventDetails
+                                                                                            isHost:NO hasReplied:NO];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                       style:UIBarButtonItemStyleBordered
+                                                                      target:nil
+                                                                      action:nil];
+        [_tableViewController.navigationItem setBackBarButtonItem:backButton];
+        [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
     }
     
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                   style:UIBarButtonItemStyleBordered
-                                                                  target:nil
-                                                                  action:nil];
-    [_tableViewController.navigationItem setBackBarButtonItem:backButton];
-    [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
+//    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+//                                                                   style:UIBarButtonItemStyleBordered
+//                                                                  target:nil
+//                                                                  action:nil];
+//    [_tableViewController.navigationItem setBackBarButtonItem:backButton];
+//    [[_tableViewController navigationController] pushViewController:_eventDetailsViewController animated:YES];
 }
 
 @end

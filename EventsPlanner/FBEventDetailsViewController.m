@@ -43,6 +43,7 @@ static const float kLongitudeAsjustment = 0;
 }
 
 @property (nonatomic, getter = isHost) BOOL host;
+@property (nonatomic, getter = hasReplied) BOOL replied;
 
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 
@@ -61,11 +62,12 @@ static const float kLongitudeAsjustment = 0;
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied
 {
     self = [super init];
     if (self) {
         _host = isHost;
+        _replied = hasReplied;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         
     }

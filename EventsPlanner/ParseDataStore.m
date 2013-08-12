@@ -238,7 +238,7 @@ NSString * const trackingData = @"trackingDictionary";
 }
 
 #pragma mark Facebook Request
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray *noReplyEvents))completionBlock
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
@@ -277,7 +277,8 @@ NSString * const trackingData = @"trackingDictionary";
                 
                 if (isHost == YES) {
                     [hostEvents insertObject:event atIndex:0];
-                } else {
+                }
+                else {
                     [guestEvents insertObject:event atIndex:0];
                 }
                 
@@ -306,7 +307,52 @@ NSString * const trackingData = @"trackingDictionary";
                 
             }
             
-            completionBlock(hostEvents, guestEvents);
+            NSMutableArray *noReplyEvents = [[NSMutableArray alloc] init];
+            FBRequest *noReplyRequest = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).type(not_replied).fields(id,name,"
+                                         @"cover,rsvp_status,start_time),id"];
+            [noReplyRequest startWithCompletionHandler:^(FBRequestConnection *connection, id noReplyResult, NSError *error) {
+                if (error) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                                    message:error.localizedDescription
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                }
+                else {
+                    FBGraphObject *noReplyGraphObj = (FBGraphObject *)noReplyResult;
+                    NSArray *noReplyArray = noReplyGraphObj[@"events"][@"data"];
+                    
+                    for (FBGraphObject *event in noReplyArray)
+                    {
+                        [noReplyEvents insertObject:event atIndex:0];
+                        
+                        CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
+                        if(!event[@"cover"]) {
+                            UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
+                            UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
+                                                                        size:defaultCoverSize];
+                            UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
+                            UIImage *gradientImage = [UIImage
+                                                      imageWithGradient:defaultCoverSize
+                                                      withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+                                                      withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+                                                      vertical:NO];
+                            event[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
+                        } else {
+                            NSURL *imageURL = [NSURL URLWithString:event[@"cover"][@"source"]];
+                            UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
+                            UIImage *gradientImage = [UIImage
+                                                      imageWithGradient:defaultCoverSize
+                                                      withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+                                                      withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+                                                      vertical:NO];
+                            event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
+                        }
+                    }
+                    completionBlock(hostEvents, guestEvents, noReplyEvents);
+                }
+            }];
         }
     }];
 }

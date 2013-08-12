@@ -13,20 +13,24 @@
 
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
+@property (nonatomic, strong) NSArray *noReplyEvents;
 
 @end
 
 @implementation EventsTableViewDataSource
 
-- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents
+- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents noReplyEvents:(NSArray *)noReplyEvents
 {
     self = [super init];
     if (self) {
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
+        _noReplyEvents = noReplyEvents;
     }
     return self;
 }
+
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -37,8 +41,10 @@
     NSArray *eventArray;
     if (indexPath.section == 0) {
         eventArray = _hostEvents;
-    } else {
+    } else if (indexPath.section == 1) {
         eventArray = _guestEvents;
+    } else if (indexPath.section == 2) {
+        eventArray = _noReplyEvents;
     }
     
     // Arguments to pass to cell
@@ -79,9 +85,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    
-    return 2;
-    
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -94,6 +98,8 @@
         } case 1: {
             return _guestEvents.count;
             break;
+        } case 2: {
+            return _noReplyEvents.count;
         } default: {
             return 0;
         }

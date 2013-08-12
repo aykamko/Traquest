@@ -31,7 +31,7 @@ extern NSString * const trackingData;
 - (void)allowTrackingForEvent: (NSString *) eventId identity: (BOOL) identity;
 - (void)disallowTrackingForEvent: (NSString *) eventId;
 
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents))completionBlock;
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray *noReplyEvents))completionBlock;
 - (void)fetchEventDetailsWithEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 
 - (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock;
