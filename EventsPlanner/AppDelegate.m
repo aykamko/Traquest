@@ -9,18 +9,17 @@
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
 #import <GoogleMaps/GoogleMaps.h>
-#import "LoginViewController.h"
+#import "FBLoginViewController.h"
 #import "ParseDataStore.h"
 #import "EventsListController.h"
 
 static const BOOL debugTracking = YES;
 
-@interface AppDelegate ()  {
-    NSTimer *_locationTrackingTimer;
-}
+@interface AppDelegate () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) EventsListController *eventsListController;
-@property (nonatomic, strong) LoginViewController *loginViewController;
+@property (nonatomic, strong) FBLoginViewController *loginViewController;
+@property (nonatomic, strong) NSMutableDictionary *eventsNeedingCertification;
 
 @end
 
@@ -53,7 +52,7 @@ static const BOOL debugTracking = YES;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor brownColor];
     
-    _loginViewController = [[LoginViewController alloc] init];
+    _loginViewController = [[FBLoginViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:_loginViewController];
     
     if ([[ParseDataStore sharedStore] isLoggedIn]) {
@@ -94,28 +93,31 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
 
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    if (application.applicationState != UIApplicationStateActive) {
+    if (!_eventsNeedingCertification) {
+        _eventsNeedingCertification = [[NSMutableDictionary alloc] init];
+    }
+    NSString *eventId = userInfo[@"eventId"];
+    NSString *eventName = userInfo[@"eventName"];
+    [_eventsNeedingCertification setObject:eventName forKey:eventId];
+    if ([application applicationState] != UIApplicationStateActive) {
         [PFPush handlePush:userInfo];
-    } else {
-        UIAlertView *pushAlert = [[UIAlertView alloc] initWithTitle:@"Title"
-                                                            message:@"Message"
-                                                           delegate:self
-                                                  cancelButtonTitle:@"No"
-                                                  otherButtonTitles:@"Yes", @"Anonomously", nil];
-        [pushAlert show];
+    }
+    else {
+        [self promptUserAllowTracking: eventName withId: eventId];
     }
 }
 
-
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    [_locationTrackingTimer invalidate];
     [[ParseDataStore sharedStore] startTrackingMyLocation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    [[ParseDataStore sharedStore] stopTrackingMyLocation];
+    for (NSString *eventId in _eventsNeedingCertification) {
+        [self promptUserAllowTracking:_eventsNeedingCertification[eventId] withId:eventId];
+    }
+    //[[ParseDataStore sharedStore] stopTrackingMyLocation];
 }
 
 //- (void)applicationWillEnterForeground:(UIApplication *)application
@@ -130,4 +132,26 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 //{
 //}
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+}
+
+-(void) promptUserAllowTracking: (NSString *) eventName withId: (NSString *) eventId{
+    NSString *title = [NSString stringWithFormat:@"The following event would like to track your location:"];
+    UIAlertView *trackingPrompt = [[UIAlertView alloc] initWithTitle: title message:eventName delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Allow Tracking", @"Allow Anonymously", @"Don't Allow", nil];
+    [trackingPrompt show];
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSString *eventName = [alertView message];
+    NSString *eventId = [[_eventsNeedingCertification allKeysForObject:eventName] objectAtIndex:0];
+    if (buttonIndex==1) {
+        [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:allowed];
+     } else if (buttonIndex==2) {
+         [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:anonymous];
+     } else if (buttonIndex==3) {
+         [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:notAllowed];
+     }
+     [_eventsNeedingCertification removeObjectForKey:eventId];
+}
 @end

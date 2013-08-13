@@ -62,7 +62,7 @@
 		7CA1428B17B5FC2300C8D02A /* CreateEventTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CA1428A17B5FC2300C8D02A /* CreateEventTableViewDataSource.m */; };
 		7CA1429117B6D79A00C8D02A /* CreateEventController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CA1429017B6D79A00C8D02A /* CreateEventController.m */; };
 		7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */; };
-		7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* LoginViewController.m */; };
+		7CBBD70317AB852800ED9DAB /* FBLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70217AB852800ED9DAB /* FBLoginViewController.m */; };
 		7CBBD70C17AB866A00ED9DAB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CCF244517AB6384009855B5 /* Parse.framework */; };
 		7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
@@ -168,8 +168,8 @@
 		7CA1429017B6D79A00C8D02A /* CreateEventController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventController.m; sourceTree = "<group>"; };
 		7CBBD6FE17AB851700ED9DAB /* EventCellContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCellContentView.h; sourceTree = "<group>"; };
 		7CBBD6FF17AB851700ED9DAB /* EventCellContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCellContentView.m; sourceTree = "<group>"; };
-		7CBBD70117AB852800ED9DAB /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
-		7CBBD70217AB852800ED9DAB /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		7CBBD70117AB852800ED9DAB /* FBLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBLoginViewController.h; sourceTree = "<group>"; };
+		7CBBD70217AB852800ED9DAB /* FBLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBLoginViewController.m; sourceTree = "<group>"; };
 		7CBBD70D17AB987700ED9DAB /* UIImage+ImageCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageCrop.h"; sourceTree = "<group>"; };
 		7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageCrop.m"; sourceTree = "<group>"; };
 		7CCF244517AB6384009855B5 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -468,8 +468,8 @@
 		7CBBD70B17AB863C00ED9DAB /* Login View Stuff */ = {
 			isa = PBXGroup;
 			children = (
-				7CBBD70117AB852800ED9DAB /* LoginViewController.h */,
-				7CBBD70217AB852800ED9DAB /* LoginViewController.m */,
+				7CBBD70117AB852800ED9DAB /* FBLoginViewController.h */,
+				7CBBD70217AB852800ED9DAB /* FBLoginViewController.m */,
 			);
 			name = "Login View Stuff";
 			sourceTree = "<group>";
@@ -640,9 +640,9 @@
 				7C471F2517A7639A00601C0C /* MKGeocodingService.m in Sources */,
 				7C162C8D17BAB8D00043CAA9 /* NSDate+ExtraStuff.m in Sources */,
 				60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */,
-				7CBBD70317AB852800ED9DAB /* LoginViewController.m in Sources */,
 				7CA1428B17B5FC2300C8D02A /* CreateEventTableViewDataSource.m in Sources */,
 				7CE691E317B6E34700D3D8AB /* CreateEventTimePickerViewController.m in Sources */,
+				7CBBD70317AB852800ED9DAB /* FBLoginViewController.m in Sources */,
 				60E093C717AC5211007CE1C8 /* FBEventDetailsTableDataSource.m in Sources */,
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
 				768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */,

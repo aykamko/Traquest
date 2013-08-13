@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Events Planner": {
+            "applicationId": "Xz7dF37SCpQkd2evgR4IeLUhhiMBTOMLTrKU06GE", 
+            "masterKey": "6VUEfIPJa31l3uRUuH6BY6HmcTpucqJeAhRtZMgj"
+        }, 
+        "_default": {
+            "link": "Events Planner"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.8"
+    }
+}

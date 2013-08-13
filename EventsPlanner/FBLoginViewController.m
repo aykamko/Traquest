@@ -1,13 +1,13 @@
 
 
-#import "LoginViewController.h"
+#import "FBLoginViewController.h"
 #import <Parse/Parse.h>
 #import "ParseDataStore.h"
 #import "EventsListController.h"
 #import "ParseDataStore.h"
 #import "FBEventDetailsViewController.h"
 
-@interface LoginViewController ()
+@interface FBLoginViewController ()
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) EventsListController *eventsListController;
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation LoginViewController
+@implementation FBLoginViewController
 
 #pragma mark - UIViewController
 

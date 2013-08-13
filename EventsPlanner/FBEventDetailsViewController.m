@@ -411,12 +411,13 @@ static const float kLongitudeAsjustment = 0;
         [_dimensionsDict addEntriesFromDictionary:
             @{ @"trackingButtonImageHeight":[NSNumber numberWithFloat:buttonBaseImage.size.height] }];
         
-        [_startTrackingButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
+        [ _startTrackingButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
         [_startTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateSelected];
         [_startTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
         
         [_startTrackingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
         [_startTrackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
+        [_startTrackingButton setTintColor:[UIColor blackColor]];
         [[_startTrackingButton titleLabel] setFont:[UIFont boldSystemFontOfSize:TrackingButtonFontSize]];
         
         [_startTrackingButton addTarget:self

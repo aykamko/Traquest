@@ -10,9 +10,13 @@
 #import <Parse/Parse.h>
 #import <Parse/PFUser.h>
 
+extern NSString * const allowed;
+extern NSString * const anonymous;
+extern NSString * const notAllowed;
+
 extern NSString * const facebookID;
 extern NSString * const locationKey;
-extern NSString * const trackingData;
+extern NSString * const trackingObject;
 
 @interface ParseDataStore : NSObject
 
@@ -27,9 +31,8 @@ extern NSString * const trackingData;
 - (void)fetchLocationWithCompletion:(void (^)(CLLocation *location))completionBlock;
 
 - (void)startTrackingMyLocation;
-- (void)stopTrackingMyLocation;
-- (void)allowTrackingForEvent:(NSString *)eventId identity:(BOOL)identity;
-- (void)disallowTrackingForEvent:(NSString *)eventId;
+- (BOOL) verifyTrackingAllowed;
+- (void)changePermissionForEvent: (NSString *) eventId identity: (NSString *) identity;
 
 - (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents,
     NSArray* maybeAttendingEvents, NSArray *noReplyEvents))completionBlock;

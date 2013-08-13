@@ -4,6 +4,6 @@
 #import <CoreLocation/CoreLocation.h>
 #import <Parse/Parse.h>
 
-@interface LoginViewController : UIViewController 
+@interface FBLoginViewController : UIViewController 
 
 @end
