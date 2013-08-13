@@ -16,6 +16,7 @@
 #import "ParseDataStore.h"
 #import "FBEventStatusTableController.h"
 #import "FBEventDetailsTableDelegate.h"
+#import "ActiveEventsStatsViewController.h"
 
 static const float TrackingButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
@@ -35,10 +36,11 @@ static const float kLongitudeAsjustment = 0;
     
     FBEventDetailsTableDataSource *_dataSource;
     __strong MKMapView *_mapView;
+
     NSString *_newStatus;
-    
+       ActiveEventsStatsViewController *_statsViewController;
     __strong FBEventStatusTableController *_statusTableController;
-    
+    ActiveEventMapViewController *_mapViewController;
 
     UITabBarItem *_item;
     UIImage *_briefcase;
@@ -598,26 +600,25 @@ static const float kLongitudeAsjustment = 0;
 
 - (void)loadMapView:(id)sender
 {
-    UIViewController *statsController = [[UIViewController alloc]init];
-    statsController.view=[[UIView alloc]init];
+    _statsViewController =[[ActiveEventsStatsViewController alloc]initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
+    _statsViewController.title = @"Stats";
     
-    _item= [statsController tabBarItem];
+    
+    _item= [_statsViewController tabBarItem];
     _briefcase= [UIImage imageNamed:@"listFinal.png"];
     [_item setImage:_briefcase];
     
     _tabBarController=[[UITabBarController alloc]init];
-    ActiveEventMapViewController *mapViewController = [[ActiveEventMapViewController alloc]
+    _mapViewController  = [[ActiveEventMapViewController alloc]
                                                        initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
-    [statsController setTitle:@"Stats"];
-    [mapViewController setTitle:@"Map"];
+    _mapViewController.title = @"Map";
     
-    [_tabBarController setViewControllers:@[mapViewController, statsController]];
-    UIBarButtonItem *backToDetailsButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
-                                                                            style:UIBarButtonItemStyleBordered
-                                                                           target:nil
-                                                                           action:nil];
-    [self.navigationItem setBackBarButtonItem:backToDetailsButton];
+    self.navigationController.title = self.tabBarItem.title;
+    [_tabBarController setViewControllers:@[_mapViewController, _statsViewController]];
+    
     [[self navigationController] pushViewController:_tabBarController animated:YES];
+    self.navigationController.title = self.tabBarItem.title;
+
 }
 
 -(void) promptGuestsForTracking: (id) sender {
