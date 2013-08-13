@@ -62,7 +62,13 @@
 }
 
 
+-(void)viewDidLoad{
+   NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self.tableView selector:@selector(reloadData) userInfo:Nil repeats:YES];
+    [timer fire];
+    [super viewDidLoad];
 
+
+}
 
 
 
@@ -109,7 +115,7 @@
         else if (indexPath.row ==3){
             title.text = @"Average distance to Venue";
             NSLog(@"%@", _friendDetailsDict);
-            CLLocationDistance dist;
+            CLLocationDistance dist = 0;
             NSInteger counter = 0;
             for (NSString *fbID in _friendDetailsDict){
                 if(_friendDetailsDict[fbID][@"geopoint"] !=[NSNull null]){
@@ -123,14 +129,20 @@
                     counter = counter + 1;
                 }
             }
-        
+            NSLog(@"%f,", dist);
+            
+            if( dist == 0){
+                description.text = @ "You have no guests who allow tracking";
+            }
+            else{
             dist = dist/counter;
             description.text = [NSString stringWithFormat:@"%@ %@",[NSString stringWithFormat:@"%0.02f", dist],@"meters"];
+            }
         }
         
         else if (indexPath.row == 4){
            title.text = @"Median distance to Venue";
-            if(fmod(_distanceArray.count, 2)==0 & _distanceArray != 0){ //if even
+            if(fmod(_distanceArray.count, 2)==0 & _distanceArray.count != 0){ //if even
                 NSNumber *num1= [_distanceArray objectAtIndex:_distanceArray.count/2];
                 NSNumber *num2 = [_distanceArray objectAtIndex:(_distanceArray.count/2)-1];
                 float median = ([num1 floatValue] + [num2 floatValue])/2;
@@ -140,10 +152,12 @@
             }
             
             else{
+                if(_distanceArray.count != 0){
                 NSNumber *num1 = [_distanceArray objectAtIndex:(_distanceArray.count/2)];
                 float median = [num1 floatValue];
                 description.text = [NSString stringWithFormat:@"%0.02f meters", median];
                 
+                }
             }
         }
         
