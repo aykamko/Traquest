@@ -102,6 +102,9 @@
                                          action:@selector(refreshTableViewUsingRefreshControl:)
                                forControlEvents:UIControlEventValueChanged];
         [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
+
+            UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
+        footer.backgroundColor = [UIColor clearColor];
         
         
         _maybeTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];

@@ -553,7 +553,7 @@
 				ORGANIZATIONNAME = FBU;
 				TargetAttributes = {
 					7C418C6217A082030084330C = {
-						DevelopmentTeam = ZC95DNC67Z;
+						DevelopmentTeam = 75E82M9UVH;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
