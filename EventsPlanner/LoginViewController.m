@@ -5,6 +5,7 @@
 #import "ParseDataStore.h"
 #import "EventsListController.h"
 #import "ParseDataStore.h"
+#import "FBEventDetailsViewController.h"
 
 @interface LoginViewController ()
 
@@ -81,14 +82,10 @@
         
         _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttendingEvents];
         
-        UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
-                                                                         style:UIBarButtonItemStylePlain
-                                                                        target:self
-                                                                        action:@selector(logUserOut:)];
         
         [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
         
-        [[[_eventsListController presentableViewController] navigationItem] setRightBarButtonItem:logoutButton];
+        [[[_eventsListController presentableViewController] navigationItem] setRightBarButtonItem:_eventsListController.logoutButton];
 
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];

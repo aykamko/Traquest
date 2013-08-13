@@ -16,6 +16,8 @@ typedef enum eventType {
 
 @interface EventsListController : NSObject<UITableViewDelegate>
 
+@property (nonatomic, strong) UIBarButtonItem *logoutButton;
+
 - (id)initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttending;
 - (id)presentableViewController;
 -(IBAction)logUserOut:(id)sender;

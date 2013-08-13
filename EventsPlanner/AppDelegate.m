@@ -55,23 +55,26 @@ static const BOOL debugTracking = YES;
     _loginViewController = [[LoginViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:_loginViewController];
     
-//    if ([[ParseDataStore sharedStore] isLoggedIn]) {
-//        
-//        [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvent, NSArray *noReplyEvents) {
-//            
-//            _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttendingEvent];
-//            
-//            UINavigationController *navController = (UINavigationController *)self.window.rootViewController;
-//            [navController pushViewController:[_eventsListController presentableViewController] animated:YES];
-//            [self.window makeKeyAndVisible];
-//            
-//        }];
-//        
-//    } else {
+    if ([[ParseDataStore sharedStore] isLoggedIn]) {
+        
+        [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvent, NSArray *noReplyEvents) {
+            
+            _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttendingEvent];
+            [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
+            
+            [[[_eventsListController presentableViewController] navigationItem] setRightBarButtonItem:_eventsListController.logoutButton];
+            
+            UINavigationController *navController = (UINavigationController *)self.window.rootViewController;
+            [navController pushViewController:[_eventsListController presentableViewController] animated:YES];
+            [self.window makeKeyAndVisible];
+            
+        }];
+        
+    } else {
     
         [self.window makeKeyAndVisible];
-//        
-//    }
+        
+    }
     
     return YES;
 }

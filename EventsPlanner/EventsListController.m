@@ -99,10 +99,10 @@
         [_tabBarController setViewControllers:@[_tableHostViewController,_tableGuestViewController,_tableMaybeViewController,_tableNoReplyViewController]];
 
 
-      
-        
-
-
+        _logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+                                                         style:UIBarButtonItemStylePlain
+                                                        target:self
+                                                        action:@selector(logUserOut:)];
         
     }
     return self;

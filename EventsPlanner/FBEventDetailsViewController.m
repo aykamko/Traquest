@@ -32,6 +32,7 @@ static const float kLongitudeAsjustment = 0;
     UIView *_buttonHolder;
     UIButton *_rsvpStatusButton;
     UITableView *_detailsTable;
+    
     FBEventDetailsTableDataSource *_dataSource;
     __strong MKMapView *_mapView;
     NSString *_newStatus;
