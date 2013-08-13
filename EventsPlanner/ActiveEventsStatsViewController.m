@@ -16,6 +16,7 @@
 @property CLLocationCoordinate2D venueLocation;
 @property (strong, nonatomic) NSMutableDictionary *friendDetailsDict;
 @property (strong, nonatomic) NSMutableArray *distanceArray;
+@property (strong, nonatomic) NSTimer *timer;
 
 @end
 
@@ -39,7 +40,7 @@
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
        self.tableView.layer.cornerRadius = 0.0;
         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:
-                                                 [NSURL URLWithString:@"http://www.graphicpanic.com/images/green-minimalist-background.jpg"]]];
+                                                 [NSURL URLWithString:@"https://www.quiltsrjewels.com/store/images/17770862.jpg"]]];
 
         UIImageView *backgroundView = [[UIImageView alloc]initWithImage:image];
         self.tableView.backgroundView = backgroundView;
@@ -58,7 +59,10 @@
         [self setDict];
 
         
-        
+        _timer = [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(reload) userInfo:Nil repeats:YES];
+        [_timer fire];
+        [super viewDidLoad];
+
     }
     return self;
     
@@ -73,15 +77,14 @@
 
 
 -(void)viewDidLoad{
-   NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:50.0 target:self.tableView selector:@selector(reloadData) userInfo:Nil repeats:YES];
-    [timer fire];
-    [super viewDidLoad];
-
+ 
 
 }
 
 
-
+-(void)reload{
+    [self.tableView reloadData];
+}
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section  {
     return @"Stats";
 }
@@ -95,7 +98,9 @@
     return 6;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"statsCell"];
+    NSString *identifier = [NSString stringWithFormat:@"Cell %d", indexPath.row];
+    
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     [self setDict];
 
     if(cell == nil){
@@ -115,13 +120,17 @@
         }
         else if (indexPath.row == 1){
  title.text = @"Guests With Tracking";
-            
-            
+            NSDictionary *dict = [[ParseDataStore sharedStore]trackingCount];
+            NSNumber *num = [dict objectForKey:_eventID];
+            description.text = [NSString stringWithFormat:@"%@" ,num];
 
         }
         
         else if (indexPath.row ==2){
             title.text = @"Actively changing locations";
+            
+        
+        
         }
         
         else if (indexPath.row ==3){
@@ -178,11 +187,13 @@
         
         else{
            title.text = @"Estimated time of Arrival";
+            
         }
         
         
         [cell addSubview:title];
         [cell addSubview:description];
+        
     }
     
     return cell;

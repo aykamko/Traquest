@@ -139,7 +139,7 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
         
     }];
     
-    NSLog(@"%@", _friendAnnotationPointDict);
+    NSLog(@" lalalal %@", _friendAnnotationPointDict);
 }
 
 - (void)viewWillDisappear:(BOOL)animated

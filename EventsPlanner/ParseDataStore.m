@@ -44,6 +44,7 @@ NSString * const trackingObject = @"trackingDictionary";
         CLLocationDistance distance = 50.0;
         [_locationManager setDistanceFilter:distance];
         [_locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
+        _trackingCount = [[NSMutableDictionary alloc]init];
         
     }
     
@@ -491,11 +492,10 @@ NSString * const trackingObject = @"trackingDictionary";
         NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
         for (PFUser *friend in objects) {
             
-//            if (friend[@"trackingDict"][eventId])
-//            {
             [userLocations setObject:friend[@"location"] forKey:friend[facebookID]];
-//            }
         }
+        
+        [_trackingCount setObject:[NSNumber numberWithInt:objects.count] forKey:eventId];
         completionBlock([[NSDictionary alloc] initWithDictionary:userLocations]);
     }];
 }

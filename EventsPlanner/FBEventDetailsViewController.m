@@ -81,11 +81,14 @@ static const float kLongitudeAsjustment = 0;
 
 - (void)viewDidLoad
 {
+    
+    [super viewDidLoad];
     [self setViewPartialEventDetails];
     
     [[ParseDataStore sharedStore] fetchEventDetailsWithEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
         [[self eventDetails] addEntriesFromDictionary:eventDetails];
         [self setViewCompleteEventDetails];
+        [_detailsTable setNeedsDisplay];
     }];
 }
 
@@ -328,7 +331,8 @@ static const float kLongitudeAsjustment = 0;
     //initializing mapView and setting coordinates of location
     _mapView = [[MKMapView alloc]
                initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
-    
+    [_mapView setMapType:MKMapTypeStandard];
+
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
     if (venueDict[@"latitude"]) {
@@ -338,10 +342,10 @@ static const float kLongitudeAsjustment = 0;
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         _venueLocation = coordinate;
-       [_mapView setMapType:MKMapTypeStandard];
+        [self updateMapZoomLocation:_venueLocation];
+
         MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
         annot.coordinate = _venueLocation;
-        [self updateMapZoomLocation:_venueLocation];
         [_mapView addAnnotation:annot];
         
     } else {
@@ -351,16 +355,17 @@ static const float kLongitudeAsjustment = 0;
         [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
             CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
             _venueLocation = coordinate;
+            [self updateMapZoomLocation:_venueLocation];
             MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
             annot.coordinate = _venueLocation;
-            [self updateMapZoomLocation:_venueLocation];
 
             [_mapView addAnnotation:annot];
 
         }];
         
     }
-    
+    //[self updateMapZoomLocation:_venueLocation];
+
     // initializing data source for table view
     _dataSource = [[FBEventDetailsTableDataSource alloc] initWithEventDetails:_eventDetails];
     _detailsTableDelegate = [[FBEventDetailsTableDelegate alloc] init];
@@ -371,6 +376,8 @@ static const float kLongitudeAsjustment = 0;
     [_detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_detailsTable setDataSource:_dataSource];
     [_detailsTable setDelegate:_detailsTableDelegate];
+   
+    
     [_detailsTable setTableHeaderView:_mapView];
     
     //setting some UI aspects of tableview
@@ -458,21 +465,6 @@ static const float kLongitudeAsjustment = 0;
                                      views:_viewsDictionary]];
 }
 
-//- (void)viewDidAppear:(BOOL)animated {
-//    
-//    [super viewDidAppear:animated];
-//    
-//    if (!(_eventDetails[@"location"]||_eventDetails[@"venue"][@"lattitude"])) {
-//        __strong UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your Event Location Was Invalid" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
-//        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
-//        [alert setDelegate:self];
-//        UITextField *locationInputTextView = [alert textFieldAtIndex:0];
-//        [locationInputTextView setPlaceholder:@"Please Enter a Location"];
-//        [alert show];
-//    }
-//    
-//}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     
@@ -492,39 +484,39 @@ static const float kLongitudeAsjustment = 0;
     
     [super viewWillAppear:animated];
 }
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    NSString *locationString = [alertView textFieldAtIndex:0].text;
-    MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
-    
-    [geocoder fetchGeocodeAddress:locationString completion:^(NSDictionary *geocode, NSError *error) {
-        CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
-        _venueLocation = coordinate;
-        if (!coordinate.latitude) {
-            [alertView show];
-            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
-            annot.coordinate = _venueLocation;
-            [self updateMapZoomLocation:_venueLocation];
-
-            [_mapView addAnnotation:annot];
-
-
-        }
-        else {
-            [_eventDetails setValue:locationString forKey:@"location"];
-            [_dataSource updateObject:locationString forKey:@"location"];
-            [_detailsTable reloadData];
-            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
-            annot.coordinate = _venueLocation;
-            [self updateMapZoomLocation:_venueLocation];
-
-            [_mapView addAnnotation:annot];
-            
-
-        }
-    }];
-}
+//
+//- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+//{
+//    NSString *locationString = [alertView textFieldAtIndex:0].text;
+//    MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
+//    
+//    [geocoder fetchGeocodeAddress:locationString completion:^(NSDictionary *geocode, NSError *error) {
+//        CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
+//        _venueLocation = coordinate;
+//        if (!coordinate.latitude) {
+//            [alertView show];
+//            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
+//            annot.coordinate = _venueLocation;
+//            [self updateMapZoomLocation:_venueLocation];
+//
+//            [_mapView addAnnotation:annot];
+//
+//
+//        }
+//        else {
+//            [_eventDetails setValue:locationString forKey:@"location"];
+//            [_dataSource updateObject:locationString forKey:@"location"];
+//            [_detailsTable reloadData];
+//            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
+//            annot.coordinate = _venueLocation;
+//            [self updateMapZoomLocation:_venueLocation];
+//
+//            [_mapView addAnnotation:annot];
+//            
+//
+//        }
+//    }];
+//}
 
 -(void) tap: (UIGestureRecognizer*) gr {
     //push new popover view with full image
@@ -620,13 +612,17 @@ static const float kLongitudeAsjustment = 0;
     [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
 }
 
--(void)updateMapZoomLocation: (CLLocationCoordinate2D) location{
+-(void)updateMapZoomLocation: (CLLocationCoordinate2D) location {
+    [_mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 200, 200) animated:NO];
+    /*
     MKCoordinateRegion region;
     region.center.latitude = location.latitude;
     region.center.longitude = location.longitude;
     region.span.latitudeDelta = 0.007;
     region.span.longitudeDelta = 0.007;
     [_mapView setRegion:region animated:NO];
+     */
+    NSLog(@"center region %lf, %lf", _mapView.region.center.latitude, _mapView.region.center.longitude);
     
     
 }

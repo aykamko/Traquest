@@ -85,7 +85,6 @@
                                                                    noReplyEvents:noReplyEvents
                                                                   maybeAttending:maybeAttendingEvents];
         
-        
         [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
 
         [self.navigationController pushViewController:[_eventsListController presentableViewController]

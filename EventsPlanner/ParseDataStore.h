@@ -22,7 +22,7 @@ extern NSString * const trackingObject;
 
 @property (readonly, nonatomic) BOOL isLoggedIn;
 @property (strong, nonatomic) NSString *myId;
-
+@property (readonly, nonatomic, strong) NSMutableDictionary *trackingCount;
 + (ParseDataStore *)sharedStore;
 
 - (void)logInWithCompletion:(void (^)())completionBlock;

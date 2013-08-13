@@ -20,12 +20,14 @@
 @property (nonatomic, strong) UITableViewController *tableGuestViewController;
 @property (nonatomic, strong) UITableViewController *tableMaybeViewController;
 @property (nonatomic, strong) UITableViewController *tableNoReplyViewController;
+@property (nonatomic, strong) UITableViewController *tableActiveViewController;
 
 @property (nonatomic, strong) EventsTableViewDataSource *tableViewDataSource;
 @property (nonatomic, strong) EventsTableViewDataSource *tableHostViewDataSource;
 @property (nonatomic, strong) EventsTableViewDataSource *tableGuestViewDataSource;
 @property (nonatomic, strong) EventsTableViewDataSource *tableMaybeViewDataSource;
 @property (nonatomic, strong) EventsTableViewDataSource *tableNoReplyViewDataSource;
+@property (nonatomic, strong) EventsTableViewDataSource *tableActiveViewDataSource;
 
 @property (nonatomic, strong) UITabBarController *tabBarController;
 @property (nonatomic, strong) NSArray *hostEvents;
@@ -65,25 +67,29 @@
         _tableGuestViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:guestEvents];
         _tableMaybeViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:maybeAttending];
         _tableNoReplyViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:noReplyEvents];
+//        _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:hostEvents];
         
         UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
         footer.backgroundColor = [UIColor clearColor];
         
-        _tableHostViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        [[_tableActiveViewController tableView] setDelegate:self];
+        [[_tableActiveViewController tableView] setDataSource:_tableHostViewDataSource];
+        [_tableActiveViewController setTitle:@"Active"];
+        _tableActiveViewController.tableView.tableFooterView = footer;
+
+        
+        _tableHostViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableHostViewController tableView] setDelegate:self];
         [[_tableHostViewController tableView] setDataSource:_tableHostViewDataSource];
         [_tableHostViewController setTitle:@"Host"];
         _tableHostViewController.tableView.tableFooterView = footer;
-        self.tableHostViewController.navigationItem.hidesBackButton = YES;
-        self.tableHostViewController.navigationController.navigationBar.translucent = NO;
         
         _tableGuestViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [[_tableGuestViewController tableView] setDelegate:self];
         [[_tableGuestViewController tableView] setDataSource:_tableGuestViewDataSource];
         [_tableGuestViewController setTitle:@"Attending"];
         _tableGuestViewController.tableView.tableFooterView = footer;
-        self.tableGuestViewController.navigationItem.hidesBackButton = YES;
-        self.tableGuestViewController.navigationController.navigationBar.translucent = NO;
 
 
         _tableMaybeViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
@@ -91,22 +97,18 @@
         [[_tableMaybeViewController tableView] setDataSource:_tableMaybeViewDataSource];
         [_tableMaybeViewController setTitle:@"Maybe"];
         _tableMaybeViewController.tableView.tableFooterView = footer;
-        self.tableMaybeViewController.navigationItem.hidesBackButton = YES;
-        self.tableMaybeViewController.navigationController.navigationBar.translucent = NO;
-
         
         _tableNoReplyViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [[_tableNoReplyViewController tableView] setDelegate:self];
         [[_tableNoReplyViewController tableView] setDataSource:_tableNoReplyViewDataSource];
         [_tableNoReplyViewController setTitle:@"No Reply"];
         _tableNoReplyViewController.tableView.tableFooterView = footer;
-        self.tableNoReplyViewController.navigationItem.hidesBackButton = YES;
-        self.tableNoReplyViewController.navigationController.navigationBar.translucent = NO;
 
         _tabBarController = [[UITabBarController alloc] init];
         _tabBarController.delegate = self;
       
-        [_tabBarController setViewControllers:@[_tableHostViewController,
+        [_tabBarController setViewControllers:@[_tableActiveViewController,
+                                                _tableHostViewController,
                                                 _tableGuestViewController,
                                                 _tableMaybeViewController,
                                                 _tableNoReplyViewController]];
@@ -125,7 +127,6 @@
         
         self.tabBarController.navigationItem.hidesBackButton = YES;
         self.tableViewController.navigationController.navigationBar.translucent = NO;
-        
     }
     return self;
 }
@@ -184,7 +185,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40.0;
+    return 0.1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
