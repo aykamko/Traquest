@@ -238,11 +238,11 @@ NSString * const trackingData = @"trackingDictionary";
 }
 
 #pragma mark Facebook Request
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray *noReplyEvents))completionBlock
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray* maybeAttendingEvents, NSArray *noReplyEvents))completionBlock
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
-                          @"me?fields=events.limit(1000).fields(id,name,admins.fields(id,name),"
+                          @"me?fields=events.limit(1000).type(attending).fields(id,name,admins.fields(id,name),"
                           @"cover,rsvp_status,start_time),id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
@@ -310,7 +310,7 @@ NSString * const trackingData = @"trackingDictionary";
             NSMutableArray *noReplyEvents = [[NSMutableArray alloc] init];
             FBRequest *noReplyRequest = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).type(not_replied).fields(id,name,"
                                          @"cover,rsvp_status,start_time),id"];
-            [noReplyRequest startWithCompletionHandler:^(FBRequestConnection *connection, id noReplyResult, NSError *error) {
+            [noReplyRequest startWithCompletionHandler:^(FBRequestConnection *connection, id noReplyResult, NSError *error){
                 if (error) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
                                                                     message:error.localizedDescription
@@ -350,12 +350,61 @@ NSString * const trackingData = @"trackingDictionary";
                             event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
                         }
                     }
-                    completionBlock(hostEvents, guestEvents, noReplyEvents);
+                    
+                    NSMutableArray *maybeAttendingEvents = [[NSMutableArray alloc] init];
+                    FBRequest *maybeRequest = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).type(maybe).fields(id,name,"
+                                                 @"cover,rsvp_status,start_time),id"];
+                    [maybeRequest startWithCompletionHandler:^(FBRequestConnection *connection, id maybeResult, NSError *error){
+                        if (error) {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                                            message:error.localizedDescription
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:@"OK"
+                                                                  otherButtonTitles:nil];
+                            [alert show];
+                        }
+                        else {
+                            FBGraphObject *maybeGraphObj = (FBGraphObject *)maybeResult;
+                            NSArray *maybeArray = maybeGraphObj[@"events"][@"data"];
+                            
+                            for (FBGraphObject *event in maybeArray)
+                            {
+                                [maybeAttendingEvents insertObject:event atIndex:0];
+                                
+                                CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
+                                if(!event[@"cover"]) {
+                                    UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
+                                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
+                                                                                size:defaultCoverSize];
+                                    UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
+                                    UIImage *gradientImage = [UIImage
+                                                              imageWithGradient:defaultCoverSize
+                                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+                                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+                                                              vertical:NO];
+                                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
+                                } else {
+                                    NSURL *imageURL = [NSURL URLWithString:event[@"cover"][@"source"]];
+                                    UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
+                                    UIImage *gradientImage = [UIImage
+                                                              imageWithGradient:defaultCoverSize
+                                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
+                                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
+                                                              vertical:NO];
+                                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
+                                }
+                            }
+                    
+                            completionBlock(hostEvents, guestEvents, maybeAttendingEvents, noReplyEvents);
+                        }
+                    }];
                 }
             }];
         }
     }];
 }
+
+
 
 
 
@@ -449,9 +498,11 @@ NSString * const trackingData = @"trackingDictionary";
     } else if ([status isEqualToString:@"Not Going"]) {
         urlStatusString = @"declined";
     }
-    
+    else {
+        return;
+    }
     NSString *graphPath = [NSString stringWithFormat:@"%@/%@/%@", eventId, urlStatusString, _myId];
-    
+
     FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:nil HTTPMethod:@"POST"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         
@@ -467,7 +518,7 @@ NSString * const trackingData = @"trackingDictionary";
             [alertView show];
             
         } else {
-            
+            NSLog(@"%@",result);
             if (completionBlock)
                 completionBlock();
             

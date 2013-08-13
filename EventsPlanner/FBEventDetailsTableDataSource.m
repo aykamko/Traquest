@@ -90,6 +90,8 @@
     details[@"owner"] = hostString;
 }
 
+
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [_mutableOrderedDetailsKeys count];
 }

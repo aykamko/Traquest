@@ -291,7 +291,6 @@
 				7CBBD71017AB987B00ED9DAB /* Categories */,
 				7CBBD70917AB860F00ED9DAB /* App Delegate */,
 				7CBBD70817AB85D600ED9DAB /* Event Table View Stuff */,
-				7CBBD70617AB858600ED9DAB /* Active Event View Stuff */,
 				7CBBD70517AB857400ED9DAB /* Detail View Stuff */,
 				7CBBD70B17AB863C00ED9DAB /* Login View Stuff */,
 				7CBBD70A17AB862F00ED9DAB /* Data Abstraction Classes */,
@@ -381,6 +380,7 @@
 		7CBBD70817AB85D600ED9DAB /* Event Table View Stuff */ = {
 			isa = PBXGroup;
 			children = (
+				7CBBD70617AB858600ED9DAB /* Active Event View Stuff */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
 				90130EC017A31D450038BBFB /* EventsListController.m */,
 				90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */,

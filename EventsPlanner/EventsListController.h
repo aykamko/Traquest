@@ -16,10 +16,8 @@ typedef enum eventType {
 
 @interface EventsListController : NSObject<UITableViewDelegate>
 
-- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents noReplyEvents:(NSArray *)noReplyEvents;
+- (id)initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttending;
 - (id)presentableViewController;
-
-
-
+-(IBAction)logUserOut:(id)sender;
 
 @end

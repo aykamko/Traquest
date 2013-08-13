@@ -14,21 +14,37 @@
 @property (nonatomic, strong) NSArray *hostEvents;
 @property (nonatomic, strong) NSArray *guestEvents;
 @property (nonatomic, strong) NSArray *noReplyEvents;
+@property (nonatomic, strong) NSArray *maybeAttending;
+
+@property (nonatomic, strong) NSArray *eventArray;
+
 
 @end
 
 @implementation EventsTableViewDataSource
 
 - (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents noReplyEvents:(NSArray *)noReplyEvents
+          maybeAttending:(NSArray *)maybeAttending
 {
     self = [super init];
     if (self) {
         _hostEvents = hostEvents;
         _guestEvents = guestEvents;
         _noReplyEvents = noReplyEvents;
+        _maybeAttending = maybeAttending;
     }
     return self;
 }
+
+- (id)initWithEvents:eventArray
+{
+    self = [super init];
+    if (self) {
+        _eventArray = eventArray;
+    }
+    return self;
+}
+
 
 
 
@@ -39,13 +55,17 @@
     EventCell *cell = (EventCell*)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     
     NSArray *eventArray;
-    if (indexPath.section == 0) {
-        eventArray = _hostEvents;
-    } else if (indexPath.section == 1) {
-        eventArray = _guestEvents;
-    } else if (indexPath.section == 2) {
-        eventArray = _noReplyEvents;
-    }
+    eventArray = _eventArray;
+    
+//    if (indexPath.section == 0) {
+//        eventArray = _hostEvents;
+//    } else if (indexPath.section == 1) {
+//        eventArray = _guestEvents;
+//    } else if (indexPath.section == 2) {
+//        eventArray = _maybeAttending;
+//    } else if (indexPath.section == 3) {
+//        eventArray = _noReplyEvents;
+//    }
     
     // Arguments to pass to cell
     NSString *cellTitle;
@@ -59,6 +79,10 @@
     cellRsvpStatus = eventArray[indexPath.row][@"rsvp_status"];
     if ([cellRsvpStatus isEqualToString:@"attending"]) {
         cellRsvpStatus = @"You're going.";
+    } else if ([cellRsvpStatus isEqualToString:@"unsure"]) {
+        cellRsvpStatus = @"You maybe going.";
+    } else if ([cellRsvpStatus isEqualToString:@"not_replied"]) {
+        cellRsvpStatus = @"You haven't replied.";
     }
     
     NSString *startTimeStr = eventArray[indexPath.row][@"start_time"];
@@ -85,26 +109,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    
-    switch (section) {
-        case 0: {
-            return _hostEvents.count;
-            break;
-        } case 1: {
-            return _guestEvents.count;
-            break;
-        } case 2: {
-            return _noReplyEvents.count;
-        } default: {
-            return 0;
-        }
-    }
-    
+    return _eventArray.count;
 }
 
 @end

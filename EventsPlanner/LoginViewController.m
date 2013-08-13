@@ -77,13 +77,22 @@
 
 - (void)setEventsListView
 {
-    [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *noReplyEvents) {
+    [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvents, NSArray *noReplyEvents) {
         
-        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents];
+        _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents guestEvents:guestEvents noReplyEvents:noReplyEvents maybeAttending:maybeAttendingEvents];
         
+        UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+                                                                         style:UIBarButtonItemStylePlain
+                                                                        target:self
+                                                                        action:@selector(logUserOut:)];
+        
+        [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
+        
+        [[[_eventsListController presentableViewController] navigationItem] setRightBarButtonItem:logoutButton];
+
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];
-        
+
     }];
     
 }

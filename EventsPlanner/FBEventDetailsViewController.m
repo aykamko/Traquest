@@ -30,9 +30,11 @@ static const float kLongitudeAsjustment = 0;
     UIImageView *_coverImageView;
     UILabel *_titleLabel;
     UIView *_buttonHolder;
+    UIButton *_rsvpStatusButton;
     UITableView *_detailsTable;
     FBEventDetailsTableDataSource *_dataSource;
     __strong MKMapView *_mapView;
+    NSString *_newStatus;
     
     __strong FBEventStatusTableController *_statusTableController;
     
@@ -191,55 +193,106 @@ static const float kLongitudeAsjustment = 0;
                                                                           options:0
                                                                           metrics:0
                                                                             views:_viewsDictionary]];
-    
     UIButton *inviteButton = [[UIButton alloc] init];
-    [inviteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    inviteButton.showsTouchWhenHighlighted = YES;
-    [inviteButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    [inviteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-    [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
-    [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:)
-           forControlEvents:UIControlEventTouchUpOutside];
-    [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
-    
-    UIButton *rsvpStatusButton = [[UIButton alloc] init];
-    [rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    rsvpStatusButton.showsTouchWhenHighlighted = YES;
-    [rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-    [rsvpStatusButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-    [rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchUpInside];
-    [rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:)
+
+    if ([self isHost])
+    {
+        [inviteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        inviteButton.showsTouchWhenHighlighted = YES;
+        [inviteButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+        [inviteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+        [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
+        [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:)
                forControlEvents:UIControlEventTouchUpOutside];
-    [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-    [rsvpStatusButton setTitle:@"RSVP Status" forState:UIControlStateNormal];
+        [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
+        [_buttonHolder addSubview:inviteButton];
+        [_viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
+        
+        
+        [_buttonHolder addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"V:|[inviteButton]|"
+                                       options:0
+                                       metrics:0
+                                       views:_viewsDictionary]];
+        
+        [_buttonHolder addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"H:|[inviteButton]|"
+                                       options:0
+                                       metrics:0
+                                       views:_viewsDictionary]];
+
+//
+//        [_buttonHolder addConstraints:[NSLayoutConstraint
+//                                       constraintsWithVisualFormat:@"V: |-[inviteButton]-|"
+//                                       options:0
+//                                       metrics:0
+//                                       views:_viewsDictionary]];
+    }
+
     
-    [_buttonHolder addSubview:inviteButton];
-    [_buttonHolder addSubview:rsvpStatusButton];
-    [_viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
-    [_viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":rsvpStatusButton }];
+    else if (![self isHost])
+    {
+        [inviteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        inviteButton.showsTouchWhenHighlighted = YES;
+        [inviteButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+        [inviteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+        [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
+        [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:)
+               forControlEvents:UIControlEventTouchUpOutside];
+        [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
+        [_buttonHolder addSubview:inviteButton];
+        [_viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
+        
+        [_buttonHolder addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"V:|[inviteButton]|"
+                                       options:0
+                                       metrics:0
+                                       views:_viewsDictionary]];
+        _rsvpStatusButton = [[UIButton alloc] init];
+        [_rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        _rsvpStatusButton.showsTouchWhenHighlighted = YES;
+        [_rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+        [_rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
+        [_rsvpStatusButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+        [_rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchUpInside];
+        [_rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:)
+                    forControlEvents:UIControlEventTouchUpOutside];
+        [_rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
     
-    [_buttonHolder addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|[inviteButton]|"
-                                   options:0
-                                   metrics:0
+    
+        if ([_eventDetails[@"rsvp_status"] isEqualToString:@"attending"])
+        {
+            _newStatus = @"Going";
+        } else if ([_eventDetails[@"rsvp_status"] isEqualToString:@"unsure"])
+        {
+            _newStatus = @"Maybe";
+        } else if ([_eventDetails[@"rsvp_status"] isEqualToString:@"declined"])
+        {
+            _newStatus = @"Not Going";
+        }
+        
+        [_rsvpStatusButton setTitle:_newStatus forState:UIControlStateNormal];
+        [_buttonHolder addSubview:_rsvpStatusButton];
+        [_viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":_rsvpStatusButton }];
+        
+        [_buttonHolder addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"V:|[rsvpStatusButton]|"
+                                       options:0
+                                       metrics:0
+                                       views:_viewsDictionary]];
+        [_buttonHolder addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"H:|[inviteButton][rsvpStatusButton]|"
+                                       options:0
+                                       metrics:0
+                                       views:_viewsDictionary]];
+        [_buttonHolder addConstraints:[NSLayoutConstraint
+                                       constraintsWithVisualFormat:@"[inviteButton(==rsvpStatusButton)]"
+                                       options:0
+                                       metrics:0
                                    views:_viewsDictionary]];
-    [_buttonHolder addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"V:|[rsvpStatusButton]|"
-                                   options:0
-                                   metrics:0
-                                   views:_viewsDictionary]];
-    [_buttonHolder addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"H:|[inviteButton][rsvpStatusButton]|"
-                                   options:0
-                                   metrics:0
-                                   views:_viewsDictionary]];
-    [_buttonHolder addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"[inviteButton(==rsvpStatusButton)]"
-                                   options:0
-                                   metrics:0
-                                   views:_viewsDictionary]];
+    }
     
     _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [_spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -500,14 +553,35 @@ static const float kLongitudeAsjustment = 0;
 - (void)changeRsvpStatus:(id)sender
 {
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    void (^completionBlock)(NSString *newStatus) = (^(NSString *newStatus) {
-        [[ParseDataStore sharedStore] changeRSVPStatusToEvent:_eventDetails[@"id"] newStatus:newStatus completion:nil];
-    });
+    if (![self isHost])
+    {
+        UIActionSheet *statusSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Going",@"Maybe",@"Not Going", nil];
+        [statusSheet showInView:[self view]];
+    }
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    NSString *actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+    if ([actionTitle isEqualToString:@"Going"])
+    {
+        _newStatus = @"Going";
+    }
+    else if ([actionTitle isEqualToString:@"Maybe"])
+    {
+        _newStatus = @"Maybe";
+    }
+    else if ([actionTitle isEqualToString:@"Not Going"])
+    {
+        _newStatus = @"Not Going";
+    }
+    else{
+        return;
+    }
+    [_rsvpStatusButton setTitle:_newStatus forState:UIControlStateNormal];
+    [[ParseDataStore sharedStore] changeRSVPStatusToEvent:_eventDetails[@"id"] newStatus:_newStatus completion:nil];
+
     
-    _statusTableController = [[FBEventStatusTableController alloc] initWithStatus:_eventDetails[@"rsvp_status"]
-                                                                       completion:completionBlock];
-    
-    [self.navigationController pushViewController:[_statusTableController presentableViewController] animated:YES];
 }
 
 - (void) resetButtonBackGroundColor: (id) sender {
