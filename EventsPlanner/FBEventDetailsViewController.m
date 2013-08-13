@@ -49,6 +49,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @property (nonatomic, getter = isHost) BOOL host;
 @property (nonatomic, getter = hasReplied) BOOL replied;
+@property BOOL active;
 
 @property (nonatomic, strong) NSString *status;
 
@@ -78,7 +79,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         _host = isHost;
         _replied = hasReplied;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
-        
+        _active = YES;
     }
     return self;
 }

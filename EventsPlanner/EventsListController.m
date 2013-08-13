@@ -68,12 +68,6 @@
         _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:maybeEvents];
         _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:notRepliedEvents];
         
-//        _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:hostEvents];
-        
-//        _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-//        [[_tableActiveViewController tableView] setDelegate:self];
-//        [[_tableActiveViewController tableView] setDataSource:_tableHostViewDataSource];
-//        [_tableActiveViewController setTitle:@"Active"];
         
         _hostTableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_hostTableViewController tableView] setDelegate:self];
@@ -94,6 +88,9 @@
                                      action:@selector(refreshTableView:)
                            forControlEvents:UIControlEventValueChanged];
         [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
+
+            UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
+        footer.backgroundColor = [UIColor clearColor];
         
 
         _maybeTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
