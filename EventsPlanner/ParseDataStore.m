@@ -812,7 +812,6 @@ NSString * const kDeclinedEventsKey = @"declined";
                 completionBlock();
             }
         }];
-
     }];
 }
 
