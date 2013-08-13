@@ -138,6 +138,8 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
         }
         
     }];
+    
+    NSLog(@"%@", _friendAnnotationPointDict);
 }
 
 - (void)viewWillDisappear:(BOOL)animated

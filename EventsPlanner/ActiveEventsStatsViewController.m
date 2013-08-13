@@ -29,7 +29,9 @@
         _guestAray = guestArray;
         _friendDetailsDict = [[NSMutableDictionary alloc] init];
         _distanceArray = [[NSMutableArray alloc]init];
-        
+        UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 1, 90)];
+        footer.backgroundColor  = [UIColor clearColor];
+        self.tableView.tableFooterView = footer; 
         self.tableView.scrollEnabled = YES;
         self.tableView.separatorColor = [UIColor grayColor];
    
@@ -53,17 +55,25 @@
             [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
             
         }
-        
         [self setDict];
+
+        
         
     }
     return self;
     
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.navigationController.navigationBar.translucent = NO;
+    
+    [super viewWillAppear:animated];
+}
+
 
 -(void)viewDidLoad{
-   NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self.tableView selector:@selector(reloadData) userInfo:Nil repeats:YES];
+   NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:50.0 target:self.tableView selector:@selector(reloadData) userInfo:Nil repeats:YES];
     [timer fire];
     [super viewDidLoad];
 
@@ -86,6 +96,8 @@
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"statsCell"];
+    [self setDict];
+
     if(cell == nil){
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"statsCell"];
         cell.backgroundColor = [UIColor clearColor];
@@ -114,7 +126,6 @@
         
         else if (indexPath.row ==3){
             title.text = @"Average distance to Venue";
-            NSLog(@"%@", _friendDetailsDict);
             CLLocationDistance dist = 0;
             NSInteger counter = 0;
             for (NSString *fbID in _friendDetailsDict){
@@ -129,7 +140,6 @@
                     counter = counter + 1;
                 }
             }
-            NSLog(@"%f,", dist);
             
             if( dist == 0){
                 description.text = @ "You have no guests who allow tracking";
@@ -142,7 +152,10 @@
         
         else if (indexPath.row == 4){
            title.text = @"Median distance to Venue";
-            if(fmod(_distanceArray.count, 2)==0 & _distanceArray.count != 0){ //if even
+            if(_distanceArray.count == 0 ){
+                description.text = @"0";
+            }
+           else if(fmod(_distanceArray.count, 2)==0 & _distanceArray.count != 0){ //if even
                 NSNumber *num1= [_distanceArray objectAtIndex:_distanceArray.count/2];
                 NSNumber *num2 = [_distanceArray objectAtIndex:(_distanceArray.count/2)-1];
                 float median = ([num1 floatValue] + [num2 floatValue])/2;
@@ -150,6 +163,8 @@
                 
                 
             }
+            
+            
             
             else{
                 if(_distanceArray.count != 0){

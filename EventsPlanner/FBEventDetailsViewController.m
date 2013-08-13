@@ -339,7 +339,6 @@ static const float kLongitudeAsjustment = 0;
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         _venueLocation = coordinate;
        [_mapView setMapType:MKMapTypeStandard];
-        //[_mapView setCenterCoordinate:_venueLocation animated:NO];
         MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
         annot.coordinate = _venueLocation;
         [self updateMapZoomLocation:_venueLocation];
@@ -352,7 +351,6 @@ static const float kLongitudeAsjustment = 0;
         [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
             CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
             _venueLocation = coordinate;
-           // [_mapView setCenterCoordinate:_venueLocation];
             MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
             annot.coordinate = _venueLocation;
             [self updateMapZoomLocation:_venueLocation];
@@ -505,7 +503,6 @@ static const float kLongitudeAsjustment = 0;
         _venueLocation = coordinate;
         if (!coordinate.latitude) {
             [alertView show];
-           // [_mapView setCenterCoordinate:_venueLocation];
             MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
             annot.coordinate = _venueLocation;
             [self updateMapZoomLocation:_venueLocation];
@@ -518,7 +515,6 @@ static const float kLongitudeAsjustment = 0;
             [_eventDetails setValue:locationString forKey:@"location"];
             [_dataSource updateObject:locationString forKey:@"location"];
             [_detailsTable reloadData];
-            //[_mapView setCenterCoordinate:_venueLocation];
             MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
             annot.coordinate = _venueLocation;
             [self updateMapZoomLocation:_venueLocation];
@@ -603,11 +599,9 @@ static const float kLongitudeAsjustment = 0;
     _statsViewController =[[ActiveEventsStatsViewController alloc]initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
     _statsViewController.title = @"Stats";
     
-    
     _item= [_statsViewController tabBarItem];
     _briefcase= [UIImage imageNamed:@"listFinal.png"];
     [_item setImage:_briefcase];
-    
     _tabBarController=[[UITabBarController alloc]init];
     _mapViewController  = [[ActiveEventMapViewController alloc]
                                                        initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
