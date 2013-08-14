@@ -10,6 +10,8 @@
 
 @interface EventsTableViewDataSource : NSObject<UITableViewDataSource>
 
+@property (nonatomic, strong) NSArray *eventArray;
+
 - (id)initWithEventArray:(NSArray *)eventArray;
 
 @end

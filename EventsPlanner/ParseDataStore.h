@@ -18,6 +18,11 @@ extern NSString * const facebookID;
 extern NSString * const locationKey;
 extern NSString * const trackingObject;
 
+extern NSString * const kHostEventsKey;
+extern NSString * const kAttendingEventsKey;
+extern NSString * const kMaybeEventsKey;
+extern NSString * const kNoReplyEventsKey;
+
 @interface ParseDataStore : NSObject
 
 @property (readonly, nonatomic) BOOL isLoggedIn;
@@ -34,10 +39,12 @@ extern NSString * const trackingObject;
 - (BOOL) verifyTrackingAllowed;
 - (void)changePermissionForEvent: (NSString *) eventId identity: (NSString *) identity;
 
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents,
-    NSArray* maybeAttendingEvents, NSArray *noReplyEvents))completionBlock;
-
-- (void)fetchEventDetailsWithEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
+- (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *hostEvents,
+                                                      NSArray *guestEvents,
+                                                      NSArray *maybeAttendingEvents,
+                                                      NSArray *noReplyEvents))completionBlock;
+- (void)fetchEventListDataForListKey:(NSString *)listKey completion:(void (^)(NSArray *eventsList))completionBlock;
+- (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 - (void)fetchPartialEventDetailsForNewEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 
 - (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock;

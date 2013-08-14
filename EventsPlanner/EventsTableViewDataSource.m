@@ -9,12 +9,6 @@
 #import "EventsTableViewDataSource.h"
 #import "EventCell.h"
 
-@interface EventsTableViewDataSource()
-
-@property (nonatomic, strong) NSArray *eventArray;
-
-@end
-
 @implementation EventsTableViewDataSource
 
 - (id)initWithEventArray:(NSArray *)eventArray

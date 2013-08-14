@@ -23,7 +23,7 @@ NSString * const trackingObject = @"trackingDictionary";
 NSString * const kHostEventsKey = @"host";
 NSString * const kAttendingEventsKey = @"attending";
 NSString * const kMaybeEventsKey = @"maybe";
-NSString * const kNoReplyEventsKey = @"no_reply";
+NSString * const kNoReplyEventsKey = @"not_replied";
 
 @interface ParseDataStore () <CLLocationManagerDelegate>
 
@@ -250,35 +250,74 @@ NSString * const kNoReplyEventsKey = @"no_reply";
 
 #pragma mark Caching data
 
-// Events List
-- (NSString *)eventsListArchivePath
+
+// All events lists
+- (BOOL)saveAllEventsLists:(NSDictionary *)dictOfEventsListsByKey
+{
+    BOOL allSucceeded = YES;
+    
+    NSArray *eventsListKeyArray = @[kHostEventsKey, kAttendingEventsKey, kMaybeEventsKey, kNoReplyEventsKey];
+    for (NSString *key in eventsListKeyArray) {
+        
+        BOOL succeeded = [self saveEventsList:dictOfEventsListsByKey[key] forKey:key];
+        if (succeeded == NO) {
+            allSucceeded = NO;
+        }
+        
+    }
+    
+    return allSucceeded;
+}
+
+- (NSDictionary *)loadAllEventsListsFromCacheAsKeyedDictionary
+{
+    NSMutableDictionary *resultDictionary = [[NSMutableDictionary alloc] init];
+    
+    NSArray *eventsListKeyArray = @[kHostEventsKey, kAttendingEventsKey, kMaybeEventsKey, kNoReplyEventsKey];
+    for (NSString *key in eventsListKeyArray) {
+        NSArray *eventsList = [self loadEventsListForKey:key];
+        [resultDictionary addEntriesFromDictionary:@{ key:eventsList }];
+    }
+    
+    return resultDictionary;
+}
+
+
+// Specific events list
+- (NSString *)archivePathForEventsListWithKey:(NSString *)eventsListKey
 {
     NSArray *cacheDirectories = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *cacheDirectory = [cacheDirectories firstObject];
     
-    return [cacheDirectory stringByAppendingPathComponent:@"eventsList.archive"];
+    NSString *appendedPath = [NSString stringWithFormat:@"%@_eventsList.archive", eventsListKey];
+    
+    return [cacheDirectory stringByAppendingPathComponent:appendedPath];
 }
 
-- (BOOL)saveEventsLists:(NSDictionary *)eventsListsByKey
+- (BOOL)saveEventsList:(NSArray *)eventsList forKey:(NSString *)eventsListKey
 {
-    return [NSKeyedArchiver archiveRootObject:eventsListsByKey
-                                       toFile:[self eventsListArchivePath]];
+    return [NSKeyedArchiver archiveRootObject:eventsList
+                                       toFile:[self archivePathForEventsListWithKey:eventsListKey]];
 }
 
-- (NSDictionary *)fetchEventsListsFromCache
+- (NSArray *)loadEventsListForKey:(NSString *)eventsListKey
 {
-    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self eventsListArchivePath]];
+    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self archivePathForEventsListWithKey:eventsListKey]];
 }
 
-- (NSDate *)eventsListCacheDate
+
+- (NSDate *)dateOfCacheForEventsListOfKey:(NSString *)eventsListKey
 {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"eventsListCacheDate"];
+    NSString *cacheKey = [NSString stringWithFormat:@"%@_eventsListCacheDate", eventsListKey];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:cacheKey];
 }
 
-- (void)setEventsListCacheDate
+- (void)setDateOfCacheForEventsListOfKey:(NSString *)eventsListKey
 {
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"eventsListCacheDate"];
+    NSString *cacheKey = [NSString stringWithFormat:@"%@_eventsListCacheDate", eventsListKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:cacheKey];
 }
+
 
 // Event Details
 - (NSString *)eventDetailsArchivePathForEvent:(NSString *)eventId
@@ -300,9 +339,9 @@ NSString * const kNoReplyEventsKey = @"no_reply";
     return [NSKeyedUnarchiver unarchiveObjectWithFile:[self eventDetailsArchivePathForEvent:eventId]];
 }
 
-- (NSString *)cacheDateObjectKeyForEvent:(NSString *)evendId
+- (NSString *)cacheDateObjectKeyForEvent:(NSString *)eventId
 {
-    return [NSString stringWithFormat:@"%@_cacheDate", evendId];
+    return [NSString stringWithFormat:@"%@_cacheDate", eventId];
 }
 
 - (NSDate *)eventDetailsCacheDateForEvent:(NSString *)eventId
@@ -315,19 +354,28 @@ NSString * const kNoReplyEventsKey = @"no_reply";
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:[self cacheDateObjectKeyForEvent:eventId]];
 }
 
+
 #pragma mark Facebook Request
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents,
-                                                   NSArray *guestEvents,
-                                                   NSArray* maybeAttendingEvents,
-                                                   NSArray *noReplyEvents))completionBlock
+- (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *hostEvents,
+                                                      NSArray *guestEvents,
+                                                      NSArray *maybeAttendingEvents,
+                                                      NSArray *noReplyEvents))completionBlock
 {
     
-    NSDate *eventsCacheDate = [self eventsListCacheDate];
+//    if (!self.myId) {
+//        self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:@"myId"];
+//    }
+    
+    // Get cached data if not too old
+    //TODO: actually get this to work right
+    /*
+    NSDate *eventsCacheDate = [self dateOfCacheForEventsListOfKey:kHostEventsKey];
     if (eventsCacheDate) {
         NSTimeInterval cacheAge = [eventsCacheDate timeIntervalSinceNow];
         if (cacheAge > (-60 * 10)) {
-            NSDictionary *savedEventsList = [self fetchEventsListsFromCache];
+            NSDictionary *savedEventsList = [self loadAllEventsListsFromCacheAsKeyedDictionary];
             if (savedEventsList) {
+                NSLog(@"cached list");
                 completionBlock(savedEventsList[kHostEventsKey],
                                 savedEventsList[kAttendingEventsKey],
                                 savedEventsList[kMaybeEventsKey],
@@ -336,6 +384,7 @@ NSString * const kNoReplyEventsKey = @"no_reply";
             }
         }
     }
+     */
     
     FBRequest *request = [FBRequest requestForGraphPath:
                           @"me?fields=events.limit(1000).fields(id,name,admins.fields(id,name),"
@@ -354,7 +403,8 @@ NSString * const kNoReplyEventsKey = @"no_reply";
             
             if (!self.myId) {
                 // Store myId locally and in parse, if it's not there already
-                _myId = result[@"id"];
+                self.myId = result[@"id"];
+                [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:@"myId"];
                 [[PFUser currentUser] setObject:_myId forKey:facebookID];
                 [[PFUser currentUser] saveInBackground];
             }
@@ -395,10 +445,9 @@ NSString * const kNoReplyEventsKey = @"no_reply";
                 
             }
             
-            //TODO: break this into a separate method completely
             FBRequest *noReplyRequest = [FBRequest requestForGraphPath:
                                          @"me?fields=events.limit(1000).type(not_replied).fields(id,name,"
-                                         @"cover,rsvp_status,start_time),id"];
+                                         @"cover,rsvp_status,start_time)"];
             [noReplyRequest startWithCompletionHandler:^(FBRequestConnection *connection,
                                                          id result,
                                                          NSError *error){
@@ -423,11 +472,11 @@ NSString * const kNoReplyEventsKey = @"no_reply";
                         [noReplyEvents insertObject:event atIndex:0];
                     }
                     
-                    [self setEventsListCacheDate];
-                    [self saveEventsLists:@{ kHostEventsKey: hostEvents,
-                                             kAttendingEventsKey: attendingEvents,
-                                             kMaybeEventsKey: maybeEvents,
-                                             kNoReplyEventsKey: noReplyEvents }];
+                    [self setDateOfCacheForEventsListOfKey:kHostEventsKey];
+                    [self saveAllEventsLists:@{ kHostEventsKey: hostEvents,
+                                                kAttendingEventsKey: attendingEvents,
+                                                kMaybeEventsKey: maybeEvents,
+                                                kNoReplyEventsKey: noReplyEvents }];
                     completionBlock(hostEvents, attendingEvents, maybeEvents, noReplyEvents);
                     
                 }
@@ -436,15 +485,94 @@ NSString * const kNoReplyEventsKey = @"no_reply";
     }];
 }
 
-- (void)fetchEventDetailsWithEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
+- (void)fetchEventListDataForListKey:(NSString *)listKey completion:(void (^)(NSArray *eventsList))completionBlock
+{
+    NSString *graphPath = @"me?fields=events.limit(1000).type(%@).fields(id,name,"
+                          @"cover,admins.fields(id,name),rsvp_status,start_time)";
+    NSString *filterKey;
+    if (listKey == kHostEventsKey) {
+        filterKey = @"attending";
+    } else if (listKey == kAttendingEventsKey) {
+        filterKey = @"attending";
+    } else if (listKey == kMaybeEventsKey) {
+        filterKey = @"maybe";
+    } else if (listKey == kNoReplyEventsKey) {
+        filterKey = @"not_replied";
+    } else {
+        return;
+    }
+    
+    graphPath = [NSString stringWithFormat:graphPath, filterKey];
+    
+    FBRequest *request = [FBRequest requestForGraphPath:graphPath];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error){
+        
+        if (error) {
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                            message:error.localizedDescription
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        } else {
+            
+            FBGraphObject *fbGraphObj = (FBGraphObject *)result;
+            NSArray *eventArray = fbGraphObj[@"events"][@"data"];
+            
+            NSMutableArray *specificEvents = [[NSMutableArray alloc] init];
+            for (FBGraphObject *event in eventArray)
+            {
+                [event fixEventCoverPhoto];
+                
+                if (listKey == kMaybeEventsKey || listKey == kNoReplyEventsKey) {
+                    [specificEvents insertObject:event atIndex:0];
+                    continue;
+                }
+                
+                NSArray *adminArray = event[@"admins"][@"data"];
+                BOOL isHost = NO;
+                for (FBGraphObject *adminData in adminArray) {
+                    if ([adminData[@"id"] isEqualToString:_myId]) {
+                        isHost = YES;
+                        break;
+                    }
+                }
+                
+                if (listKey == kHostEventsKey && isHost == YES) {
+                    [specificEvents insertObject:event atIndex:0];
+                } else if (listKey == kAttendingEventsKey && isHost == NO) {
+                    [specificEvents insertObject:event atIndex:0];
+                }
+                
+            }
+            
+            [self setDateOfCacheForEventsListOfKey:listKey];
+            [self saveEventsList:specificEvents forKey:listKey];
+            
+//            NSString *log = [NSString stringWithFormat:@"events for key %@:\n%@", listKey, specificEvents];
+//            NSLog(@"%@", log);
+            
+            if (completionBlock) {
+                completionBlock(specificEvents);
+            }
+        }
+        
+    }];
+}
+
+- (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
     
+    // Get cached data is not too old
     NSDate *eventDetailsCacheDate = [self eventDetailsCacheDateForEvent:eventId];
     if (eventDetailsCacheDate) {
         NSTimeInterval cacheAge = [eventDetailsCacheDate timeIntervalSinceNow];
         if (cacheAge > (-60 * 5)) {
             NSDictionary *savedEventDetails = [self fetchEventDetailsFromCacheForEvent:eventId];
             if (savedEventDetails) {
+                NSLog(@"cached details");
                 completionBlock(savedEventDetails);
                 return;
             }
@@ -470,6 +598,7 @@ NSString * const kNoReplyEventsKey = @"no_reply";
             
             [self setEventDetailsCacheDateForEvent:eventId];
             [self saveEventDetails:(NSDictionary *)result event:eventId];
+            
             if (completionBlock) {
                 completionBlock((NSDictionary *)result);
             }
@@ -591,7 +720,7 @@ NSString * const kNoReplyEventsKey = @"no_reply";
             [alertView show];
             
         } else {
-            NSLog(@"%@",result);
+            
             if (completionBlock)
                 completionBlock();
             

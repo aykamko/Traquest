@@ -78,12 +78,12 @@
 
 - (void)setEventsListView
 {
-    [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvents, NSArray *noReplyEvents) {
+    [[ParseDataStore sharedStore] fetchAllEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvents, NSArray *noReplyEvents) {
         
         _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents
-                                                                     guestEvents:guestEvents
-                                                                   noReplyEvents:noReplyEvents
-                                                                  maybeAttending:maybeAttendingEvents];
+                                                                     attendingEvents:guestEvents
+                                                                   notRepliedEvents:noReplyEvents
+                                                                  maybeEvents:maybeAttendingEvents];
         
         [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
 

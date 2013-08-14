@@ -18,9 +18,9 @@ typedef enum eventType {
 
 
 - (id)initWithHostEvents:(NSArray *)hostEvents
-             guestEvents:(NSArray *)guestEvents
-           noReplyEvents:(NSArray *)noReplyEvents
-          maybeAttending:(NSArray *)maybeAttending;
+         attendingEvents:(NSArray *)attendintEvents
+        notRepliedEvents:(NSArray *)notRepliedEvents
+             maybeEvents:(NSArray *)maybeEvents;
 
 - (id)presentableViewController;
 

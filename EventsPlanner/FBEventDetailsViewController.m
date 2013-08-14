@@ -85,7 +85,7 @@ static const float kLongitudeAsjustment = 0;
     [super viewDidLoad];
     [self setViewPartialEventDetails];
     
-    [[ParseDataStore sharedStore] fetchEventDetailsWithEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
+    [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
         [[self eventDetails] addEntriesFromDictionary:eventDetails];
         [self setViewCompleteEventDetails];
         [_detailsTable setNeedsDisplay];
@@ -622,7 +622,7 @@ static const float kLongitudeAsjustment = 0;
     region.span.longitudeDelta = 0.007;
     [_mapView setRegion:region animated:NO];
      */
-    NSLog(@"center region %lf, %lf", _mapView.region.center.latitude, _mapView.region.center.longitude);
+//    NSLog(@"center region %lf, %lf", _mapView.region.center.latitude, _mapView.region.center.longitude);
     
     
 }
