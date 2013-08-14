@@ -26,7 +26,8 @@ typedef enum eventType {
 
 - (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails
                                                   isHost:(BOOL)isHost
-                                              hasReplied:(BOOL)replied;
+                                                isActive:(BOOL)isActive;
+
 
 - (void)refreshTableViewForEventsListKey:(NSString *)eventsListKey
                            newEventsList:(NSArray *)eventsList

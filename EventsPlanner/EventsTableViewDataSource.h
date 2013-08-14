@@ -11,6 +11,8 @@
 @interface EventsTableViewDataSource : NSObject<UITableViewDataSource>
 
 @property (nonatomic, strong) NSArray *eventArray;
+@property (nonatomic, strong) NSMutableArray *activeEvents;
+@property (nonatomic, strong) NSMutableArray *inactiveEvents;
 
 - (id)initWithEventArray:(NSArray *)eventArray;
 

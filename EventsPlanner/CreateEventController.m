@@ -171,13 +171,13 @@
                                                    withFriends:self.createEventModel.invitedFriendIds
                                                     completion:nil];
         }
-        
+        //TODO: Figure out how to appropriately assign event as active or not
         [[ParseDataStore sharedStore] fetchPartialEventDetailsForNewEvent:newEventId completion:^(NSDictionary *eventDetails) {
             [spinner stopAnimating];
             [self.tableViewController.navigationController popViewControllerAnimated:NO];
             [self.eventsListController pushEventDetailsViewControllerWithPartialDetails:eventDetails
                                                                                  isHost:YES
-                                                                             hasReplied:YES];
+                                                                                isActive:NO];
         }];
         
     }];

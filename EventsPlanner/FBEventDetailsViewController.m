@@ -54,13 +54,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @property (nonatomic,strong) NSString *layoutConstraint;
 @property (nonatomic, getter = isHost) BOOL host;
-@property (nonatomic, getter = hasReplied) BOOL replied;
+@property (nonatomic, getter = isActive) BOOL active;
 
 @property (nonatomic, strong) NSString *status;
 
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 
 @property (nonatomic, strong) UIButton *rsvpStatusButton;
+@property (nonatomic, strong) NSLayoutConstraint *verticalConstraint;
 
 @property (nonatomic, strong) NSMutableDictionary *dimensionsDict;
 @property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
@@ -79,12 +80,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost isActive: (BOOL)isActive hasReplied:(BOOL)hasReplied
+
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost  isActive:(BOOL)isActive
 {
     self = [super init];
     if (self) {
         _host = isHost;
-        _replied = hasReplied;
+        _active = isActive;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         active = isActive;
         [_activeEventsDictionary setObject:[NSNumber numberWithBool:NO] forKey:_eventDetails[@"id"]];
@@ -509,6 +511,36 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                        options:0
                                        metrics:0
                                    views:_viewsDictionary]];
+        
+        if ([self isActive])
+        {
+            NSArray *itemsArray = @[@"Allow",@"Anonymous",@"Don't Allow"];
+            UISegmentedControl *changeTrackingPermissions = [[UISegmentedControl alloc] initWithItems:itemsArray];
+            [changeTrackingPermissions setTranslatesAutoresizingMaskIntoConstraints:NO];
+//            [changeTrackingPermissions addTarget:self action:@selector(changePermission:) forControlEvents:[UIControlEventValueChanged];
+            
+            [_scrollView addSubview:changeTrackingPermissions];
+            
+            [_viewsDictionary addEntriesFromDictionary:@{ @"changeTracking":changeTrackingPermissions}];
+
+            [_scrollView addConstraints:[NSLayoutConstraint
+                                           constraintsWithVisualFormat:@"H:|-[changeTracking]-|"
+                                           options:0
+                                           metrics:0
+                                         views:_viewsDictionary]];
+            [_scrollView addConstraints:[NSLayoutConstraint
+                                         constraintsWithVisualFormat:@"V:[_buttonHolder]-[changeTracking(50)]"
+                                         options:0
+                                         metrics:0
+                                         views:_viewsDictionary]];
+
+//            [_scrollView addConstraints:[NSLayoutConstraint
+//                                         constraintsWithVisualFormat:@"V:[_buttonHolder][changeTracking]"
+//                                         options:0
+//                                         metrics:0
+//                                         views:_viewsDictionary]];
+
+        }
     }
     
     _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -611,6 +643,11 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [_scrollView addSubview:_detailsTable];
     [_viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
+    [_scrollView addConstraints:[NSLayoutConstraint
+                                 constraintsWithVisualFormat:@"V:[changeTracking(50)]-[_detailsTable]"
+                                 options:0
+                                 metrics:0
+                                 views:_viewsDictionary]];
     
     if ([self isHost]) {
         
