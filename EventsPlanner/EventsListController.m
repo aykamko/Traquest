@@ -147,7 +147,7 @@
 - (void)tabBarController:(UITabBarController *)tabBarController
  didSelectViewController:(UIViewController *)viewController
 {
-    self.selectedTableViewController = viewController;
+    self.selectedTableViewController = (UITableViewController *)viewController;
 }
 
 - (void)refreshTableView:(id)sender

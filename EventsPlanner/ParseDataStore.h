@@ -49,8 +49,14 @@ extern NSString * const kNoReplyEventsKey;
 
 - (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock;
 
-- (void)inviteFriendsToEvent:(NSString *)eventId withFriends:(NSArray *)friendIdArray completion:(void (^)())completionBlock;
-- (void)changeRSVPStatusToEvent:(NSString *)eventId newStatus:(NSString *)status completion:(void (^)())completionBlock;
+- (void)inviteFriendsToEvent:(NSString *)eventId
+                 withFriends:(NSArray *)friendIdArray
+                  completion:(void (^)())completionBlock;
+
+- (void)changeRSVPStatusToEvent:(NSString *)eventId
+                      oldStatus:(NSString *)oldStatus
+                      newStatus:(NSString *)status
+                     completion:(void (^)())completionBlock;
 
 - (void)notifyUsersWithCompletion:(NSString *)eventId guestArray:(NSArray *)guestArray completion:(void (^)())completionBlock;
 

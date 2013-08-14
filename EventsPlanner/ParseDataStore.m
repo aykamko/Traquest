@@ -551,9 +551,6 @@ NSString * const kNoReplyEventsKey = @"not_replied";
             [self setDateOfCacheForEventsListOfKey:listKey];
             [self saveEventsList:specificEvents forKey:listKey];
             
-//            NSString *log = [NSString stringWithFormat:@"events for key %@:\n%@", listKey, specificEvents];
-//            NSLog(@"%@", log);
-            
             if (completionBlock) {
                 completionBlock(specificEvents);
             }
@@ -561,7 +558,6 @@ NSString * const kNoReplyEventsKey = @"not_replied";
         
     }];
 }
-
 - (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
     
@@ -690,20 +686,16 @@ NSString * const kNoReplyEventsKey = @"not_replied";
     }];
 }
 
-- (void)changeRSVPStatusToEvent:(NSString *)eventId newStatus:(NSString *)status completion:(void (^)())completionBlock
+- (void)changeRSVPStatusToEvent:(NSString *)eventId
+                      oldStatus:(NSString *)oldStatus
+                      newStatus:(NSString *)newStatus
+                     completion:(void (^)())completionBlock
 {
-    NSString *urlStatusString;
-    if ([status isEqualToString:@"Going"]) {
-        urlStatusString = @"attending";
-    } else if ([status isEqualToString:@"Maybe"]) {
-        urlStatusString = @"maybe";
-    } else if ([status isEqualToString:@"Not Going"]) {
-        urlStatusString = @"declined";
+    if ([newStatus isEqualToString:@"unsure"]) {
+        newStatus = @"maybe";
     }
-    else {
-        return;
-    }
-    NSString *graphPath = [NSString stringWithFormat:@"%@/%@/%@", eventId, urlStatusString, _myId];
+    
+    NSString *graphPath = [NSString stringWithFormat:@"%@/%@/%@", eventId, newStatus, self.myId];
 
     FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:nil HTTPMethod:@"POST"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
