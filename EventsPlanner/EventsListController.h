@@ -19,7 +19,7 @@ typedef enum eventType {
 + (EventsListController *)sharedListController;
 
 - (id)initWithHostEvents:(NSArray *)hostEvents
-         attendingEvents:(NSArray *)attendintEvents
+         attendingEvents:(NSArray *)attendingEvents
         notRepliedEvents:(NSArray *)notRepliedEvents
              maybeEvents:(NSArray *)maybeEvents;
 
@@ -32,5 +32,6 @@ typedef enum eventType {
 - (void)refreshTableViewForEventsListKey:(NSString *)eventsListKey
                            newEventsList:(NSArray *)eventsList
              endRefreshForRefreshControl:(UIRefreshControl *)refreshControl;
+
 
 @end
