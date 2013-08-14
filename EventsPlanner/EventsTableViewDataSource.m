@@ -11,34 +11,13 @@
 
 @interface EventsTableViewDataSource()
 
-@property (nonatomic, strong) NSArray *hostEvents;
-@property (nonatomic, strong) NSArray *guestEvents;
-@property (nonatomic, strong) NSArray *noReplyEvents;
-@property (nonatomic, strong) NSArray *maybeAttending;
-
 @property (nonatomic, strong) NSArray *eventArray;
-
 
 @end
 
 @implementation EventsTableViewDataSource
 
-- (id)initWithHostEvents:(NSArray *)hostEvents
-             guestEvents:(NSArray *)guestEvents
-           noReplyEvents:(NSArray *)noReplyEvents
-          maybeAttending:(NSArray *)maybeAttending
-{
-    self = [super init];
-    if (self) {
-        _hostEvents = hostEvents;
-        _guestEvents = guestEvents;
-        _noReplyEvents = noReplyEvents;
-        _maybeAttending = maybeAttending;
-    }
-    return self;
-}
-
-- (id)initWithEvents:(NSArray *)eventArray
+- (id)initWithEventArray:(NSArray *)eventArray
 {
     self = [super init];
     if (self) {
@@ -47,27 +26,13 @@
     return self;
 }
 
-
-
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
     static NSString *EventCellIdentifier = @"EventCell";
     EventCell *cell = (EventCell*)[tableView dequeueReusableCellWithIdentifier:EventCellIdentifier];
     
-    NSArray *eventArray;
-    eventArray = _eventArray;
-    
-//    if (indexPath.section == 0) {
-//        eventArray = _hostEvents;
-//    } else if (indexPath.section == 1) {
-//        eventArray = _guestEvents;
-//    } else if (indexPath.section == 2) {
-//        eventArray = _maybeAttending;
-//    } else if (indexPath.section == 3) {
-//        eventArray = _noReplyEvents;
-//    }
+    NSArray *eventArray = _eventArray;
     
     // Arguments to pass to cell
     NSString *cellTitle;
@@ -99,7 +64,6 @@
     cellBackground = eventArray[indexPath.row][@"cover"];
     
     // Allocating and initializing actual cell
-    
     cell = [[EventCell alloc] initWithTitle:cellTitle
                                  rsvpStatus:cellRsvpStatus
                                        date:cellDate
@@ -107,11 +71,6 @@
                             reuseIdentifier:EventCellIdentifier];
     
     return cell;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

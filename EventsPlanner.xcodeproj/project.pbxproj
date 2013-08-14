@@ -19,6 +19,7 @@
 		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
 		7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */; };
 		7C162C8D17BAB8D00043CAA9 /* NSDate+ExtraStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */; };
+		7C162C9017BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C162C8F17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m */; };
 		7C2CFFC817B9B386003A2C8F /* CreateEventPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */; };
 		7C2CFFCB17B9C8F4003A2C8F /* CreateEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2CFFCA17B9C8F4003A2C8F /* CreateEventModel.m */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
@@ -113,6 +114,8 @@
 		7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		7C162C8B17BAB8D00043CAA9 /* NSDate+ExtraStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+ExtraStuff.h"; sourceTree = "<group>"; };
 		7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+ExtraStuff.m"; sourceTree = "<group>"; };
+		7C162C8E17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBGraphObject+FixEventCoverPhoto.h"; sourceTree = "<group>"; };
+		7C162C8F17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FBGraphObject+FixEventCoverPhoto.m"; sourceTree = "<group>"; };
 		7C2CFFC617B9B386003A2C8F /* CreateEventPlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventPlacePickerViewController.h; sourceTree = "<group>"; };
 		7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventPlacePickerViewController.m; sourceTree = "<group>"; };
 		7C2CFFC917B9C8F4003A2C8F /* CreateEventModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventModel.h; sourceTree = "<group>"; };
@@ -318,6 +321,7 @@
 				7CE691E617B6EE0C00D3D8AB /* Constants */,
 				7CBBD71017AB987B00ED9DAB /* Categories */,
 				7CBBD70917AB860F00ED9DAB /* App Delegate */,
+				7CBBD70617AB858600ED9DAB /* Active Event View Stuff */,
 				7CA1428817B5FA0900C8D02A /* New Event View Stuff */,
 				7CBBD70817AB85D600ED9DAB /* Event Table View Stuff */,
 				7CBBD70517AB857400ED9DAB /* Detail View Stuff */,
@@ -430,7 +434,6 @@
 		7CBBD70817AB85D600ED9DAB /* Event Table View Stuff */ = {
 			isa = PBXGroup;
 			children = (
-				7CBBD70617AB858600ED9DAB /* Active Event View Stuff */,
 				90130EBF17A31D450038BBFB /* EventsListController.h */,
 				90130EC017A31D450038BBFB /* EventsListController.m */,
 				90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */,
@@ -483,6 +486,8 @@
 				7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */,
 				7C162C8B17BAB8D00043CAA9 /* NSDate+ExtraStuff.h */,
 				7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */,
+				7C162C8E17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.h */,
+				7C162C8F17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -545,7 +550,7 @@
 				ORGANIZATIONNAME = FBU;
 				TargetAttributes = {
 					7C418C6217A082030084330C = {
-						DevelopmentTeam = 75E82M9UVH;
+						DevelopmentTeam = ZC95DNC67Z;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -655,6 +660,7 @@
 				7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */,
 				7C2CFFCB17B9C8F4003A2C8F /* CreateEventModel.m in Sources */,
 				7CBBD70017AB851700ED9DAB /* EventCellContentView.m in Sources */,
+				7C162C9017BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m in Sources */,
 				7CED113017B036CE005B533D /* FBEventStatusTableController.m in Sources */,
 				7C418C7317A082030084330C /* main.m in Sources */,
 			);

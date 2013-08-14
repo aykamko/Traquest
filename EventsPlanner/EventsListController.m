@@ -58,57 +58,44 @@
         _guestEvents = guestEvents;
         _noReplyEvents = noReplyEvents;
         _maybeAttending = maybeAttending;
-//        _tableViewDataSource = [[EventsTableViewDataSource alloc] initWithHostEvents:hostEvents
-//                                                                         guestEvents:guestEvents
-//                                                                       noReplyEvents:noReplyEvents
-//                                                                      maybeAttending:maybeAttending];
-//        
-        _tableHostViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:hostEvents];
-        _tableGuestViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:guestEvents];
-        _tableMaybeViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:maybeAttending];
-        _tableNoReplyViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:noReplyEvents];
+        
+        _tableHostViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:hostEvents];
+        _tableGuestViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:guestEvents];
+        _tableMaybeViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:maybeAttending];
+        _tableNoReplyViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:noReplyEvents];
+        
 //        _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:hostEvents];
         
-        UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
-        footer.backgroundColor = [UIColor clearColor];
-        
-        _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        [[_tableActiveViewController tableView] setDelegate:self];
-        [[_tableActiveViewController tableView] setDataSource:_tableHostViewDataSource];
-        [_tableActiveViewController setTitle:@"Active"];
-        _tableActiveViewController.tableView.tableFooterView = footer;
-
+//        _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+//        [[_tableActiveViewController tableView] setDelegate:self];
+//        [[_tableActiveViewController tableView] setDataSource:_tableHostViewDataSource];
+//        [_tableActiveViewController setTitle:@"Active"];
         
         _tableHostViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_tableHostViewController tableView] setDelegate:self];
         [[_tableHostViewController tableView] setDataSource:_tableHostViewDataSource];
         [_tableHostViewController setTitle:@"Host"];
-        _tableHostViewController.tableView.tableFooterView = footer;
         
         _tableGuestViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [[_tableGuestViewController tableView] setDelegate:self];
         [[_tableGuestViewController tableView] setDataSource:_tableGuestViewDataSource];
         [_tableGuestViewController setTitle:@"Attending"];
-        _tableGuestViewController.tableView.tableFooterView = footer;
 
 
         _tableMaybeViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [[_tableMaybeViewController tableView] setDelegate:self];
         [[_tableMaybeViewController tableView] setDataSource:_tableMaybeViewDataSource];
         [_tableMaybeViewController setTitle:@"Maybe"];
-        _tableMaybeViewController.tableView.tableFooterView = footer;
         
         _tableNoReplyViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [[_tableNoReplyViewController tableView] setDelegate:self];
         [[_tableNoReplyViewController tableView] setDataSource:_tableNoReplyViewDataSource];
         [_tableNoReplyViewController setTitle:@"No Reply"];
-        _tableNoReplyViewController.tableView.tableFooterView = footer;
 
         _tabBarController = [[UITabBarController alloc] init];
         _tabBarController.delegate = self;
       
-        [_tabBarController setViewControllers:@[_tableActiveViewController,
-                                                _tableHostViewController,
+        [_tabBarController setViewControllers:@[ _tableHostViewController,
                                                 _tableGuestViewController,
                                                 _tableMaybeViewController,
                                                 _tableNoReplyViewController]];
@@ -180,7 +167,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     // Hide footer
-    return 0.1;
+    return 90;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

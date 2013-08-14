@@ -8,6 +8,7 @@
 
 #import "ParseDataStore.h"
 #import "UIImage+ImageCrop.h"
+#import "FBGraphObject+FixEventCoverPhoto.h"
 
 #pragma mark Parse String Keys
 
@@ -247,31 +248,47 @@ NSString * const trackingObject = @"trackingDictionary";
 {
     
     FBRequest *request = [FBRequest requestForGraphPath:
-                          @"me?fields=events.limit(1000).type(attending).fields(id,name,admins.fields(id,name),"
+                          @"me?fields=events.limit(1000).fields(id,name,admins.fields(id,name),"
                           @"cover,rsvp_status,start_time),id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
+            
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
                                                             message:error.localizedDescription
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
             [alert show];
-        } else {
-            _myId = result[@"id"];
             
-            // Save the logged in user's Facebook ID to parse
-            [[PFUser currentUser] setObject:_myId forKey:facebookID];
-            [[PFUser currentUser] saveInBackground];
+        } else {
+            
+            if (!self.myId) {
+                // Store myId locally and in parse, if it's not there already
+                _myId = result[@"id"];
+                [[PFUser currentUser] setObject:_myId forKey:facebookID];
+                [[PFUser currentUser] saveInBackground];
+            }
             
             FBGraphObject *fbGraphObj = (FBGraphObject *)result;
             NSArray *eventArray = fbGraphObj[@"events"][@"data"];
+            
             NSMutableArray *hostEvents = [[NSMutableArray alloc] init];
-            NSMutableArray *guestEvents = [[NSMutableArray alloc] init];
+            NSMutableArray *attendingEvents = [[NSMutableArray alloc] init];
+            NSMutableArray *maybeEvents = [[NSMutableArray alloc] init];
             
             for (FBGraphObject *event in eventArray) {
-                NSArray *adminArray = event[@"admins"][@"data"];
                 
+                [event fixEventCoverPhoto];
+                
+                // Checking if maybe (host cannot be maybe)
+                NSString *rsvpStatus = event[@"rsvp_status"];
+                if ([rsvpStatus isEqualToString:@"unsure"]) {
+                    [maybeEvents insertObject:event atIndex:0];
+                    continue;
+                }
+            
+                // Checking if host or just attending
+                NSArray *adminArray = event[@"admins"][@"data"];
                 BOOL isHost = NO;
                 for (FBGraphObject *adminData in adminArray) {
                     if ([adminData[@"id"] isEqualToString:_myId]) {
@@ -282,136 +299,46 @@ NSString * const trackingObject = @"trackingDictionary";
                 
                 if (isHost == YES) {
                     [hostEvents insertObject:event atIndex:0];
-                }
-                else {
-                    [guestEvents insertObject:event atIndex:0];
-                }
-                
-                CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
-                if(!event[@"cover"]) {
-                    UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
-                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
-                                                                size:defaultCoverSize];
-                    UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
-                    UIImage *gradientImage = [UIImage
-                                              imageWithGradient:defaultCoverSize
-                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
-                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
-                                              vertical:NO];
-                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
                 } else {
-                    NSURL *imageURL = [NSURL URLWithString:event[@"cover"][@"source"]];
-                    UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
-                    UIImage *gradientImage = [UIImage
-                                              imageWithGradient:defaultCoverSize
-                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
-                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
-                                              vertical:NO];
-                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
+                    [attendingEvents insertObject:event atIndex:0];
                 }
                 
             }
             
-            NSMutableArray *noReplyEvents = [[NSMutableArray alloc] init];
-            FBRequest *noReplyRequest = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).type(not_replied).fields(id,name,"
+            //TODO: break this into a separate method completely
+            FBRequest *noReplyRequest = [FBRequest requestForGraphPath:
+                                         @"me?fields=events.limit(1000).type(not_replied).fields(id,name,"
                                          @"cover,rsvp_status,start_time),id"];
-            [noReplyRequest startWithCompletionHandler:^(FBRequestConnection *connection, id noReplyResult, NSError *error){
+            [noReplyRequest startWithCompletionHandler:^(FBRequestConnection *connection,
+                                                         id result,
+                                                         NSError *error){
                 if (error) {
+                    
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
                                                                     message:error.localizedDescription
                                                                    delegate:nil
                                                           cancelButtonTitle:@"OK"
                                                           otherButtonTitles:nil];
                     [alert show];
-                }
-                else {
-                    FBGraphObject *noReplyGraphObj = (FBGraphObject *)noReplyResult;
-                    NSArray *noReplyArray = noReplyGraphObj[@"events"][@"data"];
                     
+                } else {
+                    
+                    FBGraphObject *fbGraphObj = (FBGraphObject *)result;
+                    NSArray *noReplyArray = fbGraphObj[@"events"][@"data"];
+                    
+                    NSMutableArray *noReplyEvents = [[NSMutableArray alloc] init];
                     for (FBGraphObject *event in noReplyArray)
                     {
+                        [event fixEventCoverPhoto];
                         [noReplyEvents insertObject:event atIndex:0];
-                        
-                        CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
-                        if(!event[@"cover"]) {
-                            UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
-                            UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
-                                                                        size:defaultCoverSize];
-                            UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
-                            UIImage *gradientImage = [UIImage
-                                                      imageWithGradient:defaultCoverSize
-                                                      withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
-                                                      withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
-                                                      vertical:NO];
-                            event[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
-                        } else {
-                            NSURL *imageURL = [NSURL URLWithString:event[@"cover"][@"source"]];
-                            UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
-                            UIImage *gradientImage = [UIImage
-                                                      imageWithGradient:defaultCoverSize
-                                                      withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
-                                                      withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
-                                                      vertical:NO];
-                            event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
-                        }
                     }
                     
-                    NSMutableArray *maybeAttendingEvents = [[NSMutableArray alloc] init];
-                    FBRequest *maybeRequest = [FBRequest requestForGraphPath:@"me?fields=events.limit(1000).type(maybe).fields(id,name,"
-                                                 @"cover,rsvp_status,start_time),id"];
-                    [maybeRequest startWithCompletionHandler:^(FBRequestConnection *connection, id maybeResult, NSError *error){
-                        if (error) {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
-                                                                            message:error.localizedDescription
-                                                                           delegate:nil
-                                                                  cancelButtonTitle:@"OK"
-                                                                  otherButtonTitles:nil];
-                            [alert show];
-                        }
-                        else {
-                            FBGraphObject *maybeGraphObj = (FBGraphObject *)maybeResult;
-                            NSArray *maybeArray = maybeGraphObj[@"events"][@"data"];
-                            
-                            for (FBGraphObject *event in maybeArray)
-                            {
-                                [maybeAttendingEvents insertObject:event atIndex:0];
-                                
-                                CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
-                                if(!event[@"cover"]) {
-                                    UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
-                                    UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
-                                                                                size:defaultCoverSize];
-                                    UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
-                                    UIImage *gradientImage = [UIImage
-                                                              imageWithGradient:defaultCoverSize
-                                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
-                                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
-                                                              vertical:NO];
-                                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
-                                } else {
-                                    NSURL *imageURL = [NSURL URLWithString:event[@"cover"][@"source"]];
-                                    UIImage *mainImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
-                                    UIImage *gradientImage = [UIImage
-                                                              imageWithGradient:defaultCoverSize
-                                                              withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
-                                                              withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
-                                                              vertical:NO];
-                                    event[@"cover"] = [UIImage overlayImage:gradientImage overImage:mainImage];
-                                }
-                            }
-                    
-                            completionBlock(hostEvents, guestEvents, maybeAttendingEvents, noReplyEvents);
-                        }
-                    }];
+                completionBlock(hostEvents, attendingEvents, maybeEvents, noReplyEvents);
                 }
             }];
         }
     }];
 }
-
-
-
-
 
 - (void)fetchEventDetailsWithEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
@@ -459,18 +386,7 @@ NSString * const trackingObject = @"trackingDictionary";
             
         } else {
             
-            CGSize defaultCoverSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, 120);
-            UIImage *mainImage = [UIImage imageNamed:@"eventCoverPhoto.png"];
-            UIImage *coloring = [UIImage imageWithBackground:[UIColor colorWithWhite:0 alpha:0.3]
-                                                        size:defaultCoverSize];
-            UIImage *imageWithBackground = [UIImage overlayImage:coloring overImage:mainImage];
-            UIImage *gradientImage = [UIImage
-                                      imageWithGradient:defaultCoverSize
-                                      withColor1:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]
-                                      withColor2:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
-                                      vertical:NO];
-            result[@"cover"] = [UIImage overlayImage:gradientImage overImage:imageWithBackground];
-            
+            [result fixEventCoverPhoto];
             
             if (completionBlock) {
                 completionBlock((NSDictionary *)result);
@@ -482,7 +398,6 @@ NSString * const trackingObject = @"trackingDictionary";
 }
 
 #pragma mark Parse Request
-
 - (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock
 {
     PFQuery *geopointsQuery = [PFUser query];

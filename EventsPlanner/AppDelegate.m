@@ -56,7 +56,10 @@ static const BOOL debugTracking = YES;
     
     if ([[ParseDataStore sharedStore] isLoggedIn]) {
         
-        [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvent, NSArray *noReplyEvents) {
+        [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents,
+                                                                         NSArray *guestEvents,
+                                                                         NSArray *maybeAttendingEvent,
+                                                                         NSArray *noReplyEvents) {
             
             self.loginViewController.navigationController.navigationBar.translucent = NO;
             
