@@ -23,7 +23,9 @@
 
 @implementation EventsTableViewDataSource
 
-- (id)initWithHostEvents:(NSArray *)hostEvents guestEvents:(NSArray *)guestEvents noReplyEvents:(NSArray *)noReplyEvents
+- (id)initWithHostEvents:(NSArray *)hostEvents
+             guestEvents:(NSArray *)guestEvents
+           noReplyEvents:(NSArray *)noReplyEvents
           maybeAttending:(NSArray *)maybeAttending
 {
     self = [super init];
@@ -36,7 +38,7 @@
     return self;
 }
 
-- (id)initWithEvents:eventArray
+- (id)initWithEvents:(NSArray *)eventArray
 {
     self = [super init];
     if (self) {

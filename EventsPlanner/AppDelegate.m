@@ -41,7 +41,6 @@ static const BOOL debugTracking = YES;
     
     // Parse Push setup
     [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
-    [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
     
     // Google Maps
     [GMSServices provideAPIKey:@"AIzaSyCYlOnjDI2_s5WPCmeQJ7IMozreNxjyDww"];
@@ -58,6 +57,8 @@ static const BOOL debugTracking = YES;
     if ([[ParseDataStore sharedStore] isLoggedIn]) {
         
         [[ParseDataStore sharedStore] fetchEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvent, NSArray *noReplyEvents) {
+            
+            self.loginViewController.navigationController.navigationBar.translucent = NO;
             
             _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents
                                                                          guestEvents:guestEvents
