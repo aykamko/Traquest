@@ -13,6 +13,8 @@
 
 #pragma mark Parse String Keys
 
+static BOOL showsPastEvents = YES;
+
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
 NSString * const notAllowed = @"notAllowed";
@@ -21,6 +23,8 @@ NSString * const locationKey = @"location";
 NSString * const facebookID = @"fbID";
 NSString * const trackingObject = @"trackingDictionary";
 
+NSString * const kActiveGuestEventsKey = @"activeGuest";
+NSString * const kActiveHostEventsKey = @"activeHost";
 NSString * const kHostEventsKey = @"host";
 NSString * const kAttendingEventsKey = @"attending";
 NSString * const kMaybeEventsKey = @"maybe";
@@ -30,6 +34,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 @interface ParseDataStore () <CLLocationManagerDelegate>
 
+@property (strong, nonatomic) NSDate *endDate;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
@@ -47,7 +52,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 {
     self = [super init];
     if (self) {
-        
+        _endDate = [[NSDate alloc] init];
         _locationManager = [[CLLocationManager alloc] init];
         [_locationManager setDelegate:self];
         CLLocationDistance distance = 50.0;
@@ -85,28 +90,8 @@ NSString * const kDeclinedEventsKey = @"declined";
     return NO;
 }
 
-- (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
+-(void)fetchLocationDataForIds: (NSDictionary *) guestDetails
 {
-    CLLocation *location = [locations lastObject];
-    
-    if (self.locationCompletionBlock) {
-        [self.locationManager stopUpdatingLocation];
-        self.locationCompletionBlock(location);
-    }
-    
-    CLLocationCoordinate2D coordinate = [location coordinate];
-    _currentLocation = location;
-    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-                                                  longitude:coordinate.longitude];
-    
-    
-    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
-    [_userPastLocations addObject:geoPoint];
-    [[PFUser currentUser] saveInBackground];
-}
-
-- (void)fetchLocationDataForIds: (NSDictionary *) guestDetails
-{    
     PFQuery *trackingQuery = [PFUser query];
     [trackingQuery whereKey: @"fbID" containedIn:[guestDetails allKeys]];
     //[trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
@@ -205,7 +190,6 @@ NSString * const kDeclinedEventsKey = @"declined";
     [[PFFacebookUtils session] closeAndClearTokenInformation];
     [PFUser logOut];
     [_locationManager stopUpdatingLocation];
-    [_locationManager stopMonitoringSignificantLocationChanges];
     completionBlock();
 }
 
@@ -250,6 +234,31 @@ NSString * const kDeclinedEventsKey = @"declined";
     [self startTrackingMyLocation];
     [[PFUser currentUser] saveInBackground];
 }
+
+- (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
+{
+    if ([_endDate compare:[NSDate date]]==NSOrderedAscending) {
+        [manager stopUpdatingLocation];
+        return;
+    }
+    CLLocation *location = [locations lastObject];
+    
+    if (self.locationCompletionBlock) {
+        [self.locationManager stopUpdatingLocation];
+        self.locationCompletionBlock(location);
+    }
+    
+    CLLocationCoordinate2D coordinate = [location coordinate];
+    _currentLocation = location;
+    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
+                                                  longitude:coordinate.longitude];
+    
+    
+    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
+    [_userPastLocations addObject:geoPoint];
+    [[PFUser currentUser] saveInBackground];
+}
+
 
 #pragma mark Caching data
 
@@ -377,11 +386,14 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 
 
+
 #pragma mark Facebook Request
-- (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *hostEvents,
-                                                      NSArray *guestEvents,
-                                                      NSArray *maybeAttendingEvents,
-                                                      NSArray *noReplyEvents))completionBlock
+- (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *activeHostEvents,
+                                                   NSArray *activeGuestEvents,
+                                                   NSArray *hostEvents,
+                                                   NSArray *guestEvents,
+                                                   NSArray* maybeAttendingEvents,
+                                                   NSArray *noReplyEvents))completionBlock
 {
     
     // Get cached data if not too old
@@ -394,7 +406,9 @@ NSString * const kDeclinedEventsKey = @"declined";
                 if (!self.myId) {
                     self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:@"myFbId"];
                 }
-                completionBlock(savedEventsList[kHostEventsKey],
+                completionBlock(savedEventsList[kActiveHostEventsKey],
+                                savedEventsList[kActiveGuestEventsKey],
+                                savedEventsList[kHostEventsKey],
                                 savedEventsList[kAttendingEventsKey],
                                 savedEventsList[kMaybeEventsKey],
                                 savedEventsList[kNoReplyEventsKey]);
@@ -432,16 +446,64 @@ NSString * const kDeclinedEventsKey = @"declined";
             NSMutableArray *hostEvents = [[NSMutableArray alloc] init];
             NSMutableArray *attendingEvents = [[NSMutableArray alloc] init];
             NSMutableArray *maybeEvents = [[NSMutableArray alloc] init];
+            NSMutableArray *activeHostEvents = [[NSMutableArray alloc] init];
+            NSMutableArray *activeGuestEvents = [[NSMutableArray alloc] init];
             
+            PFQuery *pastEventsQuery = [PFQuery queryWithClassName:@"PastEvents"];
+            PFObject *pastEventsObject = [[pastEventsQuery findObjects] objectAtIndex:0];
+            NSMutableArray *pastEvents  = pastEventsObject[@"events"];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+
             for (FBGraphObject *event in eventArray) {
                 
+                if ([pastEvents containsObject:event[@"id"]]) {
+                    continue;
+                }
+                
+                BOOL active = NO;
                 [event fixEventCoverPhoto];
                 
-                // Checking if maybe (host cannot be maybe)
-                NSString *rsvpStatus = event[@"rsvp_status"];
-                if ([rsvpStatus isEqualToString:@"unsure"]) {
-                    [maybeEvents insertObject:event atIndex:0];
-                    continue;
+                PFObject *thisEvent;
+                PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
+                [eventQuery whereKey:@"id" equalTo:event[@"id"]];
+                
+                NSArray *objects = [eventQuery findObjects];
+                if ([objects count]==0) {
+                    thisEvent = [PFObject objectWithClassName:@"Event"];
+                    [thisEvent setObject:event[@"id"] forKey:@"id"];
+                } else {
+                    thisEvent = [objects objectAtIndex:0];
+                }
+                NSString *startTimeString = event[@"start_time"];
+                if ([startTimeString rangeOfString:@"T"].location==NSNotFound) {
+                    [thisEvent setObject:[NSNull null] forKey:@"startDate"];
+                } else {
+                    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+                    
+                    NSDate *eventDate = [formatter dateFromString:startTimeString];
+                    NSDate *endTrackingDate = [[NSDate alloc] initWithTimeInterval:(60*60) sinceDate:eventDate];
+                    NSDate *startTrackingDate = [[NSDate alloc] initWithTimeInterval:(-2*60*60) sinceDate:eventDate];
+                    [thisEvent setObject:endTrackingDate forKey:@"endDate"];
+                    [thisEvent setObject:startTrackingDate forKey:@"startDate"];
+                    if ([startTrackingDate compare:[NSDate date]] == NSOrderedAscending) {
+                        if ([endTrackingDate compare:[NSDate date]]==NSOrderedAscending) {
+                            if (!showsPastEvents) {
+                                continue;
+                            }
+                        } else {
+                            active = YES;
+                        }
+                    }
+                }
+                [thisEvent saveInBackground];
+                
+                if (!active||showsPastEvents) {
+                    // Checking if maybe (host cannot be maybe)
+                    NSString *rsvpStatus = event[@"rsvp_status"];
+                    if ([rsvpStatus isEqualToString:@"unsure"]) {
+                        [maybeEvents insertObject:event atIndex:0];
+                        continue;
+                    }
                 }
             
                 // Checking if host or just attending
@@ -455,9 +517,17 @@ NSString * const kDeclinedEventsKey = @"declined";
                 }
                 
                 if (isHost == YES) {
-                    [hostEvents insertObject:event atIndex:0];
+                    if (active) {
+                        [activeHostEvents insertObject:event atIndex:0];
+                    } else {
+                        [hostEvents insertObject:event atIndex:0];
+                    }
                 } else {
-                    [attendingEvents insertObject:event atIndex:0];
+                    if (active) {
+                        [activeGuestEvents insertObject:event atIndex:0];
+                    } else {
+                        [attendingEvents insertObject:event atIndex:0];
+                    }
                 }
                 
             }
@@ -490,11 +560,13 @@ NSString * const kDeclinedEventsKey = @"declined";
                     }
                     
                     [self setDateOfAllEventsLists];
-                    [self saveAllEventsLists:@{ kHostEventsKey: hostEvents,
-                                                kAttendingEventsKey: attendingEvents,
-                                                kMaybeEventsKey: maybeEvents,
-                                                kNoReplyEventsKey: noReplyEvents }];
-                    completionBlock(hostEvents, attendingEvents, maybeEvents, noReplyEvents);
+                    [self saveAllEventsLists:@{ kActiveHostEventsKey: activeHostEvents,
+                                             kActiveGuestEventsKey: activeGuestEvents,
+                                             kHostEventsKey: hostEvents,
+                                             kAttendingEventsKey: attendingEvents,
+                                             kMaybeEventsKey: maybeEvents,
+                                             kNoReplyEventsKey: noReplyEvents }];
+                    completionBlock(activeHostEvents, activeGuestEvents,hostEvents, attendingEvents, maybeEvents, noReplyEvents);
                     
                 }
             }];

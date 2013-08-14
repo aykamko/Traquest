@@ -12,8 +12,12 @@
 #import <Parse/Parse.h>
 
 @interface FBEventDetailsViewController : UIViewController <UIScrollViewDelegate,UIActionSheetDelegate>
+
 @property (nonatomic, strong) NSMutableDictionary *activeEventsDictionary;
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost isActive: (BOOL)isActive hasReplied:(BOOL)hasReplied;
--(NSMutableDictionary *)getActiveDict;
--(void)setIsActive: (BOOL)isActive; 
+
+- (NSMutableDictionary *)getActiveDict;
+- (void)setIsActive:(BOOL)isActive;
+
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL) active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied;
+
 @end

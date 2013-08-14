@@ -176,6 +176,7 @@
             [spinner stopAnimating];
             [self.tableViewController.navigationController popViewControllerAnimated:NO];
             [self.eventsListController pushEventDetailsViewControllerWithPartialDetails:eventDetails
+                                                                               isActive:NO
                                                                                  isHost:YES
                                                                              hasReplied:YES];
         }];

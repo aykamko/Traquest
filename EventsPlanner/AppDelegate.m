@@ -56,17 +56,21 @@ static const BOOL debugTracking = YES;
     
     if ([[ParseDataStore sharedStore] isLoggedIn]) {
         
-        [[ParseDataStore sharedStore] fetchAllEventListDataWithCompletion:^(NSArray *hostEvents,
-                                                                         NSArray *guestEvents,
-                                                                         NSArray *maybeAttendingEvent,
-                                                                         NSArray *noReplyEvents) {
+        [[ParseDataStore sharedStore] fetchAllEventListDataWithCompletion:^(NSArray *activeHostEvents,
+                                                                            NSArray *activeGuestEvents,
+                                                                            NSArray *hostEvents,
+                                                                            NSArray *guestEvents,
+                                                                            NSArray *maybeAttendingEvent,
+                                                                            NSArray *noReplyEvents) {
             
             self.loginViewController.navigationController.navigationBar.translucent = NO;
             
-            _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents
-                                                                         attendingEvents:guestEvents
-                                                                       notRepliedEvents:noReplyEvents
-                                                                      maybeEvents:maybeAttendingEvent];
+            _eventsListController = [[EventsListController alloc] initWithActiveHostEvents:activeHostEvents
+                                                                         activeGuestEvents:activeGuestEvents
+                                                                                hostEvents:hostEvents
+                                                                           attendingEvents:guestEvents
+                                                                          notRepliedEvents:noReplyEvents
+                                                                            maybeAttending:maybeAttendingEvent];
             
             [[self.eventsListController presentableViewController] navigationItem].hidesBackButton = YES;
             
@@ -77,9 +81,7 @@ static const BOOL debugTracking = YES;
         }];
         
     } else {
-    
-        [self.window makeKeyAndVisible];
-        
+       [self.window makeKeyAndVisible];
     }
     
     return YES;
@@ -113,7 +115,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    [[ParseDataStore sharedStore] startTrackingMyLocation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

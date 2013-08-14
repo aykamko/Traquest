@@ -18,14 +18,17 @@ typedef enum eventType {
 
 + (EventsListController *)sharedListController;
 
-- (id)initWithHostEvents:(NSArray *)hostEvents
-         attendingEvents:(NSArray *)attendingEvents
-        notRepliedEvents:(NSArray *)notRepliedEvents
-             maybeEvents:(NSArray *)maybeEvents;
+- (id)initWithActiveHostEvents:(NSArray *)activeHostEvents
+             activeGuestEvents:(NSArray *)activeGuestEvents
+                    hostEvents:(NSArray *)hostEvents
+               attendingEvents:(NSArray *)attendingEvents
+              notRepliedEvents:(NSArray *)noReplyEvents
+                maybeAttending:(NSArray *)maybeAttending;
 
 - (id)presentableViewController;
 
 - (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails
+                                                isActive: (BOOL) active
                                                   isHost:(BOOL)isHost
                                               hasReplied:(BOOL)replied;
 

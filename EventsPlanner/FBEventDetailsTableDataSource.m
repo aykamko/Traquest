@@ -47,16 +47,18 @@
     
     NSString *startTime = details[@"start_time"];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZ"];
-    NSDate *date = [formatter dateFromString:startTime];
     NSString *dateString = @"";
-    if(!date) {
-        [formatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *date;
+    
+    if ([startTime rangeOfString:@"T"].location==NSNotFound) {
+        [formatter setDateFormat:@"yyyy-MM-dd"];
         date = [formatter dateFromString:startTime];
-        [formatter setDateFormat:@"EEEE',' MMMM dd, YYYY"];
+        [formatter setDateFormat:@"EEEE',' MMMM dd, yyyy"];
         dateString = [formatter stringFromDate:date];
-    }
-    else {
+
+    } else {
+        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+        date = [formatter dateFromString:startTime];
         [formatter setDateFormat:@"EEEE',' MMMM dd',' 'at' h:mm a"];
         dateString = [formatter stringFromDate:date];
     }

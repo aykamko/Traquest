@@ -42,12 +42,15 @@ extern NSString * const kDeclinedEventsKey;
 - (BOOL) verifyTrackingAllowed;
 - (void)changePermissionForEvent: (NSString *) eventId identity: (NSString *) identity;
 
-- (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *hostEvents,
-                                                      NSArray *guestEvents,
-                                                      NSArray *maybeAttendingEvents,
-                                                      NSArray *noReplyEvents))completionBlock;
 - (void)fetchEventListDataForListKey:(NSString *)listKey completion:(void (^)(NSArray *eventsList))completionBlock;
 - (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
+- (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *activeHostEvents,
+                                                   NSArray *activeGuestEvents,
+                                                   NSArray *hostEvents,
+                                                   NSArray *guestEvents,
+                                                   NSArray* maybeAttendingEvents,
+                                                   NSArray *noReplyEvents))completionBlock;
+
 - (void)fetchPartialEventDetailsForNewEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 
 - (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock;

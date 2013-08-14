@@ -1,7 +1,7 @@
-Parse.Cloud.beforeSave(Parse.User, function(request, response) {
+Parse.Cloud.beforeSave('Tracking', function(request, response) {
   // Check if the user added a pin in the last minute
-  var LocationObject = Parse.User;
-  var query = new Parse.Query(Parse.User.current());
+  var TrackingObject = 'Tracking';
+  var query = new Parse.Query(TrackingObject);
 	console.log();
   var oneMinuteAgo = new Date();
   oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1);
@@ -22,6 +22,27 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
       response.error('Oups something went wrong.');
     }
   });
+});
+
+Parse.Cloud.define('deleteEventData', function(request,response) {
+	var EventData = Parse.Object.extend('TrackingObject');
+	var query = new Parse.Query(EventData);
+	var eventIdKey = 'E' + request.params.eventId;
+	query.find( {
+		success: function(results) {
+			console.log();
+			if(results.length > 0) {
+				for(var i=0; i< results.length; i++) {
+					results[i].set(eventIdKey, "");
+					results[i].save();
+				}
+			}
+			response.success(results);
+		},
+		error: function(error) {
+	      response.error('Oups something went wrong');
+		}
+	});
 });
 
 Parse.Cloud.define('getLocationAverage', function(request, response) {
@@ -52,7 +73,8 @@ Parse.Cloud.define('getLocationAverage', function(request, response) {
 });
 // Use Parse.Cloud.define to define as many cloud functions as you want.
 // For example:
-Parse.Cloud.define("hello", function(request, response) {
-  response.success("Hello world!");
+Parse.Cloud.define('hello', function(request, response) {
+	response.success(request.params.stuff);
+	console.log();
 });
 

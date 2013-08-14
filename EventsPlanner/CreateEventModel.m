@@ -97,7 +97,7 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
                                                               kDescriptionEventParameterKey: self.description}];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZ"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
     
     if (self.startTime) {
         NSString *startTimeISO8601String = [dateFormatter stringFromDate:self.startTime];
