@@ -84,6 +84,7 @@
                                                                      attendingEvents:guestEvents
                                                                    notRepliedEvents:noReplyEvents
                                                                   maybeEvents:maybeAttendingEvents];
+
         
         [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
 

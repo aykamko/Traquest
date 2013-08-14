@@ -94,6 +94,14 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
     [self.timer fire];
 }
 
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.timer invalidate];
+    self.timer = nil;
+}
+
+#pragma mark Adding Annotations and Map View
 - (void)updateMarkersOnMap
 {
     [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.friendDetailsDict allKeys] eventId:self.eventId completion:^(NSDictionary *userLocations) {
@@ -139,35 +147,6 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
         
     }];
     
-    NSLog(@" lalalal %@", _friendAnnotationPointDict);
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self.timer invalidate];
-    self.timer = nil;
-}
-
-- (UIImage *)resizeImage:(UIImage *)oldImage
-{
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(32, 32), NO, 0.0);
-    [oldImage drawInRect:CGRectMake(0, 0, 32, 32)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    CALayer *imageLayer = [CALayer layer];
-    imageLayer.frame = CGRectMake(0,0, 32, 32);
-    imageLayer.contents = (id) newImage.CGImage;
-    
-    imageLayer.masksToBounds = YES;
-    imageLayer.cornerRadius = 4.0;
-    
-    UIGraphicsBeginImageContext(newImage.size);
-    [imageLayer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return roundedImage;
 }
 
 
@@ -219,5 +198,29 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
     CGFloat navBarHeight = CGRectGetHeight(self.navigationController.navigationBar.bounds);
     [self.mapView setVisibleMapRect:zoomRect edgePadding:UIEdgeInsetsMake(50 + navBarHeight, 50, 50, 50) animated:YES];
 }
+#pragma mark resize profile Pic
+
+- (UIImage *)resizeImage:(UIImage *)oldImage
+{
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(32, 32), NO, 0.0);
+    [oldImage drawInRect:CGRectMake(0, 0, 32, 32)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    CALayer *imageLayer = [CALayer layer];
+    imageLayer.frame = CGRectMake(0,0, 32, 32);
+    imageLayer.contents = (id) newImage.CGImage;
+    
+    imageLayer.masksToBounds = YES;
+    imageLayer.cornerRadius = 4.0;
+    
+    UIGraphicsBeginImageContext(newImage.size);
+    [imageLayer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return roundedImage;
+}
+
 
 @end
