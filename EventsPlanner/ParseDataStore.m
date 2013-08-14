@@ -20,6 +20,11 @@ NSString * const locationKey = @"location";
 NSString * const facebookID = @"fbID";
 NSString * const trackingObject = @"trackingDictionary";
 
+NSString * const kHostEventsKey = @"host";
+NSString * const kAttendingEventsKey = @"attending";
+NSString * const kMaybeEventsKey = @"maybe";
+NSString * const kNoReplyEventsKey = @"no_reply";
+
 @interface ParseDataStore () <CLLocationManagerDelegate>
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
@@ -97,7 +102,7 @@ NSString * const trackingObject = @"trackingDictionary";
     [[PFUser currentUser] saveInBackground];
 }
 
--(void)fetchLocationDataForIds: (NSDictionary *) guestDetails
+- (void)fetchLocationDataForIds: (NSDictionary *) guestDetails
 {    
     PFQuery *trackingQuery = [PFUser query];
     [trackingQuery whereKey: @"fbID" containedIn:[guestDetails allKeys]];
@@ -243,9 +248,94 @@ NSString * const trackingObject = @"trackingDictionary";
     [[PFUser currentUser] saveInBackground];
 }
 
-#pragma mark Facebook Request
-- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents, NSArray *guestEvents, NSArray* maybeAttendingEvents, NSArray *noReplyEvents))completionBlock
+#pragma mark Caching data
+
+// Events List
+- (NSString *)eventsListArchivePath
 {
+    NSArray *cacheDirectories = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *cacheDirectory = [cacheDirectories firstObject];
+    
+    return [cacheDirectory stringByAppendingPathComponent:@"eventsList.archive"];
+}
+
+- (BOOL)saveEventsLists:(NSDictionary *)eventsListsByKey
+{
+    return [NSKeyedArchiver archiveRootObject:eventsListsByKey
+                                       toFile:[self eventsListArchivePath]];
+}
+
+- (NSDictionary *)fetchEventsListsFromCache
+{
+    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self eventsListArchivePath]];
+}
+
+- (NSDate *)eventsListCacheDate
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"eventsListCacheDate"];
+}
+
+- (void)setEventsListCacheDate
+{
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"eventsListCacheDate"];
+}
+
+// Event Details
+- (NSString *)eventDetailsArchivePathForEvent:(NSString *)eventId
+{
+    NSArray *cacheDirectories = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *cacheDirectory = [cacheDirectories firstObject];
+    
+    return [cacheDirectory stringByAppendingPathExtension:[NSString stringWithFormat:@"%@.archive", eventId]];
+}
+
+- (BOOL)saveEventDetails:(NSDictionary *)eventDetails event:(NSString *)eventId
+{
+    return [NSKeyedArchiver archiveRootObject:eventDetails
+                                       toFile:[self eventDetailsArchivePathForEvent:eventId]];
+}
+
+- (NSDictionary *)fetchEventDetailsFromCacheForEvent:(NSString *)eventId
+{
+    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self eventDetailsArchivePathForEvent:eventId]];
+}
+
+- (NSString *)cacheDateObjectKeyForEvent:(NSString *)evendId
+{
+    return [NSString stringWithFormat:@"%@_cacheDate", evendId];
+}
+
+- (NSDate *)eventDetailsCacheDateForEvent:(NSString *)eventId
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:[self cacheDateObjectKeyForEvent:eventId]];
+}
+
+- (void)setEventDetailsCacheDateForEvent:(NSString *)eventId
+{
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:[self cacheDateObjectKeyForEvent:eventId]];
+}
+
+#pragma mark Facebook Request
+- (void)fetchEventListDataWithCompletion:(void (^)(NSArray *hostEvents,
+                                                   NSArray *guestEvents,
+                                                   NSArray* maybeAttendingEvents,
+                                                   NSArray *noReplyEvents))completionBlock
+{
+    
+    NSDate *eventsCacheDate = [self eventsListCacheDate];
+    if (eventsCacheDate) {
+        NSTimeInterval cacheAge = [eventsCacheDate timeIntervalSinceNow];
+        if (cacheAge > (-60 * 10)) {
+            NSDictionary *savedEventsList = [self fetchEventsListsFromCache];
+            if (savedEventsList) {
+                completionBlock(savedEventsList[kHostEventsKey],
+                                savedEventsList[kAttendingEventsKey],
+                                savedEventsList[kMaybeEventsKey],
+                                savedEventsList[kNoReplyEventsKey]);
+                return;
+            }
+        }
+    }
     
     FBRequest *request = [FBRequest requestForGraphPath:
                           @"me?fields=events.limit(1000).fields(id,name,admins.fields(id,name),"
@@ -333,7 +423,13 @@ NSString * const trackingObject = @"trackingDictionary";
                         [noReplyEvents insertObject:event atIndex:0];
                     }
                     
-                completionBlock(hostEvents, attendingEvents, maybeEvents, noReplyEvents);
+                    [self setEventsListCacheDate];
+                    [self saveEventsLists:@{ kHostEventsKey: hostEvents,
+                                             kAttendingEventsKey: attendingEvents,
+                                             kMaybeEventsKey: maybeEvents,
+                                             kNoReplyEventsKey: noReplyEvents }];
+                    completionBlock(hostEvents, attendingEvents, maybeEvents, noReplyEvents);
+                    
                 }
             }];
         }
@@ -342,7 +438,22 @@ NSString * const trackingObject = @"trackingDictionary";
 
 - (void)fetchEventDetailsWithEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
-    NSString *graphPath = [NSString stringWithFormat:@"%@?fields=location,description,venue,owner,privacy,attending.fields(id,name,picture.height(100).width(100))", eventId];
+    
+    NSDate *eventDetailsCacheDate = [self eventDetailsCacheDateForEvent:eventId];
+    if (eventDetailsCacheDate) {
+        NSTimeInterval cacheAge = [eventDetailsCacheDate timeIntervalSinceNow];
+        if (cacheAge > (-60 * 5)) {
+            NSDictionary *savedEventDetails = [self fetchEventDetailsFromCacheForEvent:eventId];
+            if (savedEventDetails) {
+                completionBlock(savedEventDetails);
+                return;
+            }
+        }
+    }
+    
+    NSString *graphPath = [NSString stringWithFormat:
+                           @"%@?fields=location,description,venue,owner,privacy,"
+                           @"attending.fields(id,name,picture.height(100).width(100))", eventId];
     FBRequest *request = [FBRequest requestForGraphPath:graphPath];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
@@ -357,6 +468,8 @@ NSString * const trackingObject = @"trackingDictionary";
         }
         else {
             
+            [self setEventDetailsCacheDateForEvent:eventId];
+            [self saveEventDetails:(NSDictionary *)result event:eventId];
             if (completionBlock) {
                 completionBlock((NSDictionary *)result);
             }

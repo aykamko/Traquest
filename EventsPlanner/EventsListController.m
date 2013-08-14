@@ -95,7 +95,7 @@
         _tabBarController = [[UITabBarController alloc] init];
         _tabBarController.delegate = self;
       
-        [_tabBarController setViewControllers:@[ _tableHostViewController,
+        [_tabBarController setViewControllers:@[_tableHostViewController,
                                                 _tableGuestViewController,
                                                 _tableMaybeViewController,
                                                 _tableNoReplyViewController]];
