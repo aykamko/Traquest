@@ -81,8 +81,8 @@
         _maybeEvents = maybeEvents;
         
         [self initializeViewControllers];
-        _tabBarController = [[UITabBarController alloc] init];
         
+        _tabBarController = [[UITabBarController alloc] init];
         _tabBarController.delegate = self;
       
         [_tabBarController setViewControllers:@[_hostTableViewController,
