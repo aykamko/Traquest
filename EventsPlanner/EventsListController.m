@@ -121,7 +121,6 @@
         _notReplyEvents = noReplyEvents;
         _maybeAttending = maybeAttending;
     
-        _trackingDict = [[NSMutableDictionary alloc]init];
         [self initializeViewControllers];
         
         _tabBarController = [[UITabBarController alloc] init];
@@ -239,21 +238,10 @@
 
 - (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)replied
 {
-    if ([_trackingDict objectForKey:partialDetails[@"id"]]) { //if user is already tracking
-        
-        self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
-                                                                                              isActive:YES
-                                                                                                isHost:isHost
-                                                                                            hasReplied:replied];
-        
-    } else {
-        
-        self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
-                                                                                              isActive:active
-                                                                                                isHost:isHost
-                                                                                            hasReplied:replied];
-        
-    }
+    self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
+                                                                                          isActive:active
+                                                                                            isHost:isHost
+                                                                                        hasReplied:replied];
     
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
                                                                    style:UIBarButtonItemStyleBordered
@@ -291,7 +279,6 @@
 {
     return 0.1;
 }
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 120.0;

@@ -269,7 +269,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [self loadMapView:nil];
     [_startTrackingButton removeFromSuperview];
-//    [[EventsListController sharedListController].trackingDict setObject:[NSNumber numberWithBool:YES] forKey:_eventDetails[@"id"]];
     [self addStopTrackingButtonAndViewMapButton];
     
     [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"]];
@@ -780,6 +779,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (NSString *)eventParameterStringFromStatusString:(NSString *)eventParameter
 {
     NSString *parameterString;
+    
     if ([eventParameter isEqualToString:@"Going"]) {
         
         parameterString = kAttendingEventsKey;

@@ -17,8 +17,6 @@ typedef enum eventType {
 
 @interface EventsListController : NSObject<UITableViewDelegate>
 
-@property (nonatomic, strong) NSMutableDictionary *trackingDict;
-
 + (EventsListController *)sharedListController;
 
 - (id)initWithActiveHostEvents:(NSArray *)activeHostEvents
