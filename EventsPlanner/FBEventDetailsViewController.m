@@ -23,13 +23,9 @@ static const float TableViewSideMargin = 12.0;
 static const float kLatitudeAdjustment = 0.0008;
 static const float kLongitudeAsjustment = 0;
 
-<<<<<<< HEAD
 static NSInteger const kActionSheetCancelButtonIndex = 3;
 
-@interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate>
-=======
 @interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate, MKMapViewDelegate>
->>>>>>> 248b936... Added Cloud Code
 {
     CLLocationCoordinate2D _venueLocation;
     UITabBarController *_tabBarController;
@@ -54,20 +50,15 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 }
 
-<<<<<<< HEAD
 @property (nonatomic, strong) NSArray *verticalLayoutContraints;
 
 @property (nonatomic,strong) NSString *layoutConstraint;
-@property (nonatomic, getter = isHost) BOOL host;
-@property (nonatomic, getter = hasReplied) BOOL replied;
 
 @property (nonatomic, strong) NSString *status;
-=======
+
 @property (nonatomic, getter = isActive) BOOL active;
 @property (nonatomic, getter = isHost) BOOL host;
 @property (nonatomic, getter = hasReplied) BOOL replied;
-
->>>>>>> 248b936... Added Cloud Code
 
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 
@@ -90,11 +81,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @implementation FBEventDetailsViewController
 
-<<<<<<< HEAD
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost isActive: (BOOL)isActive hasReplied:(BOOL)hasReplied
-=======
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL) active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied
->>>>>>> 248b936... Added Cloud Code
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied
 {
     self = [super init];
     if (self) {
@@ -102,7 +89,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         _host = isHost;
         _replied = hasReplied;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
-        active = isActive;
         [_activeEventsDictionary setObject:[NSNumber numberWithBool:NO] forKey:_eventDetails[@"id"]];
     
         
@@ -113,7 +99,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)viewDidLoad
 {
     [self setViewPartialEventDetails];
-<<<<<<< HEAD
     
     [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
         [[self eventDetails] addEntriesFromDictionary:eventDetails];
@@ -304,15 +289,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
      */
     NSLog(@"center region %lf, %lf", _mapView.region.center.latitude, _mapView.region.center.longitude);
     
-    
-=======
 //    
 //    [[ParseDataStore sharedStore] fetchEventDetailsWithEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
 //        [[self eventDetails] addEntriesFromDictionary:eventDetails];
 //        [self setViewCompleteEventDetails];
 //        [_detailsTable setNeedsDisplay];
 //    }];
->>>>>>> 248b936... Added Cloud Code
 }
 
 
@@ -514,23 +496,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                            forState:UIControlStateNormal];
         
         [_rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-<<<<<<< HEAD
-=======
-    
-    
-        if ([_eventDetails[@"rsvp_status"] isEqualToString:@"attending"])
-        {
-            _newStatus = @"Going";
-        } else if ([_eventDetails[@"rsvp_status"] isEqualToString:@"unsure"])
-        {
-            _newStatus = @"Maybe";
-        } else if ([_eventDetails[@"rsvp_status"] isEqualToString:@"declined"])
-        {
-            _newStatus = @"Not Going";
-        } else {
-            _newStatus = @"RSVP Status";
-        }
->>>>>>> 248b936... Added Cloud Code
         
         [_buttonHolder addSubview:_rsvpStatusButton];
         [_viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":_rsvpStatusButton }];
@@ -644,7 +609,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     }
     
     // initializing data source for table view
-<<<<<<< HEAD
     _dataSource = [[FBEventDetailsTableDataSource alloc] initWithEventDetails:_eventDetails];
     _detailsTableDelegate = [[FBEventDetailsTableDelegate alloc] init];
     
@@ -664,9 +628,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3] CGColor]];
     [_detailsTable setUserInteractionEnabled:NO];
     [_detailsTable setScrollEnabled:NO];
-=======
- 
->>>>>>> 248b936... Added Cloud Code
     
     [_dimensionsDict
      addEntriesFromDictionary:@{ @"screenWidthWithMargin":[NSNumber numberWithFloat:
@@ -714,16 +675,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                  views:_viewsDictionary]];
 }
 
-<<<<<<< HEAD
-
--(void)addStartTrackingButton{
-
-    _startTrackingButton = [[UIButton alloc] init];
-=======
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [[ParseDataStore sharedStore] fetchEventDetailsWithEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
+    [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
         [[self eventDetails] addEntriesFromDictionary:eventDetails];
         [self setViewCompleteEventDetails];
         [_mapView setNeedsDisplay];
@@ -732,9 +687,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
->>>>>>> 248b936... Added Cloud Code
+
+- (void)addStartTrackingButton{
+    
+    _startTrackingButton = [[UIButton alloc] init];
     
     UIImage *buttonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
                                                                  pathForResource:@"tracking-button@2x"
@@ -778,16 +734,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                  views:_viewsDictionary]];
     
 }
-
-<<<<<<< HEAD
-
-=======
--(void) startButtonTouch: (id) sender {
-    //set button to be highlighted
-    [sender setBackgroundColor: [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
-}
->>>>>>> 248b936... Added Cloud Code
-
 
 -(void)addStopTrackingButtonAndViewMapButton{
     _stopTrackingButton = [[UIButton alloc]init];
@@ -941,43 +887,13 @@ _layoutConstraint = @"V:[_buttonHolder]-[_viewMapButton(viewMapButtonImageHeight
     NSLog(@"stop tracking man");
 }
 
-<<<<<<< HEAD
+
 -(NSMutableDictionary *) getActiveDict {
     return   _activeEventsDictionary;
 }
 
-
-
 -(void)setIsActive: (BOOL)isActive{
     active = isActive;
-=======
--(void) promptGuestsForTracking: (id) sender {
-    NSDictionary *eventIdDict = @{@"eventId": _eventDetails[@"id"]};
-    [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:eventIdDict block:^(id object, NSError *error) {
-        NSLog(@"%@",object);
-    }];
-    [self loadMapView:nil];
-    [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
 }
-
--(void)updateMapZoomLocation: (CLLocationCoordinate2D) location {
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(location, 200, 200);
-    [_mapView setRegion:region animated:NO];
-    [_mapView setCenterCoordinate:location];
-    /*
-    MKCoordinateRegion region;
-    region.center.latitude = location.latitude;
-    region.center.longitude = location.longitude;
-    region.span.latitudeDelta = 0.007;
-    region.span.longitudeDelta = 0.007;
-    [_mapView setRegion:region animated:NO];
-     */
-    NSLog(@"center region %lf, %lf", _mapView.region.center.latitude, _mapView.region.center.longitude);
-    
-    
->>>>>>> 248b936... Added Cloud Code
-}
-   
-
 
 @end

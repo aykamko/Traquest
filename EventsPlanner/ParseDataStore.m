@@ -288,7 +288,10 @@ NSString * const kDeclinedEventsKey = @"declined";
     NSArray *eventsListKeyArray = @[kHostEventsKey, kAttendingEventsKey, kMaybeEventsKey, kNoReplyEventsKey];
     for (NSString *key in eventsListKeyArray) {
         NSArray *eventsList = [self loadEventsListForKey:key];
-        [resultDictionary addEntriesFromDictionary:@{ key:eventsList }];
+        if (!eventsList) {
+            return nil;
+        }
+        [resultDictionary addEntriesFromDictionary:@{ key: eventsList }];
     }
     
     return resultDictionary;

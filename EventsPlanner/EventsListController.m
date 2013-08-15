@@ -70,8 +70,8 @@
 @property (nonatomic, strong) NSArray *activeHostEvents;
 @property (nonatomic, strong) NSArray *allActiveEvents;
 @property (nonatomic, strong) NSArray *hostEvents;
-@property (nonatomic, strong) NSArray *guestEvents;
-@property (nonatomic, strong) NSArray *noReplyEvents;
+@property (nonatomic, strong) NSArray *attendingEvents;
+@property (nonatomic, strong) NSArray *notReplyEvents;
 @property (nonatomic, strong) NSArray *maybeAttending;
 
 @property (nonatomic, strong) FBEventDetailsViewController *eventDetailsViewController;
@@ -117,8 +117,8 @@
         
         _hostEvents = hostEvents;
 
-        _guestEvents = attendingEvents;
-        _noReplyEvents = noReplyEvents;
+        _attendingEvents = attendingEvents;
+        _notReplyEvents = noReplyEvents;
         _maybeAttending = maybeAttending;
     
         _trackingDict = [[NSMutableDictionary alloc]init];
@@ -241,14 +241,14 @@
 {
     if ([_trackingDict objectForKey:partialDetails[@"id"]]) { //if user is already tracking
         self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
-                                                                                                isHost:isHost
                                                                                               isActive:YES
+                                                                                                isHost:isHost
                                                                                             hasReplied:replied];
     } else {
         
         self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
-                                                                                                isHost:active
-                                                                                              isActive:isHost
+                                                                                              isActive:active
+                                                                                                isHost:isHost
                                                                                             hasReplied:replied];
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
@@ -335,9 +335,9 @@
     _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_allActiveEvents];
     
     _hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
-    _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_guestEvents];
+    _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
     _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeAttending];
-    _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_noReplyEvents];
+    _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_notReplyEvents];
     
     _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
     [[_tableActiveViewController tableView] setDelegate:self];
