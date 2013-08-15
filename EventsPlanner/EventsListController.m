@@ -64,7 +64,7 @@
         _attendingEvents = attendintEvents;
         _notRepliedEvents = notRepliedEvents;
         _maybeEvents = maybeEvents;
-        
+        [self initializeViewControllers];
               _tabBarController = [[UITabBarController alloc] init];
         _tabBarController.delegate = self;
       
