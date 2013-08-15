@@ -46,6 +46,9 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
     UITabBarItem *_item;
     UIImage *_briefcase;
+    UIView *_transparentView;
+    UIView *_wrapper;
+    UITapGestureRecognizer *_singleFingerTap ;
 
 }
 
@@ -113,7 +116,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             [_detailsTable setNeedsDisplay];
             
         }];
-        
     }];
     
     [super viewDidLoad];
@@ -503,8 +505,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_spinner removeFromSuperview];
     _spinner = nil;
     
-    _dataSource = [[FBEventDetailsTableDataSource alloc] initWithEventDetails:_eventDetails];
-    _detailsTableDelegate = [[FBEventDetailsTableDelegate alloc] init];
     
     [_dimensionsDict
      addEntriesFromDictionary:@{ @"screenWidthWithMargin":[NSNumber numberWithFloat:
@@ -516,14 +516,26 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     //initializing mapView and setting coordinates of location
     _mapView = [[MKMapView alloc]
                initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
-    [_mapView setDelegate:self];
-    [_detailsTable setTableHeaderView:_mapView];
-    [_mapView setMapType:MKMapTypeStandard];
-    [_mapView setUserInteractionEnabled:YES];
     
-    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadMapView:)];
-    [_mapView addGestureRecognizer:tapRecognizer];
-
+    [_mapView setMapType:MKMapTypeStandard];
+    [_mapView setUserInteractionEnabled:NO];
+    
+    _transparentView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_mapView.bounds), CGRectGetHeight(_mapView.bounds))];
+    [_transparentView setUserInteractionEnabled:YES];
+    _transparentView.backgroundColor = [UIColor clearColor];
+    
+    _wrapper = [[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_mapView.bounds), CGRectGetHeight(_mapView.bounds))];
+    [_wrapper setUserInteractionEnabled:YES];
+    _wrapper.backgroundColor = [UIColor clearColor];
+    
+    [_wrapper addSubview:_mapView];
+    [_wrapper addSubview:_transparentView];
+    
+    _singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                               action:@selector(clickedOnMap:)];
+    
+    [_transparentView addGestureRecognizer:_singleFingerTap];
+    
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
     if (venueDict[@"latitude"]) {
@@ -534,11 +546,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         _venueLocation = coordinate;
+        
         [self updateMapZoomLocation:_venueLocation];
         
         MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
         annot.coordinate = _venueLocation;
         [_mapView addAnnotation:annot];
+        
         
     } else {
         
@@ -548,6 +562,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
             _venueLocation = coordinate;
             [self updateMapZoomLocation:_venueLocation];
+            
             MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
             annot.coordinate = _venueLocation;
             
@@ -567,20 +582,21 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_detailsTable setDataSource:_dataSource];
     [_detailsTable setDelegate:_detailsTableDelegate];
+
+    [_detailsTable setTableHeaderView:_wrapper];
     
     //setting some UI aspects of tableview
     [_detailsTable setTableHeaderView:_mapView];
     [_detailsTable.layer setCornerRadius:3];
     [_detailsTable.layer setBorderWidth:0.5];
     [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3] CGColor]];
-    [_detailsTable setUserInteractionEnabled:NO];
-    
+    [_detailsTable setUserInteractionEnabled:YES];
     [_detailsTable setScrollEnabled:NO];
-    [_viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
     
     [_scrollView addSubview:_detailsTable];
-    [_dimensionsDict addEntriesFromDictionary:
-     @{ @"detailsTableContentHeight":[NSNumber numberWithFloat: [_detailsTable contentSize].height] }];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
+    
+    [_dimensionsDict addEntriesFromDictionary:@{ @"detailsTableContentHeight":[NSNumber numberWithFloat:[_detailsTable contentSize].height] }];
 
     if (self.isTracking) {
         
@@ -589,6 +605,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     } else if (self.isHost) {
         
         [self addStartTrackingButton];
+
         
     } else {
     
@@ -815,5 +832,22 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [self addStartTrackingButton];
     
 }
+
+- (void)clickedOnMap:(UITapGestureRecognizer *)recognizer
+{
+    NSLog(@"clicked the map");
+    
+    MKMapView *plainMap = [[MKMapView alloc] init];
+    [plainMap setRegion:MKCoordinateRegionMakeWithDistance(_venueLocation, 200, 200) animated:NO];
+    
+    MKPointAnnotation *annot = [[MKPointAnnotation alloc] init];
+    annot.coordinate = _venueLocation;
+    [plainMap addAnnotation:annot];
+    
+    UIViewController *mapViewController = [[UIViewController alloc]init];
+    mapViewController.view = plainMap;
+    [[self navigationController] pushViewController:mapViewController animated:YES];
+}
+
 
 @end

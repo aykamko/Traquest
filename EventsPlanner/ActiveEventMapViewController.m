@@ -202,6 +202,7 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
 
 - (UIImage *)resizeImage:(UIImage *)oldImage
 {
+    
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(32, 32), NO, 0.0);
     [oldImage drawInRect:CGRectMake(0, 0, 32, 32)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();

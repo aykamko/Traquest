@@ -333,7 +333,7 @@ NSString * const kDeclinedEventsKey = @"declined";
         if (!eventsList) {
             return nil;
         }
-        [resultDictionary addEntriesFromDictionary:@{ key: eventsList }];
+        [resultDictionary addEntriesFromDictionary:@{ key:eventsList }];
     }
     
     return resultDictionary;
