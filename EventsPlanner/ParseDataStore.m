@@ -238,6 +238,45 @@ NSString * const kDeclinedEventsKey = @"declined";
     
 }
 
+- (void)setTrackingStatus:(BOOL)isTracking event:(NSString *)eventId
+{
+
+    PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
+    [eventQuery whereKey:@"eventId" equalTo:eventId];
+    
+    [eventQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        
+        PFObject *thisEvent = [objects firstObject];
+        [thisEvent setObject:[NSNumber numberWithBool:isTracking] forKey:@"isTracking"];
+        [thisEvent saveInBackground];
+        
+    }];
+}
+
+- (void)fetchTrackingStatusForEvent:(NSString *)eventId completion:(void (^)(BOOL isTracking))completionBlock
+{
+    PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
+    [eventQuery whereKey:@"eventId" equalTo:eventId];
+    
+    [eventQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        
+        PFObject *thisEvent = [objects firstObject];
+        BOOL isTracking;
+        NSNumber *isTrackingNumber = [thisEvent objectForKey:@"isTracking"];
+        
+        if (!isTrackingNumber) {
+            isTracking = NO;
+        } else {
+            isTracking = [isTrackingNumber boolValue];
+        }
+        
+        if (completionBlock) {
+            completionBlock(isTracking);
+        }
+        
+    }];
+}
+
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
     if ([_endDate compare:[NSDate date]]==NSOrderedAscending) {
@@ -470,16 +509,18 @@ NSString * const kDeclinedEventsKey = @"declined";
                 [event fixEventCoverPhoto];
                 
                 PFObject *thisEvent;
+                NSString *eventId = event[@"id"];
                 PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
-                [eventQuery whereKey:@"id" equalTo:event[@"id"]];
+                [eventQuery whereKey:@"eventId" equalTo:eventId];
                 
-                NSArray *objects = [NSArray array];/*[eventQuery findObjects];*/
+                NSArray *objects = [eventQuery findObjects];
                 if ([objects count]==0) {
                     thisEvent = [PFObject objectWithClassName:@"Event"];
-                    [thisEvent setObject:event[@"id"] forKey:@"id"];
+                    [thisEvent setObject:eventId forKey:@"eventId"];
                 } else {
                     thisEvent = [objects objectAtIndex:0];
                 }
+                
                 NSString *startTimeString = event[@"start_time"];
                 if ([startTimeString rangeOfString:@"T"].location == NSNotFound) {
                     [thisEvent setObject:[NSNull null] forKey:@"startDate"];

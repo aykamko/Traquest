@@ -55,6 +55,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @property (nonatomic, strong) NSString *status;
 
+@property (nonatomic, getter = isTracking) BOOL tracking;
 @property (nonatomic, getter = isActive) BOOL active;
 @property (nonatomic, getter = isHost) BOOL host;
 @property (nonatomic, getter = hasReplied) BOOL replied;
@@ -89,7 +90,9 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         _host = isHost;
         _replied = hasReplied;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
-        [_activeEventsDictionary setObject:[NSNumber numberWithBool:NO] forKey:_eventDetails[@"id"]];
+        
+        // By default
+        self.tracking = NO;
         
     }
     return self;
@@ -99,11 +102,20 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 {
     [self setViewPartialEventDetails];
     
-    [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
-        [[self eventDetails] addEntriesFromDictionary:eventDetails];
-        [self setViewCompleteEventDetails];
-        [_detailsTable setNeedsDisplay];
+    [[ParseDataStore sharedStore] fetchTrackingStatusForEvent:self.eventDetails[@"id"] completion:^(BOOL isTracking) {
+        
+        self.tracking = isTracking;
+        
+        [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
+            
+            [[self eventDetails] addEntriesFromDictionary:eventDetails];
+            [self setViewCompleteEventDetails];
+            [_detailsTable setNeedsDisplay];
+            
+        }];
+        
     }];
+    
     [super viewDidLoad];
 }
 
@@ -189,7 +201,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     NSString *actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
     
-    [[ParseDataStore sharedStore] changeRSVPStatusToEvent:self.eventDetails[@"id"] oldStatus:self.eventDetails[@"rsvp_status"] newStatus:[self eventParameterStringFromStatusString:actionTitle] completion:^{
+    [[ParseDataStore sharedStore] changeRSVPStatusToEvent:self.eventDetails[@"id"]
+                                                oldStatus:self.eventDetails[@"rsvp_status"]
+                                                newStatus:[self eventParameterStringFromStatusString:actionTitle]
+                                               completion:^{
         
         self.eventDetails[@"rsvp_status"] = [self eventParameterStringFromStatusString:actionTitle];
         [spinner stopAnimating];
@@ -219,10 +234,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 }
 
 
-- (void) resetButtonBackGroundColor: (id) sender {
+- (void)resetButtonBackGroundColor:(id)sender
+{
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
+
 #pragma mark MapView
+
 - (void)loadMapView:(id)sender
 {
     _statsViewController =[[ActiveEventsStatsViewController alloc]initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
@@ -248,12 +266,15 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 #pragma mark Push and Load Active Map
 
 - (void)promptGuestsForTracking: (id) sender {
+    
     [self loadMapView:nil];
     [_startTrackingButton removeFromSuperview];
-    [[EventsListController sharedListController].trackingDict setObject:[NSNumber numberWithBool:YES] forKey:_eventDetails[@"id"]];
+//    [[EventsListController sharedListController].trackingDict setObject:[NSNumber numberWithBool:YES] forKey:_eventDetails[@"id"]];
     [self addStopTrackingButtonAndViewMapButton];
     
+    [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"]];
     [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
+    
 }
 
 #pragma mark Map Zoom
@@ -562,20 +583,16 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_dimensionsDict addEntriesFromDictionary:
      @{ @"detailsTableContentHeight":[NSNumber numberWithFloat: [_detailsTable contentSize].height] }];
 
-    if ([self isHost]) {
+    if (self.isTracking) {
         
-        if (self.active) {
-            
-            [self addStopTrackingButtonAndViewMapButton];
-            
-        } else {
-          
-            [self addStartTrackingButton];
-            
-        }
+        [self addStopTrackingButtonAndViewMapButton];
+        
+    } else if (self.isHost) {
+        
+        [self addStartTrackingButton];
         
     } else {
-        
+    
         [_scrollView addConstraints:[NSLayoutConstraint
                                      constraintsWithVisualFormat:@"V:[_buttonHolder]-(sideMargin)-[_detailsTable(detailsTableContentHeight)]-|"
                                      options:0
@@ -790,17 +807,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 
 
--(void)doSomething:(id)sender {
-    NSLog(@"stop tracking man");
-}
-
-
--(NSMutableDictionary *) getActiveDict {
-    return   _activeEventsDictionary;
-}
-
--(void)setIsActive: (BOOL)isActive{
-    self.active = isActive;
+- (void)doSomething:(id)sender {
+    
+    [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"]];
+    [self.viewMapButton removeFromSuperview];
+    [self.stopTrackingButton removeFromSuperview];
+    [self addStartTrackingButton];
+    
 }
 
 @end

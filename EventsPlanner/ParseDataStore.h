@@ -39,17 +39,20 @@ extern NSString * const kDeclinedEventsKey;
 - (void)fetchLocationWithCompletion:(void (^)(CLLocation *location))completionBlock;
 
 - (void)startTrackingMyLocationIfAllowed;
-- (BOOL) verifyTrackingAllowed;
-- (void)changePermissionForEvent: (NSString *) eventId identity: (NSString *) identity;
+- (BOOL)verifyTrackingAllowed;
+- (void)changePermissionForEvent:(NSString *)eventId identity:(NSString *)identity;
+
+- (void)setTrackingStatus:(BOOL)isTracking event:(NSString *)eventId;
+- (void)fetchTrackingStatusForEvent:(NSString *)eventId completion:(void (^)(BOOL isTracking))completionBlock;
 
 - (void)fetchEventListDataForListKey:(NSString *)listKey completion:(void (^)(NSArray *eventsList))completionBlock;
 - (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 - (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *activeHostEvents,
-                                                   NSArray *activeGuestEvents,
-                                                   NSArray *hostEvents,
-                                                   NSArray *guestEvents,
-                                                   NSArray* maybeAttendingEvents,
-                                                   NSArray *noReplyEvents))completionBlock;
+                                                      NSArray *activeGuestEvents,
+                                                      NSArray *hostEvents,
+                                                      NSArray *guestEvents,
+                                                      NSArray *maybeAttendingEvents,
+                                                      NSArray *noReplyEvents))completionBlock;
 
 - (void)fetchPartialEventDetailsForNewEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 
@@ -58,7 +61,6 @@ extern NSString * const kDeclinedEventsKey;
 - (void)inviteFriendsToEvent:(NSString *)eventId
                  withFriends:(NSArray *)friendIdArray
                   completion:(void (^)())completionBlock;
-
 - (void)changeRSVPStatusToEvent:(NSString *)eventId
                       oldStatus:(NSString *)oldStatus
                       newStatus:(NSString *)status

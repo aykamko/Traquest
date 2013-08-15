@@ -13,11 +13,6 @@
 
 @interface FBEventDetailsViewController : UIViewController <UIScrollViewDelegate,UIActionSheetDelegate>
 
-@property (nonatomic, strong) NSMutableDictionary *activeEventsDictionary;
-
-- (NSMutableDictionary *)getActiveDict;
-- (void)setIsActive:(BOOL)isActive;
-
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL) active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied;
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied;
 
 @end
