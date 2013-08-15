@@ -266,8 +266,6 @@
 {
     self.createEventController = [[CreateEventController alloc] initWithListController:self];
     
-    //TODO: set navigation bar translucency from within CreateEventController
-    self.tabBarController.navigationController.navigationBar.translucent = NO;
     [self.tabBarController.navigationController
              pushViewController:self.createEventController.presentableViewController
              animated:YES];

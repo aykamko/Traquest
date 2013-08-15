@@ -17,9 +17,11 @@ static const BOOL debugTracking = YES;
 
 @interface AppDelegate () <UIAlertViewDelegate>
 
+@property (nonatomic, strong) UINavigationController *navController;
+
 @property (nonatomic, strong) EventsListController *eventsListController;
 @property (nonatomic, strong) FBLoginViewController *loginViewController;
-@property (nonatomic, strong) NSMutableDictionary *eventsNeedingCertification;
+@property (nonatomic, strong) NSMutableArray *eventsNeedingCertification;
 
 @end
 
@@ -51,8 +53,10 @@ static const BOOL debugTracking = YES;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor brownColor];
     
-    _loginViewController = [[FBLoginViewController alloc] init];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:_loginViewController];
+    self.loginViewController = [[FBLoginViewController alloc] init];
+    
+    self.navController = [[UINavigationController alloc] initWithRootViewController:self.loginViewController];
+    self.window.rootViewController = self.navController;
     
     if ([[ParseDataStore sharedStore] isLoggedIn]) {
         
@@ -74,8 +78,7 @@ static const BOOL debugTracking = YES;
             
             [[self.eventsListController presentableViewController] navigationItem].hidesBackButton = YES;
             
-            UINavigationController *navController = (UINavigationController *)self.window.rootViewController;
-            [navController pushViewController:[_eventsListController presentableViewController] animated:YES];
+            [self.navController pushViewController:[_eventsListController presentableViewController] animated:YES];
             [self.window makeKeyAndVisible];
             
         }];
@@ -99,28 +102,32 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
 
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    if (!_eventsNeedingCertification) {
-        _eventsNeedingCertification = [[NSMutableDictionary alloc] init];
+    if (!self.eventsNeedingCertification) {
+        self.eventsNeedingCertification = [[NSMutableArray alloc] init];
     }
+    
     NSString *eventId = userInfo[@"eventId"];
     NSString *eventName = userInfo[@"eventName"];
-    [_eventsNeedingCertification setObject:eventName forKey:eventId];
+    [self.eventsNeedingCertification addObject:@{ eventId: eventName }];
+    
     if ([application applicationState] != UIApplicationStateActive) {
         [PFPush handlePush:userInfo];
-    }
-    else {
-        [self promptUserAllowTracking: eventName withId: eventId];
+    } else {
+        [self promptUserAllowTrackingForEvent:eventName eventId:eventId];
     }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    [[ParseDataStore sharedStore] startTrackingMyLocationIfAllowed];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    for (NSString *eventId in _eventsNeedingCertification) {
-        [self promptUserAllowTracking:_eventsNeedingCertification[eventId] withId:eventId];
+    for (NSDictionary *event in _eventsNeedingCertification) {
+        NSString *eventId = [[event allKeys] firstObject];
+        NSString *eventName = event[eventId];
+        [self promptUserAllowTrackingForEvent:eventName eventId:eventId];
     }
     //[[ParseDataStore sharedStore] stopTrackingMyLocation];
 }
@@ -136,27 +143,46 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 //- (void)applicationWillResignActive:(UIApplication *)application
 //{
 //}
+//
+//- (void)applicationWillResignActive:(UIApplication *)application
+//{
+//}
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-}
-
--(void) promptUserAllowTracking: (NSString *) eventName withId: (NSString *) eventId{
-    NSString *title = [NSString stringWithFormat:@"The following event would like to track your location:"];
-    UIAlertView *trackingPrompt = [[UIAlertView alloc] initWithTitle: title message:eventName delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Allow Tracking", @"Allow Anonymously", @"Don't Allow", nil];
+- (void)promptUserAllowTrackingForEvent:(NSString *)eventName eventId:(NSString *)eventId {
+    
+    NSString *title = @"The following event would like to track your location:";
+    
+    UIAlertView *trackingPrompt = [[UIAlertView alloc]
+                                   initWithTitle:title
+                                   message:eventName
+                                   delegate:self
+                                   cancelButtonTitle:@"Don't Allow"
+                                   otherButtonTitles:@"Allow Tracking", @"Allow Anonymously", nil];
+    
     [trackingPrompt show];
+    
 }
 
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSString *eventName = [alertView message];
-    NSString *eventId = [[_eventsNeedingCertification allKeysForObject:eventName] objectAtIndex:0];
-    if (buttonIndex==1) {
-        [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:allowed];
-     } else if (buttonIndex==2) {
-         [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:anonymous];
-     } else if (buttonIndex==3) {
-         [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:notAllowed];
-     }
-     [_eventsNeedingCertification removeObjectForKey:eventId];
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    NSDictionary *event = [self.eventsNeedingCertification firstObject];
+    NSString *eventId = [[event allKeys] firstObject];
+    
+    NSString *identity;
+    if (buttonIndex == 0) {
+        identity = allowed;
+    } else if (buttonIndex == 1) {
+        identity = anonymous;
+    } else if (buttonIndex == 2) {
+        identity = notAllowed;
+    }
+    
+    [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:identity];
+    [self.eventsNeedingCertification removeObjectAtIndex:0];
+    
+//    if (([self.eventsNeedingCertification count] == 0) && (identity != notAllowed)) {
+//        self.navController setViewControllers:<#(NSArray *)#> animated:<#(BOOL)#>
+//    }
 }
+
 @end

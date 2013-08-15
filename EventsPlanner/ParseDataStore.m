@@ -208,7 +208,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     
 }
 
-- (void)startTrackingMyLocation
+- (void)startTrackingMyLocationIfAllowed
 {
     if (![self isLoggedIn] || ![self verifyTrackingAllowed]) {
         return;
@@ -217,7 +217,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     [_locationManager startUpdatingLocation];
 }
 
-- (BOOL) verifyTrackingAllowed {
+- (BOOL)verifyTrackingAllowed {
     PFObject *trackingObj = [[PFUser currentUser] objectForKey:trackingObject];
     for (NSString *key in [trackingObj allKeys]) {
         NSString * object = [NSString stringWithFormat:@"%@", trackingObj[key]];
@@ -228,11 +228,14 @@ NSString * const kDeclinedEventsKey = @"declined";
     [_locationManager stopUpdatingLocation];
     return NO;
 }
-- (void) changePermissionForEvent: (NSString *) eventId identity: (NSString *) identity {
+
+- (void)changePermissionForEvent:(NSString *)eventId identity:(NSString *)identity {
+    
     PFObject *tracking = [[PFUser currentUser] objectForKey:trackingObject];
     [tracking setObject:identity forKey:[NSString stringWithFormat:@"E%@", eventId]];    
-    [self startTrackingMyLocation];
+    [self startTrackingMyLocationIfAllowed];
     [[PFUser currentUser] saveInBackground];
+    
 }
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations

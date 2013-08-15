@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@class FBEventDetailsViewController;
 
 typedef enum eventType {
     hostedEvent=0,
@@ -15,6 +16,8 @@ typedef enum eventType {
 }eventType;
 
 @interface EventsListController : NSObject<UITableViewDelegate>
+
+@property (nonatomic, strong) NSMutableDictionary *trackingDict;
 
 + (EventsListController *)sharedListController;
 
@@ -36,5 +39,6 @@ typedef enum eventType {
                            newEventsList:(NSArray *)eventsList
              endRefreshForRefreshControl:(UIRefreshControl *)refreshControl;
 
-@property (nonatomic, strong) NSMutableDictionary *trackingDict;
+- (FBEventDetailsViewController *)detailsViewControllerForEvent:(NSString *)eventId;
+
 @end

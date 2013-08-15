@@ -30,7 +30,6 @@
     
     // Arguments to pass to cell
     NSString *cellTitle;
-    NSString *cellRsvpStatus;
     NSDate *cellDate;
     UIImage *cellBackground;
     
