@@ -268,7 +268,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 {
     BOOL allSucceeded = YES;
     
-    NSArray *eventsListKeyArray = @[kHostEventsKey, kAttendingEventsKey, kMaybeEventsKey, kNoReplyEventsKey];
+    NSArray *eventsListKeyArray = @[kActiveHostEventsKey, kActiveGuestEventsKey, kHostEventsKey, kAttendingEventsKey, kMaybeEventsKey, kNoReplyEventsKey];
     for (NSString *key in eventsListKeyArray) {
         
         BOOL succeeded = [self saveEventsList:dictOfEventsListsByKey[key] forKey:key];
@@ -285,7 +285,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 {
     NSMutableDictionary *resultDictionary = [[NSMutableDictionary alloc] init];
     
-    NSArray *eventsListKeyArray = @[kHostEventsKey, kAttendingEventsKey, kMaybeEventsKey, kNoReplyEventsKey];
+    NSArray *eventsListKeyArray = @[kActiveHostEventsKey, kActiveGuestEventsKey, kHostEventsKey, kAttendingEventsKey, kMaybeEventsKey, kNoReplyEventsKey];
     for (NSString *key in eventsListKeyArray) {
         NSArray *eventsList = [self loadEventsListForKey:key];
         if (!eventsList) {
@@ -403,7 +403,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     NSDate *oldestCacheDate = [self dateOfOldestCache];
     if (oldestCacheDate) {
         NSTimeInterval cacheAge = [oldestCacheDate timeIntervalSinceNow];
-        if (cacheAge > -60 * 10) {
+        if (cacheAge > -60 * 0) {
             NSDictionary *savedEventsList = [self loadAllEventsListsFromCacheAsKeyedDictionary];
             if (savedEventsList) {
                 if (!self.myId) {
@@ -452,16 +452,16 @@ NSString * const kDeclinedEventsKey = @"declined";
             NSMutableArray *activeHostEvents = [[NSMutableArray alloc] init];
             NSMutableArray *activeGuestEvents = [[NSMutableArray alloc] init];
             
-            PFQuery *pastEventsQuery = [PFQuery queryWithClassName:@"PastEvents"];
-            PFObject *pastEventsObject = [[pastEventsQuery findObjects] objectAtIndex:0];
-            NSMutableArray *pastEvents  = pastEventsObject[@"events"];
+//            PFQuery *pastEventsQuery = [PFQuery queryWithClassName:@"PastEvents"];
+//            PFObject *pastEventsObject = [[pastEventsQuery findObjects] objectAtIndex:0];
+//            NSMutableArray *pastEvents  = pastEventsObject[@"events"];
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 
             for (FBGraphObject *event in eventArray) {
                 
-                if ([pastEvents containsObject:event[@"id"]]) {
-                    continue;
-                }
+//                if ([pastEvents containsObject:event[@"id"]]) {
+//                    continue;
+//                }
                 
                 BOOL active = NO;
                 [event fixEventCoverPhoto];
