@@ -473,7 +473,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                 PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
                 [eventQuery whereKey:@"id" equalTo:event[@"id"]];
                 
-                NSArray *objects = [eventQuery findObjects];
+                NSArray *objects = [NSArray array];/*[eventQuery findObjects];*/
                 if ([objects count]==0) {
                     thisEvent = [PFObject objectWithClassName:@"Event"];
                     [thisEvent setObject:event[@"id"] forKey:@"id"];
@@ -481,7 +481,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                     thisEvent = [objects objectAtIndex:0];
                 }
                 NSString *startTimeString = event[@"start_time"];
-                if ([startTimeString rangeOfString:@"T"].location==NSNotFound) {
+                if ([startTimeString rangeOfString:@"T"].location == NSNotFound) {
                     [thisEvent setObject:[NSNull null] forKey:@"startDate"];
                 } else {
                     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];

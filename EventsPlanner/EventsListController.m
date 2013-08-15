@@ -240,10 +240,12 @@
 - (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)replied
 {
     if ([_trackingDict objectForKey:partialDetails[@"id"]]) { //if user is already tracking
+        
         self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
                                                                                               isActive:YES
                                                                                                 isHost:isHost
                                                                                             hasReplied:replied];
+        
     } else {
         
         self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
@@ -251,14 +253,14 @@
                                                                                                 isHost:isHost
                                                                                             hasReplied:replied];
         
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                       style:UIBarButtonItemStyleBordered
-                                                                      target:nil
-                                                                      action:nil];
-        [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
-        [self.tabBarController.navigationController pushViewController:_eventDetailsViewController animated:YES];
-        
     }
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                   style:UIBarButtonItemStyleBordered
+                                                                  target:nil
+                                                                  action:nil];
+    [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
+    [self.tabBarController.navigationController pushViewController:_eventDetailsViewController animated:YES];
 }
 
 #pragma mark  Create New Event
@@ -320,13 +322,14 @@
     } else if (self.selectedTableViewController == self.maybeTableViewController) {
         
         [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:YES];
+        
     } else if (self.selectedTableViewController == self.notRepliedTableViewController) {
         
         [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:NO];
     }
     
-    
 }
+
 #pragma mark initialize View Controllers
 -(void)initializeViewControllers{
     

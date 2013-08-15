@@ -35,7 +35,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     UIView *_buttonHolder;
     UITableView *_detailsTable;
     
-    BOOL active;
     BOOL alreadyTracking;
     
     FBEventDetailsTableDataSource *_dataSource;
@@ -85,12 +84,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 {
     self = [super init];
     if (self) {
+        
         _active = active;
         _host = isHost;
         _replied = hasReplied;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         [_activeEventsDictionary setObject:[NSNumber numberWithBool:NO] forKey:_eventDetails[@"id"]];
-    
         
     }
     return self;
@@ -217,26 +216,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [statusSheet showInView:[self view]];
         
     }
-    _layoutConstraint = @"V:[_buttonHolder]-[_viewMapButton(viewMapButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-[_stopTrackingButton(trackingButtonImageHeight)]-|";
-    
-    self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:self.layoutConstraint
-                                                                            options:0
-                                                                            metrics:self.dimensionsDict
-                                                                              views:self.viewsDictionary];
-    
-    
-    [_scrollView addConstraints:self.verticalLayoutContraints];
-    [_scrollView addConstraints:[NSLayoutConstraint
-                                 constraintsWithVisualFormat:@"H:|-(sideMargin)-[_viewMapButton(screenWidthWithMargin)]-(sideMargin)-|"
-                                 options:0
-                                 metrics:_dimensionsDict
-                                 views:_viewsDictionary]];
-    [_scrollView addConstraints:[NSLayoutConstraint
-                                 constraintsWithVisualFormat:@"H:|-(sideMargin)-[_stopTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
-                                 options:0
-                                 metrics:_dimensionsDict
-                                 views:_viewsDictionary]];
-    
 }
 
 
@@ -265,8 +244,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     self.navigationController.title = self.tabBarItem.title;
     
 }
+
 #pragma mark Push and Load Active Map
--(void) promptGuestsForTracking: (id) sender {
+
+- (void)promptGuestsForTracking: (id) sender {
     [self loadMapView:nil];
     [_startTrackingButton removeFromSuperview];
     [[EventsListController sharedListController].trackingDict setObject:[NSNumber numberWithBool:YES] forKey:_eventDetails[@"id"]];
@@ -316,24 +297,15 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [self.view addSubview:_scrollView];
     [_viewsDictionary addEntriesFromDictionary:@{ @"_scrollView":_scrollView }];
-       if(_layoutConstraint){
-        
-    }
     
-       else{
-           [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:_viewsDictionary]];
-           [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView]|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:_viewsDictionary]];
-
-
-       }
-    
-    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:_viewsDictionary]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView]|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:_viewsDictionary]];
     // Initializing eventImageView and setting its UIImage
     _coverImageView = [[UIImageView alloc] init];
     [_coverImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -439,26 +411,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     if ([self isHost])
     {
-
-
-        [inviteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-        inviteButton.showsTouchWhenHighlighted = YES;
-        [inviteButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-        [inviteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-        [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
-        [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:)
-               forControlEvents:UIControlEventTouchUpOutside];
-        [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
-        [_buttonHolder addSubview:inviteButton];
-        [_viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
-        
-        
-        [_buttonHolder addConstraints:[NSLayoutConstraint
-                                       constraintsWithVisualFormat:@"V:|[inviteButton]|"
-                                       options:0
-                                       metrics:0
-                                       views:_viewsDictionary]];
         
         [_buttonHolder addConstraints:[NSLayoutConstraint
                                        constraintsWithVisualFormat:@"H:|[inviteButton]|"
@@ -466,21 +418,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                        metrics:0
                                        views:_viewsDictionary]];
 
-    }
-    
-    else if (![self isHost])
-    {
-        [inviteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-        inviteButton.showsTouchWhenHighlighted = YES;
-        [inviteButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-        [inviteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [inviteButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-        [inviteButton addTarget:self action:@selector(inviteFriends:) forControlEvents:UIControlEventTouchUpInside];
-        [inviteButton addTarget:self action:@selector(resetButtonBackGroundColor:)
-               forControlEvents:UIControlEventTouchUpOutside];
-        [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
-        [_buttonHolder addSubview:inviteButton];
-        [_viewsDictionary addEntriesFromDictionary:@{ @"inviteButton":inviteButton }];
+    } else if (![self isHost]) {
         
         _rsvpStatusButton = [[UIButton alloc] init];
         [_rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -548,21 +486,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     _dataSource = [[FBEventDetailsTableDataSource alloc] initWithEventDetails:_eventDetails];
     _detailsTableDelegate = [[FBEventDetailsTableDelegate alloc] init];
     
-    //creating table view with event details and setting data source
-    _detailsTable = [[UITableView alloc] init];
-    [_detailsTable setBackgroundColor:[UIColor whiteColor]];
-    [_detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_detailsTable setDataSource:_dataSource];
-    [_detailsTable setDelegate:_detailsTableDelegate];
-    
-    
-    
-    //setting some UI aspects of tableview
-    [_detailsTable.layer setCornerRadius:3];
-    [_detailsTable.layer setBorderWidth:0.5];
-    [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3] CGColor]];
-    [_detailsTable setUserInteractionEnabled:NO];
-    [_detailsTable setScrollEnabled:NO];
+    [_dimensionsDict
+     addEntriesFromDictionary:@{ @"screenWidthWithMargin":[NSNumber numberWithFloat:
+                                                           ([UIScreen mainScreen].bounds.size.width -
+                                                            (TableViewSideMargin * 2))],
+                                 
+                                 @"sideMargin":[NSNumber numberWithFloat:TableViewSideMargin] }];
     
     //initializing mapView and setting coordinates of location
     _mapView = [[MKMapView alloc]
@@ -571,7 +500,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_detailsTable setTableHeaderView:_mapView];
     [_mapView setMapType:MKMapTypeStandard];
     [_mapView setUserInteractionEnabled:YES];
-
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadMapView:)];
     [_mapView addGestureRecognizer:tapRecognizer];
@@ -579,6 +507,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
     if (venueDict[@"latitude"]) {
+        
         NSString *latString = venueDict[@"latitude"];
         NSString *lngString = venueDict[@"longitude"];
         double latitude = [latString doubleValue];
@@ -619,34 +548,23 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_detailsTable setDataSource:_dataSource];
     [_detailsTable setDelegate:_detailsTableDelegate];
     
-    
-    [_detailsTable setTableHeaderView:_mapView];
-    
     //setting some UI aspects of tableview
+    [_detailsTable setTableHeaderView:_mapView];
     [_detailsTable.layer setCornerRadius:3];
     [_detailsTable.layer setBorderWidth:0.5];
     [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3] CGColor]];
     [_detailsTable setUserInteractionEnabled:NO];
+    
     [_detailsTable setScrollEnabled:NO];
-    
-    [_dimensionsDict
-     addEntriesFromDictionary:@{ @"screenWidthWithMargin":[NSNumber numberWithFloat:
-                                                           ([UIScreen mainScreen].bounds.size.width -
-                                                            (TableViewSideMargin * 2))],
-                                 
-                                 @"sideMargin":[NSNumber numberWithFloat:TableViewSideMargin],
-                                 
-                                 @"detailsTableContentHeight":[NSNumber numberWithFloat:
-                                                               [_detailsTable contentSize].height] }];
-    
-    
-    
-    [_scrollView addSubview:_detailsTable];
     [_viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
     
+    [_scrollView addSubview:_detailsTable];
+    [_dimensionsDict addEntriesFromDictionary:
+     @{ @"detailsTableContentHeight":[NSNumber numberWithFloat: [_detailsTable contentSize].height] }];
+
     if ([self isHost]) {
         
-        if (active) {
+        if (self.active) {
             
             [self addStopTrackingButtonAndViewMapButton];
             
@@ -666,27 +584,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         
     }
     
-    
-    
     [_scrollView addConstraints:[NSLayoutConstraint
                                  constraintsWithVisualFormat:@"H:|-(sideMargin)-[_detailsTable(screenWidthWithMargin)]-(sideMargin)-|"
                                  options:0
                                  metrics:_dimensionsDict
                                  views:_viewsDictionary]];
-}
-
--(void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
-    [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
-        [[self eventDetails] addEntriesFromDictionary:eventDetails];
-        [self setViewCompleteEventDetails];
-        [_mapView setNeedsDisplay];
-        [_detailsTable setNeedsDisplay];
-    }];
-
 }
-
 
 - (void)addStartTrackingButton{
     
@@ -719,13 +623,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [_scrollView addSubview:_startTrackingButton];
     [_viewsDictionary addEntriesFromDictionary:@{ @"_startTrackingButton":_startTrackingButton }];
+    
     if(_verticalLayoutContraints){
         [_scrollView removeConstraints:_verticalLayoutContraints];
     }
     
-    
-    _layoutConstraint =   @"V:[_buttonHolder]-[_startTrackingButton(trackingButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
+    _layoutConstraint =  @"V:[_buttonHolder]-[_startTrackingButton(trackingButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
     _verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint options:0 metrics:_dimensionsDict views:_viewsDictionary];
+    
     [_scrollView addConstraints:_verticalLayoutContraints];
     [_scrollView addConstraints:[NSLayoutConstraint
                                  constraintsWithVisualFormat:@"H:|-(sideMargin)-[_startTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
@@ -736,7 +641,41 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 }
 
 -(void)addStopTrackingButtonAndViewMapButton{
-    _stopTrackingButton = [[UIButton alloc]init];
+    
+    _viewMapButton = [[UIButton alloc]init];
+    
+    UIImage *viewMapButtonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
+                                                                        pathForResource:@"silver-button-normal@2x"
+                                                                        ofType:@"png"]];
+    UIImage *viewMapButtonImage = [viewMapButtonBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
+    UIImage *viewMapButtonPressedBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
+                                                                               pathForResource:@"silver-button-pressed@2x"
+                                                                               ofType:@"png"]];
+    UIImage *viewMapButtonPressedImage = [viewMapButtonPressedBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
+    
+    
+    [_dimensionsDict addEntriesFromDictionary:
+     @{ @"viewMapButtonImageHeight":[NSNumber numberWithFloat:viewMapButtonBaseImage.size.height] }];
+    
+    
+    [_viewMapButton setBackgroundImage:viewMapButtonImage forState:UIControlStateNormal];
+    [_viewMapButton setBackgroundImage:viewMapButtonPressedImage forState:UIControlStateSelected];
+    [_viewMapButton setBackgroundImage:viewMapButtonPressedImage forState:UIControlStateHighlighted];
+    
+    [_viewMapButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [_viewMapButton setTitle:@"View Map" forState:UIControlStateNormal];
+    [_viewMapButton setTintColor:[UIColor blackColor]];
+    [[_viewMapButton titleLabel] setFont:[UIFont boldSystemFontOfSize:TrackingButtonFontSize]];
+    
+    [_viewMapButton addTarget:self
+                       action:@selector(loadMapView:)
+             forControlEvents:UIControlEventTouchUpInside];
+    
+    [_scrollView addSubview:_viewMapButton];
+    [_viewsDictionary addEntriesFromDictionary:@{ @"_viewMapButton":_viewMapButton }];
+    
+    
+    _stopTrackingButton = [[UIButton alloc] init];
     
     UIImage *buttonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
                                                                  pathForResource:@"cancel-button-normal@2x"
@@ -766,45 +705,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                   forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:_stopTrackingButton];
     [_viewsDictionary addEntriesFromDictionary:@{ @"_stopTrackingButton":_stopTrackingButton }];
-    
-    _viewMapButton = [[UIButton alloc]init];
-    
-    UIImage *viewMapButtonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                 pathForResource:@"silver-button-normal@2x"
-                                                                 ofType:@"png"]];
-    UIImage *viewMapButtonImage = [viewMapButtonBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    UIImage *viewMapButtonPressedBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                        pathForResource:@"silver-button-pressed@2x"
-                                                                        ofType:@"png"]];
-    UIImage *viewMapButtonPressedImage = [viewMapButtonPressedBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    
-    
-    [_dimensionsDict addEntriesFromDictionary:
-     @{ @"viewMapButtonImageHeight":[NSNumber numberWithFloat:viewMapButtonBaseImage.size.height] }];
-    
-    
-    [ _viewMapButton setBackgroundImage:viewMapButtonImage forState:UIControlStateNormal];
-    [_viewMapButton setBackgroundImage:viewMapButtonPressedImage forState:UIControlStateSelected];
-    [_viewMapButton setBackgroundImage:viewMapButtonPressedImage forState:UIControlStateHighlighted];
-    
-    [_viewMapButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_viewMapButton setTitle:@"View Map" forState:UIControlStateNormal];
-    [_viewMapButton setTintColor:[UIColor blackColor]];
-    [[_viewMapButton titleLabel] setFont:[UIFont boldSystemFontOfSize:TrackingButtonFontSize]];
-    
-    [_viewMapButton addTarget:self
-                       action:@selector(loadMapView:)
-             forControlEvents:UIControlEventTouchUpInside];
-    
-    [_scrollView addSubview:_viewMapButton];
-    [_viewsDictionary addEntriesFromDictionary:@{ @"_viewMapButton":_viewMapButton }];
+
     
     if(_verticalLayoutContraints){
         [_scrollView removeConstraints:_verticalLayoutContraints];
     }
     
-    
-_layoutConstraint = @"V:[_buttonHolder]-[_viewMapButton(viewMapButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-[_stopTrackingButton(trackingButtonImageHeight)]-|";
+    _layoutConstraint = @"V:[_buttonHolder]-[_viewMapButton(viewMapButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-[_stopTrackingButton(trackingButtonImageHeight)]-|";
     self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
                                                                             options:0
                                                                             metrics:self.dimensionsDict
@@ -893,7 +800,7 @@ _layoutConstraint = @"V:[_buttonHolder]-[_viewMapButton(viewMapButtonImageHeight
 }
 
 -(void)setIsActive: (BOOL)isActive{
-    active = isActive;
+    self.active = isActive;
 }
 
 @end
