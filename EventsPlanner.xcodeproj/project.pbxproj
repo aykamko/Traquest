@@ -20,6 +20,9 @@
 		7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */; };
 		7C162C8D17BAB8D00043CAA9 /* NSDate+ExtraStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */; };
 		7C162C9017BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C162C8F17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m */; };
+		7C162C9617BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C162C9417BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png */; };
+		7C162C9717BC97F10043CAA9 /* loginBackgroundIPhonePortrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C162C9517BC97F10043CAA9 /* loginBackgroundIPhonePortrait@2x.png */; };
+		7C162C9917BC9EF50043CAA9 /* post-it-note.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C162C9817BC9EF50043CAA9 /* post-it-note.png */; };
 		7C2CFFC817B9B386003A2C8F /* CreateEventPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */; };
 		7C2CFFCB17B9C8F4003A2C8F /* CreateEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2CFFCA17B9C8F4003A2C8F /* CreateEventModel.m */; };
 		7C418C6717A082030084330C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C418C6617A082030084330C /* Foundation.framework */; };
@@ -81,8 +84,6 @@
 		7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
-		90164D2317A8939800E5A564 /* firstBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 90164D2217A8939800E5A564 /* firstBackground.png */; };
-		904838DE17A9AB1400042357 /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 904838DD17A9AB1400042357 /* stickynote.png */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
 
@@ -116,6 +117,9 @@
 		7C162C8C17BAB8D00043CAA9 /* NSDate+ExtraStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+ExtraStuff.m"; sourceTree = "<group>"; };
 		7C162C8E17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBGraphObject+FixEventCoverPhoto.h"; sourceTree = "<group>"; };
 		7C162C8F17BB146B0043CAA9 /* FBGraphObject+FixEventCoverPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FBGraphObject+FixEventCoverPhoto.m"; sourceTree = "<group>"; };
+		7C162C9417BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loginBackgroundIPhonePortrait.png; sourceTree = "<group>"; };
+		7C162C9517BC97F10043CAA9 /* loginBackgroundIPhonePortrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loginBackgroundIPhonePortrait@2x.png"; sourceTree = "<group>"; };
+		7C162C9817BC9EF50043CAA9 /* post-it-note.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-it-note.png"; sourceTree = "<group>"; };
 		7C2CFFC617B9B386003A2C8F /* CreateEventPlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventPlacePickerViewController.h; sourceTree = "<group>"; };
 		7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventPlacePickerViewController.m; sourceTree = "<group>"; };
 		7C2CFFC917B9C8F4003A2C8F /* CreateEventModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventModel.h; sourceTree = "<group>"; };
@@ -200,10 +204,8 @@
 		90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventsStatsViewController.m; sourceTree = "<group>"; };
 		90130EBF17A31D450038BBFB /* EventsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsListController.h; sourceTree = "<group>"; };
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
-		90164D2217A8939800E5A564 /* firstBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = firstBackground.png; sourceTree = "<group>"; };
 		90202D0017B5BE0C00C0CA66 /* FBIdAnnotationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBIdAnnotationPoint.h; sourceTree = "<group>"; };
 		90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIdAnnotationPoint.m; sourceTree = "<group>"; };
-		904838DD17A9AB1400042357 /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
 		90E9727017A1BA92000EC59B /* EventsTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewDataSource.h; sourceTree = "<group>"; };
 		90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewDataSource.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -419,11 +421,12 @@
 			children = (
 				7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */,
 				7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */,
+				7C162C9417BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png */,
+				7C162C9517BC97F10043CAA9 /* loginBackgroundIPhonePortrait@2x.png */,
 				6065E46417ACA3C8003B947E /* eventCoverPhoto.png */,
-				904838DD17A9AB1400042357 /* stickynote.png */,
-				90164D2217A8939800E5A564 /* firstBackground.png */,
 				7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */,
 				60D520AC17A18EE9009CD642 /* Icon.png */,
+				7C162C9817BC9EF50043CAA9 /* post-it-note.png */,
 				7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */,
 				7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */,
 				7CE2DAA017A09BC500834B6F /* login-button-small.png */,
@@ -587,16 +590,17 @@
 			files = (
 				7CE05FCF17B33BDB004BF47C /* tracking-button@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
-				904838DE17A9AB1400042357 /* stickynote.png in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
 				7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */,
 				7C418C7117A082030084330C /* InfoPlist.strings in Resources */,
-				90164D2317A8939800E5A564 /* firstBackground.png in Resources */,
 				60D520AD17A18EE9009CD642 /* Icon.png in Resources */,
+				7C162C9717BC97F10043CAA9 /* loginBackgroundIPhonePortrait@2x.png in Resources */,
+				7C162C9917BC9EF50043CAA9 /* post-it-note.png in Resources */,
 				7CE05FCE17B33BDB004BF47C /* tracking-button-pressed@2x.png in Resources */,
 				6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
+				7C162C9617BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

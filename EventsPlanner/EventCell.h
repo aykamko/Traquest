@@ -11,7 +11,6 @@
 @interface EventCell : UITableViewCell
 
 - (instancetype) initWithTitle:(NSString *)title
-                    rsvpStatus:(NSString *)status
                           date:(NSDate *)date
                     background:(UIImage *)background
                reuseIdentifier:(NSString *)identifier;

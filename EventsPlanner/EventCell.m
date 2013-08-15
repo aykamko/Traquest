@@ -17,7 +17,6 @@
 }
 
 @property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) UIImage *background;
 
@@ -26,7 +25,6 @@
 @implementation EventCell
 
 - (instancetype) initWithTitle:(NSString *)title
-                    rsvpStatus:(NSString *)status
                           date:(NSDate *)date
                     background:(UIImage *)background
                reuseIdentifier:(NSString *)identifier
@@ -35,7 +33,6 @@
     if (self) {
         
         _title = title;
-        _status = status;
         _date = date;
         _background = background;
         
@@ -72,7 +69,6 @@
     
     _contentView = [[EventCellContentView alloc] initWithFrame:newBounds
                                                          title:_title
-                                                    rsvpStatus:_status
                                                           date:_date
                                                     background:_background];
     [self addSubview:_contentView];

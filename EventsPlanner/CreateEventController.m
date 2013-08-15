@@ -180,6 +180,12 @@
                                                                              hasReplied:YES];
         }];
         
+        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:^(NSArray *eventsList) {
+            [self.eventsListController refreshTableViewForEventsListKey:kHostEventsKey
+                                                          newEventsList:eventsList
+                                            endRefreshForRefreshControl:nil];
+        }];
+        
     }];
 }
 

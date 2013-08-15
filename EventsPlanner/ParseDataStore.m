@@ -285,6 +285,26 @@ NSString * const kDeclinedEventsKey = @"declined";
     return resultDictionary;
 }
 
+- (void)setDateOfAllEventsLists
+{
+    NSArray *eventsListByKey = @[kHostEventsKey, kMaybeEventsKey, kAttendingEventsKey, kNoReplyEventsKey];
+    for (NSString *key in eventsListByKey) {
+        [self setDateOfCacheForEventsListOfKey:key];
+    }
+}
+
+- (NSDate *)dateOfOldestCache
+{
+    NSArray *eventsListByKey = @[kHostEventsKey, kMaybeEventsKey, kAttendingEventsKey, kNoReplyEventsKey];
+    NSDate *oldestCacheDate = [NSDate date];
+    for (NSString *key in eventsListByKey) {
+        NSDate *currentCacheDate = [self dateOfCacheForEventsListOfKey:key];
+        if ([currentCacheDate compare:oldestCacheDate] == NSOrderedAscending) {
+            oldestCacheDate = currentCacheDate;
+        }
+    }
+    return oldestCacheDate;
+}
 
 // Specific events list
 - (NSString *)archivePathForEventsListWithKey:(NSString *)eventsListKey
@@ -320,7 +340,6 @@ NSString * const kDeclinedEventsKey = @"declined";
     NSString *cacheKey = [NSString stringWithFormat:@"%@_eventsListCacheDate", eventsListKey];
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:cacheKey];
 }
-
 
 // Event Details
 - (NSString *)eventDetailsArchivePathForEvent:(NSString *)eventId
@@ -365,20 +384,16 @@ NSString * const kDeclinedEventsKey = @"declined";
                                                       NSArray *noReplyEvents))completionBlock
 {
     
-//    if (!self.myId) {
-//        self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:@"myId"];
-//    }
-    
     // Get cached data if not too old
-    //TODO: actually get this to work right
-    /*
-    NSDate *eventsCacheDate = [self dateOfCacheForEventsListOfKey:kHostEventsKey];
-    if (eventsCacheDate) {
-        NSTimeInterval cacheAge = [eventsCacheDate timeIntervalSinceNow];
-        if (cacheAge > (-60 * 10)) {
+    NSDate *oldestCacheDate = [self dateOfOldestCache];
+    if (oldestCacheDate) {
+        NSTimeInterval cacheAge = [oldestCacheDate timeIntervalSinceNow];
+        if (cacheAge > -60 * 10) {
             NSDictionary *savedEventsList = [self loadAllEventsListsFromCacheAsKeyedDictionary];
             if (savedEventsList) {
-                NSLog(@"cached list");
+                if (!self.myId) {
+                    self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:@"myFbId"];
+                }
                 completionBlock(savedEventsList[kHostEventsKey],
                                 savedEventsList[kAttendingEventsKey],
                                 savedEventsList[kMaybeEventsKey],
@@ -387,7 +402,6 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
         }
     }
-     */
     
     FBRequest *request = [FBRequest requestForGraphPath:
                           @"me?fields=events.limit(1000).fields(id,name,admins.fields(id,name),"
@@ -407,7 +421,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             if (!self.myId) {
                 // Store myId locally and in parse, if it's not there already
                 self.myId = result[@"id"];
-                [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:@"myId"];
+                [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:@"myFbId"];
                 [[PFUser currentUser] setObject:_myId forKey:facebookID];
                 [[PFUser currentUser] saveInBackground];
             }
@@ -475,7 +489,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                         [noReplyEvents insertObject:event atIndex:0];
                     }
                     
-                    [self setDateOfCacheForEventsListOfKey:kHostEventsKey];
+                    [self setDateOfAllEventsLists];
                     [self saveAllEventsLists:@{ kHostEventsKey: hostEvents,
                                                 kAttendingEventsKey: attendingEvents,
                                                 kMaybeEventsKey: maybeEvents,
@@ -567,7 +581,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 - (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
-    
     // Get cached data is not too old
     NSDate *eventDetailsCacheDate = [self eventDetailsCacheDateForEvent:eventId];
     if (eventDetailsCacheDate) {

@@ -1,22 +1,15 @@
 
 
 #import "FBLoginViewController.h"
-#import <Parse/Parse.h>
 #import "ParseDataStore.h"
 #import "EventsListController.h"
-#import "ParseDataStore.h"
-#import "FBEventDetailsViewController.h"
+#import "Toast+UIView.h"
 
 @interface FBLoginViewController ()
 
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) EventsListController *eventsListController;
-@property (nonatomic, strong) CLLocationManager *locationManager;
-@property (nonatomic,strong) UITextView *logo;
-@property (nonatomic,strong) UITextView *logo2;
-@property (nonatomic, strong) IBOutlet UIButton *loginButton;
-
-@property (nonatomic, strong) NSMutableArray *userPastLocations;
+@property (nonatomic, strong) UILabel *logoLabel;
+@property (nonatomic, strong) UIButton *loginButton;
 
 - (IBAction)loginButtonTouchHandler:(id)sender;
 
@@ -24,17 +17,18 @@
 
 @implementation FBLoginViewController
 
-#pragma mark - UIViewController
-
 - (void)viewDidLoad {
 
     [super viewDidLoad];
 
-    self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"firstBackground.png"]];
+    UIImage *backgroundImage = [UIImage imageNamed:@"loginBackgroundIPhonePortrait.png"];
+    self.view = [[UIImageView alloc] initWithImage:backgroundImage];
+    [self.view setUserInteractionEnabled:YES];
 
     // Check if user is cached and linked to Facebook, if so, bypass login
     [self drawLayout];
     if ([[ParseDataStore sharedStore] isLoggedIn]) {
+        [self.view makeToastActivity];
         [self setEventsListView];
     }
 
@@ -53,26 +47,16 @@
     [super viewWillDisappear:animated];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return YES;
-}
-
-#pragma mark - Login mehtods
-
-
-
 /* Login to facebook method */
 - (IBAction)loginButtonTouchHandler:(id)sender  {
     
+    [self.loginButton setUserInteractionEnabled:NO];
     // Show loading indicator until login is finished
-    [_activityIndicator startAnimating];
-    
     [[ParseDataStore sharedStore] logInWithCompletion:^{
-        [_activityIndicator stopAnimating];
+        [self.view makeToastActivity];
         [self setEventsListView];
+        [self.loginButton setUserInteractionEnabled:YES];
     }];
-    
    
 }
 
@@ -81,12 +65,13 @@
     [[ParseDataStore sharedStore] fetchAllEventListDataWithCompletion:^(NSArray *hostEvents, NSArray *guestEvents, NSArray *maybeAttendingEvents, NSArray *noReplyEvents) {
         
         _eventsListController = [[EventsListController alloc] initWithHostEvents:hostEvents
-                                                                     attendingEvents:guestEvents
-                                                                   notRepliedEvents:noReplyEvents
-                                                                  maybeEvents:maybeAttendingEvents];
+                                                                 attendingEvents:guestEvents
+                                                                notRepliedEvents:noReplyEvents
+                                                                     maybeEvents:maybeAttendingEvents];
         
         [[[_eventsListController presentableViewController] navigationItem] setHidesBackButton:YES];
 
+        [self.view hideToastActivity];
         [self.navigationController pushViewController:[_eventsListController presentableViewController]
                                              animated:YES];
 
@@ -94,90 +79,126 @@
     
 }
 
-- (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
-{
-
-    CLLocation* location = [locations lastObject];
-
-    CLLocationCoordinate2D coordinate = [location coordinate];
-    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-                                           longitude:coordinate.longitude];
-
-    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
-    [_userPastLocations addObject:geoPoint];
- 
-        
-    [[PFUser currentUser] saveInBackground];
-}
-
-
 - (void)drawLayout {
-    _logo=[[UITextView alloc]initWithFrame:CGRectMake(self.view.center.x-55, 150, 150, 50) ];
-    _logo.text=@"Events";
-    [_logo setTextColor:[UIColor blackColor]];
-    [_logo setFont:[UIFont fontWithName:@"Noteworthy-Bold" size:30]];
-    _logo.backgroundColor=[UIColor clearColor];
-    _logo.editable=NO;
-    _logo2=[[UITextView alloc]initWithFrame:CGRectMake(self.view.center.x-50, 180, 200, 50)];
-    _logo2.text=@"Planner";
-    [_logo setTextColor:[UIColor blackColor]];
-    [_logo2 setBackgroundColor:[UIColor clearColor]];
-    [_logo2 setFont:[UIFont fontWithName:@"Noteworthy-Bold" size:30]];
-    _logo2.editable=NO;
-    _logo2.scrollEnabled=NO;
-    _logo.scrollEnabled=NO;
-
-    _logo.transform=CGAffineTransformMakeRotation(-13*M_PI/180.0);
-    _logo2.transform=CGAffineTransformMakeRotation(-14.5*M_PI/180.0);
     
-    UIImageView *imageView=[[UIImageView alloc]initWithFrame:CGRectMake(self.view.center.x-100, 120, 200, 200)];
-    [imageView setImage:[UIImage imageNamed:@"stickynote.png"]];
+    NSMutableDictionary *viewDict = [[NSMutableDictionary alloc] init];
     
-    UITextView *description=[[UITextView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
-    description.center=CGPointMake(self.view.center.x, self.view.center.y+200);
-    description.backgroundColor=[UIColor clearColor];
-    description.text=@"Login to view and plan your Facebook events!";
-    [description setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15]];
-                          
+    UIView *containerView = [[UIView alloc] init];
+    [containerView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [viewDict addEntriesFromDictionary:@{ @"containerView":containerView }];
+    [containerView setBackgroundColor:[UIColor clearColor]];
     
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"post-it-note.png"]];
+    [imageView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [viewDict addEntriesFromDictionary:@{ @"imageView":imageView }];
+    [containerView addSubview:imageView];
+    [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:imageView
+                                                          attribute:NSLayoutAttributeWidth
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    [containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:viewDict]];
     
     self.loginButton = [[UIButton alloc] init];
-    [self.loginButton setBounds:CGRectMake(0, 0, 150, 50)];
-    [self.loginButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 43, 0, 0)];
-    [self.loginButton setTitle:@"Login" forState:UIControlStateNormal];
     [self.loginButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    NSLayoutConstraint *loginBottomConstraint = [NSLayoutConstraint constraintWithItem:self.view
-                                                                             attribute:NSLayoutAttributeBottom
-                                                                             relatedBy:NSLayoutRelationEqual
-                                                                                toItem:self.loginButton
-                                                                             attribute:NSLayoutAttributeBottom
-                                                                            multiplier:1.0
-                                                                              constant:180.0];
-    NSLayoutConstraint *loginCenterXConstraint = [NSLayoutConstraint constraintWithItem:self.view
-                                                                              attribute:NSLayoutAttributeCenterX
-                                                                              relatedBy:NSLayoutRelationEqual
-                                                                                 toItem:self.loginButton
-                                                                              attribute:NSLayoutAttributeCenterX
-                                                                             multiplier:1.0
-                                                                               constant:0.0];
+    [viewDict addEntriesFromDictionary:@{ @"loginButton":self.loginButton }];
     
-    UIImage *normalStateImg = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"login-button-small" ofType:@"png"]];
+    UIImage *baseNormalStateImg = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
+                                                                    pathForResource:@"login-button-small"
+                                                                    ofType:@"png"]];
+    UIImage *normalStateImg = [baseNormalStateImg resizableImageWithCapInsets:UIEdgeInsetsMake(0, 100, 0, 10)];
     [self.loginButton setBackgroundImage:normalStateImg forState:UIControlStateNormal];
     
-    UIImage *pressedStateImg = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"login-button-small-pressed" ofType:@"png"]];
+    UIImage *basePressedStateImg = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
+                                                                 pathForResource:@"login-button-small-pressed"
+                                                                 ofType:@"png"]];
+    UIImage *pressedStateImg = [basePressedStateImg resizableImageWithCapInsets:UIEdgeInsetsMake(0, 100, 0, 10)];
     [self.loginButton setBackgroundImage:pressedStateImg forState:UIControlStateSelected];
+    
+    [self.loginButton addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton
+                                                                 attribute:NSLayoutAttributeHeight
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:nil
+                                                                 attribute:NSLayoutAttributeNotAnAttribute
+                                                                multiplier:1.0
+                                                                  constant:baseNormalStateImg.size.height]];
+    
+    [self.loginButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 43, 0, 0)];
+    [self.loginButton.titleLabel setFont:[UIFont boldSystemFontOfSize:17]];
+    [self.loginButton setTitle:@"Log In With Facebook" forState:UIControlStateNormal];
     
     [self.loginButton addTarget:self
                          action:@selector(loginButtonTouchHandler:)
                forControlEvents:UIControlEventTouchUpInside];
-        
-    [self.view addSubview:description];
-    [self.view addSubview:self.loginButton];
-    [self.view addSubview:imageView];
-    [self.view addSubview:_logo];
-    [self.view addSubview:_logo2];
     
-    [self.view addConstraints:@[loginBottomConstraint, loginCenterXConstraint]];
+    [containerView addSubview:self.loginButton];
+    [containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(20)-[loginButton]-(20)-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:viewDict]];
+    [containerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]-(20)-[loginButton]|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:viewDict]];
+    
+    [self.view addSubview:containerView];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.view
+                                                              attribute:NSLayoutAttributeCenterY
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:containerView
+                                                              attribute:NSLayoutAttributeCenterY
+                                                             multiplier:1.0
+                                                               constant:0.0]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[containerView]-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:viewDict]];
+    
+    NSString *logoLabelText = @"Events\nPlanner";
+    UIFont *logoLabelFont = [UIFont fontWithName:@"Noteworthy-Bold" size:30];
+    CGSize sizeOfText = [logoLabelText sizeWithFont:logoLabelFont
+                                  constrainedToSize:CGSizeMake(1000.0f, 1000.0f)
+                                      lineBreakMode:NSLineBreakByWordWrapping];
+    
+    self.logoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, sizeOfText.width, sizeOfText.height)];
+    [self.logoLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [viewDict addEntriesFromDictionary:@{ @"logoLabel":self.logoLabel }];
+    self.logoLabel.numberOfLines = 2;
+    self.logoLabel.textAlignment = NSTextAlignmentCenter;
+    self.logoLabel.text = logoLabelText;
+    self.logoLabel.font = logoLabelFont;
+    self.logoLabel.textColor = [UIColor blackColor];
+    self.logoLabel.backgroundColor = [UIColor clearColor];
+    
+    self.logoLabel.transform = CGAffineTransformMakeRotation(-13 * M_PI/180.0);
+    [imageView addSubview:self.logoLabel];
+    [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.logoLabel
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.logoLabel
+                                                          attribute:NSLayoutAttributeCenterY
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    
+//    
+//    UITextView *description=[[UITextView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+//    description.center=CGPointMake(self.view.center.x, self.view.center.y+200);
+//    description.backgroundColor=[UIColor clearColor];
+//    description.text=@"Login to view and plan your Facebook events!";
+//    [description setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15]];
+    
 }
 
 @end

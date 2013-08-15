@@ -17,7 +17,6 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
                         title:(NSString *)title
-                   rsvpStatus:(NSString *)status
                          date:(NSDate *)date
                    background:(UIImage *)background
 {
@@ -28,12 +27,10 @@
         
         // Initializing labels
         _eventTitleLabel = [[UILabel alloc] init];
-        _eventStatusLabel = [[UILabel alloc] init];
         _eventDateLabel = [[UILabel alloc] init];
         
         // Setting label text
         [_eventTitleLabel setText:title];
-        [_eventStatusLabel setText:status];
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDoesRelativeDateFormatting:YES];
@@ -50,7 +47,7 @@
                                                                                  toItem:_eventTitleLabel
                                                                               attribute:NSLayoutAttributeTop
                                                                              multiplier:1.0
-                                                                               constant:-kMargins];
+                                                                               constant:-kMargins + 1.0];
         NSLayoutConstraint *titleLeftConstraint = [NSLayoutConstraint constraintWithItem:self
                                                                                attribute:NSLayoutAttributeLeft
                                                                                relatedBy:NSLayoutRelationEqual
@@ -61,27 +58,6 @@
         [_eventTitleLabel setFont:[UIFont boldSystemFontOfSize:kBigLabelFontSize]];
         [_eventTitleLabel setBackgroundColor:[UIColor clearColor]];
         [_eventTitleLabel setTextColor:[UIColor whiteColor]];
-        
-        // Event Status Label properties
-        [_eventStatusLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-        NSLayoutConstraint *statusBottomConstraint = [NSLayoutConstraint constraintWithItem:_eventDateLabel
-                                                                                  attribute:NSLayoutAttributeTop
-                                                                                  relatedBy:NSLayoutRelationEqual
-                                                                                     toItem:_eventStatusLabel
-                                                                                  attribute:NSLayoutAttributeBottom
-                                                                                 multiplier:1.0
-                                                                                   constant:0.0];
-        NSLayoutConstraint *statusLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventTitleLabel
-                                                                                attribute:NSLayoutAttributeLeft
-                                                                                relatedBy:NSLayoutRelationEqual
-                                                                                   toItem:_eventStatusLabel
-                                                                                attribute:NSLayoutAttributeLeft
-                                                                               multiplier:1.0
-                                                                                 constant:0];
-        [_eventStatusLabel setFont:[UIFont systemFontOfSize:kSmallLabelFontSize]];
-        [_eventStatusLabel setBackgroundColor:[UIColor clearColor]];
-        [_eventStatusLabel setTextColor:[UIColor whiteColor]];
-        
         
         // Event Date Label properties
         [_eventDateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -105,13 +81,11 @@
         
         // Adding to superview
         [self addSubview:_eventTitleLabel];
-        [self addSubview:_eventStatusLabel];
         [self addSubview:_eventDateLabel];
         
         // Adding constraints
-        [self addConstraints:@[statusBottomConstraint, statusLeftConstraint,
-                               titleTopConstraint, titleLeftConstraint,
-                               dateBottomConstraint, dateLeftConstraint]];
+        [self addConstraints:@[ titleTopConstraint, titleLeftConstraint,
+                                dateBottomConstraint, dateLeftConstraint]];
     }
     return self;
 }

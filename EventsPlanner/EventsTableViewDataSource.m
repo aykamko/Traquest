@@ -37,15 +37,6 @@
     // Getting arguments
     cellTitle = eventArray[indexPath.row][@"name"];
     
-    cellRsvpStatus = eventArray[indexPath.row][@"rsvp_status"];
-    if ([cellRsvpStatus isEqualToString:@"attending"]) {
-        cellRsvpStatus = @"You're going.";
-    } else if ([cellRsvpStatus isEqualToString:@"unsure"]) {
-        cellRsvpStatus = @"You maybe going.";
-    } else if ([cellRsvpStatus isEqualToString:@"not_replied"]) {
-        cellRsvpStatus = @"You haven't replied.";
-    }
-    
     NSString *startTimeStr = eventArray[indexPath.row][@"start_time"];
     
     NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
@@ -59,7 +50,6 @@
     
     // Allocating and initializing actual cell
     cell = [[EventCell alloc] initWithTitle:cellTitle
-                                 rsvpStatus:cellRsvpStatus
                                        date:cellDate
                                  background:cellBackground
                             reuseIdentifier:EventCellIdentifier];
