@@ -392,7 +392,7 @@ NSString * const kNoReplyEventsKey = @"not_replied";
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error getting events lists!"
                                                             message:error.localizedDescription
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
@@ -453,7 +453,7 @@ NSString * const kNoReplyEventsKey = @"not_replied";
                                                          NSError *error){
                 if (error) {
                     
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error getting no reply events!"
                                                                     message:error.localizedDescription
                                                                    delegate:nil
                                                           cancelButtonTitle:@"OK"
@@ -509,7 +509,7 @@ NSString * const kNoReplyEventsKey = @"not_replied";
         
         if (error) {
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error getting event list!"
                                                             message:error.localizedDescription
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
@@ -713,6 +713,9 @@ NSString * const kNoReplyEventsKey = @"not_replied";
             
         } else {
             
+            [self fetchEventListDataForListKey:oldStatus completion:nil];
+            [self fetchEventListDataForListKey:newStatus completion:nil];
+            
             if (completionBlock)
                 completionBlock();
             
@@ -720,7 +723,6 @@ NSString * const kNoReplyEventsKey = @"not_replied";
         
     }];
 }
-
 
 - (void)createEventWithParameters:(NSDictionary *)eventParameters
                        completion:(void (^)(NSString *newEventId))completionBlock;

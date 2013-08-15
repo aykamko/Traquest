@@ -23,6 +23,8 @@ static const float TableViewSideMargin = 12.0;
 static const float kLatitudeAdjustment = 0.0008;
 static const float kLongitudeAsjustment = 0;
 
+static NSInteger const kActionSheetCancelButtonIndex = 3;
+
 @interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate>
 {
     CLLocationCoordinate2D _venueLocation;
@@ -534,6 +536,10 @@ static const float kLongitudeAsjustment = 0;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
+    if (buttonIndex == kActionSheetCancelButtonIndex) {
+        return;
+    }
+    
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                         initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -584,6 +590,10 @@ static const float kLongitudeAsjustment = 0;
         
         statusString = @"Not Going";
         
+    } else if ([statusParameter isEqualToString:@"not_replied"]) {
+        
+        statusString = @"No Reply";
+        
     }
     
     return statusString;
@@ -603,6 +613,10 @@ static const float kLongitudeAsjustment = 0;
     } else if ([eventParameter isEqualToString:@"Not Going"]) {
         
         parameterString = @"declined";
+        
+    } else if ([eventParameter isEqualToString:@"No Reply"]) {
+        
+        parameterString = @"not_replied";
         
     }
     

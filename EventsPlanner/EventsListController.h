@@ -28,4 +28,8 @@ typedef enum eventType {
                                                   isHost:(BOOL)isHost
                                               hasReplied:(BOOL)replied;
 
+- (void)refreshTableViewForEventsListKey:(NSString *)eventsListKey
+                           newEventsList:(NSArray *)eventsList
+             endRefreshForRefreshControl:(UIRefreshControl *)refreshControl;
+
 @end

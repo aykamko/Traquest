@@ -150,22 +150,55 @@
     self.selectedTableViewController = (UITableViewController *)viewController;
 }
 
+- (void)refreshTableViewForEventsListKey:(NSString *)eventsListKey
+                           newEventsList:(NSArray *)eventsList
+             endRefreshForRefreshControl:(UIRefreshControl *)refreshControl
+{
+    UITableViewController *tableViewController;
+    if (eventsListKey == kHostEventsKey) {
+        tableViewController = self.hostTableViewController;
+    } else if (eventsListKey == kAttendingEventsKey) {
+        tableViewController = self.attendingTableViewController;
+    } else if (eventsListKey == kMaybeEventsKey) {
+        tableViewController = self.maybeTableViewController;
+    } else if (eventsListKey == kNoReplyEventsKey) {
+        tableViewController = self.notRepliedTableViewController;
+    } else {
+        return;
+    }
+    
+    ((EventsTableViewDataSource *)tableViewController.tableView.dataSource).eventArray = eventsList;
+    [self.selectedTableViewController.tableView reloadData];
+    [refreshControl endRefreshing];
+}
+
 - (void)refreshTableView:(id)sender
 {
-    void (^completionBlock)(NSArray *eventsList) = ^(NSArray *eventsList) {
-        ((EventsTableViewDataSource *)self.selectedTableViewController.tableView.dataSource).eventArray = eventsList;
-        [self.selectedTableViewController.tableView reloadData];
-        [sender endRefreshing];
-    };
     
     if ([sender isEqual:self.hostRefreshControl]) {
-        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:completionBlock];
+        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:^(NSArray *eventsList) {
+            [self refreshTableViewForEventsListKey:kHostEventsKey
+                                     newEventsList:eventsList
+                       endRefreshForRefreshControl:sender];
+        }];
     } else if ([sender isEqual:self.attendingRefreshControl]) {
-        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kAttendingEventsKey completion:completionBlock];
+        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kAttendingEventsKey completion:^(NSArray *eventsList) {
+            [self refreshTableViewForEventsListKey:kAttendingEventsKey
+                                     newEventsList:eventsList
+                       endRefreshForRefreshControl:sender];
+        }];
     } else if ([sender isEqual:self.maybeRefreshControl]) {
-        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kMaybeEventsKey completion:completionBlock];
+        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kMaybeEventsKey completion:^(NSArray *eventsList) {
+            [self refreshTableViewForEventsListKey:kMaybeEventsKey
+                                     newEventsList:eventsList
+                       endRefreshForRefreshControl:sender];
+        }];
     } else if ([sender isEqual:self.notRepliedRefreshControl]) {
-        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kNoReplyEventsKey completion:completionBlock];
+        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kNoReplyEventsKey completion:^(NSArray *eventsList) {
+            [self refreshTableViewForEventsListKey:kNoReplyEventsKey
+                                     newEventsList:eventsList
+                       endRefreshForRefreshControl:sender];
+        }];
     }
 }
 
