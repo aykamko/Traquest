@@ -281,23 +281,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 #pragma mark Map Zoom
 
 -(void)updateMapZoomLocation: (CLLocationCoordinate2D) location {
-    [_mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 200, 200) animated:NO];
-    /*
-     MKCoordinateRegion region;
-     region.center.latitude = location.latitude;
-     region.center.longitude = location.longitude;
-     region.span.latitudeDelta = 0.007;
-     region.span.longitudeDelta = 0.007;
-     [_mapView setRegion:region animated:NO];
-     */
-    NSLog(@"center region %lf, %lf", _mapView.region.center.latitude, _mapView.region.center.longitude);
-    
-//    
-//    [[ParseDataStore sharedStore] fetchEventDetailsWithEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
-//        [[self eventDetails] addEntriesFromDictionary:eventDetails];
-//        [self setViewCompleteEventDetails];
-//        [_detailsTable setNeedsDisplay];
-//    }];
+    [_mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 400, 400) animated:NO];
+
 }
 
 
@@ -516,25 +501,23 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     //initializing mapView and setting coordinates of location
     _mapView = [[MKMapView alloc]
                initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
+    NSLog(@"FUCKING DIMENSIONS: %@", NSStringFromCGRect(_mapView.frame));
     
     [_mapView setMapType:MKMapTypeStandard];
-    [_mapView setUserInteractionEnabled:NO];
+    [_mapView setScrollEnabled:NO];
+    [_mapView setZoomEnabled:NO];
+    [_mapView setUserInteractionEnabled:YES];
     
-    _transparentView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_mapView.bounds), CGRectGetHeight(_mapView.bounds))];
-    [_transparentView setUserInteractionEnabled:YES];
-    _transparentView.backgroundColor = [UIColor clearColor];
-    
-    _wrapper = [[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_mapView.bounds), CGRectGetHeight(_mapView.bounds))];
-    [_wrapper setUserInteractionEnabled:YES];
-    _wrapper.backgroundColor = [UIColor clearColor];
-    
-    [_wrapper addSubview:_mapView];
-    [_wrapper addSubview:_transparentView];
     
     _singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                action:@selector(clickedOnMap:)];
     
-    [_transparentView addGestureRecognizer:_singleFingerTap];
+    [_singleFingerTap setNumberOfTouchesRequired:1];
+    NSLog(@"Wrapper size and stuff: %@", NSStringFromCGRect(_wrapper.frame));
+    
+    [_mapView addGestureRecognizer:_singleFingerTap];
+    //[_wrapper addGestureRecognizer:_singleFingerTap];
+    NSLog(@"transparent view: %@", NSStringFromCGRect(_transparentView.frame));
     
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];

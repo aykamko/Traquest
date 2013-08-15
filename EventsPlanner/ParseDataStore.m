@@ -504,7 +504,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 //                if ([pastEvents containsObject:event[@"id"]]) {
 //                    continue;
 //                }
-                
                 BOOL active = NO;
                 [event fixEventCoverPhoto];
                 
@@ -519,6 +518,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                     [thisEvent setObject:eventId forKey:@"eventId"];
                 } else {
                     thisEvent = [objects objectAtIndex:0];
+
                 }
                 
                 NSString *startTimeString = event[@"start_time"];
