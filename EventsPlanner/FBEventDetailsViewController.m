@@ -501,8 +501,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     //initializing mapView and setting coordinates of location
     _mapView = [[MKMapView alloc]
                initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
-    NSLog(@"FUCKING DIMENSIONS: %@", NSStringFromCGRect(_mapView.frame));
-    
     [_mapView setMapType:MKMapTypeStandard];
     [_mapView setScrollEnabled:NO];
     [_mapView setZoomEnabled:NO];
@@ -831,6 +829,5 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     mapViewController.view = plainMap;
     [[self navigationController] pushViewController:mapViewController animated:YES];
 }
-
 
 @end
