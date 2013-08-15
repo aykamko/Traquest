@@ -33,5 +33,5 @@ typedef enum eventType {
                            newEventsList:(NSArray *)eventsList
              endRefreshForRefreshControl:(UIRefreshControl *)refreshControl;
 
-
+@property (nonatomic, strong) NSMutableDictionary *trackingDict;
 @end

@@ -79,6 +79,8 @@
         _attendingEvents = attendintEvents;
         _notRepliedEvents = notRepliedEvents;
         _maybeEvents = maybeEvents;
+    
+        _trackingDict = [[NSMutableDictionary alloc]init];
         
         [self initializeViewControllers];
         
@@ -198,20 +200,21 @@
 - (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails isHost:(BOOL)isHost hasReplied:(BOOL)replied
 
 {
-    if([_eventDetailsViewController getActiveDict])
+    if([_trackingDict objectForKey:partialDetails[@"id"]])
     { //if user is already tracking
         self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
                                                                                 isHost:isHost
                                                                                 isActive: YES
                                                                                 hasReplied:replied];
     }
-  else
-  {
+    else{
+
     self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
                                                                             isHost:isHost
                                                                             isActive: NO
                                                                             hasReplied:replied];
-  }
+    }
+
     
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
                                                             style:UIBarButtonItemStyleBordered
@@ -219,7 +222,8 @@
                                                             action:nil];
     [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
     [self.tabBarController.navigationController pushViewController:_eventDetailsViewController animated:YES];
-}
+    
+    }
 #pragma mark  Create New Event
 - (IBAction)makeNewEvent:(id)sender
 {
@@ -291,6 +295,7 @@
 }
 #pragma mark initialize View Controllers
 -(void)initializeViewControllers{
+    
     _hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
     _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
     _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeEvents];
@@ -303,7 +308,7 @@
     [_hostTableViewController setTitle:@"Host"];
     self.hostRefreshControl = [[UIRefreshControl alloc] init];
     [self.hostRefreshControl addTarget:self
-                                action:@selector(refreshTableView:)
+                                action:@selector(refreshTableViewUsingRefreshControl:)
                       forControlEvents:UIControlEventValueChanged];
     [self.hostTableViewController setRefreshControl:self.hostRefreshControl];
     
@@ -313,7 +318,7 @@
     [_attendingTableViewController setTitle:@"Attending"];
     self.attendingRefreshControl= [[UIRefreshControl alloc] init];
     [self.attendingRefreshControl addTarget:self
-                                     action:@selector(refreshTableView:)
+                                     action:@selector(refreshTableViewUsingRefreshControl:)
                            forControlEvents:UIControlEventValueChanged];
     [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
     
@@ -327,7 +332,7 @@
     [_maybeTableViewController setTitle:@"Maybe"];
     self.maybeRefreshControl = [[UIRefreshControl alloc] init];
     [self.maybeRefreshControl addTarget:self
-                                 action:@selector(refreshTableView:)
+                                 action:@selector(refreshTableViewUsingRefreshControl:)
                        forControlEvents:UIControlEventValueChanged];
     [self.maybeTableViewController setRefreshControl:self.maybeRefreshControl];
     
@@ -337,7 +342,7 @@
     [_notRepliedTableViewController setTitle:@"No Reply"];
     self.notRepliedRefreshControl = [[UIRefreshControl alloc] init];
     [self.notRepliedRefreshControl addTarget:self
-                                      action:@selector(refreshTableView:)
+                                      action:@selector(refreshTableViewUsingRefreshControl:)
                             forControlEvents:UIControlEventValueChanged];
     [self.notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
     

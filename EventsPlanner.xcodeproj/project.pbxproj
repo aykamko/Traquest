@@ -84,8 +84,6 @@
 		7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
-		90164D2317A8939800E5A564 /* firstBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 90164D2217A8939800E5A564 /* firstBackground.png */; };
-		904838DE17A9AB1400042357 /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 904838DD17A9AB1400042357 /* stickynote.png */; };
 		90B4DDA917BBF1B000E83799 /* cancel-button-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */; };
 		90B4DDAB17BBF1BB00E83799 /* cancel-button-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */; };
 		90B4DDB017BC207D00E83799 /* silver-button-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B4DDAC17BC207D00E83799 /* silver-button-normal.png */; };
@@ -214,7 +212,6 @@
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
 		90202D0017B5BE0C00C0CA66 /* FBIdAnnotationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBIdAnnotationPoint.h; sourceTree = "<group>"; };
 		90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIdAnnotationPoint.m; sourceTree = "<group>"; };
-		904838DD17A9AB1400042357 /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
 		90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-normal@2x.png"; sourceTree = "<group>"; };
 		90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-pressed@2x.png"; sourceTree = "<group>"; };
 		90B4DDAC17BC207D00E83799 /* silver-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "silver-button-normal.png"; sourceTree = "<group>"; };
@@ -612,7 +609,6 @@
 				7CE05FCF17B33BDB004BF47C /* tracking-button@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90B4DDB317BC207D00E83799 /* silver-button-pressed@2x.png in Resources */,
-				904838DE17A9AB1400042357 /* stickynote.png in Resources */,
 				90B4DDA917BBF1B000E83799 /* cancel-button-normal@2x.png in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,

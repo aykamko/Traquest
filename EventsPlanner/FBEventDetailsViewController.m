@@ -17,7 +17,7 @@
 #import "FBEventStatusTableController.h"
 #import "FBEventDetailsTableDelegate.h"
 #import "ActiveEventsStatsViewController.h"
-
+#import "EventsListController.h"
 static const float TrackingButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
 static const float kLatitudeAdjustment = 0.0008;
@@ -267,8 +267,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 -(void) promptGuestsForTracking: (id) sender {
     [self loadMapView:nil];
     [_startTrackingButton removeFromSuperview];
-    _activeEventsDictionary  = [[NSMutableDictionary alloc]init];
-    [_activeEventsDictionary setObject:[NSNumber numberWithBool:YES] forKey:_eventDetails[@"id"]];
+    [[EventsListController sharedListController].trackingDict setObject:[NSNumber numberWithBool:YES] forKey:_eventDetails[@"id"]];
     [self addStopTrackingButtonAndViewMapButton];
     
     [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
