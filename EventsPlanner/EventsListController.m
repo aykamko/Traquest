@@ -80,55 +80,7 @@
         _notRepliedEvents = notRepliedEvents;
         _maybeEvents = maybeEvents;
         
-        _hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:hostEvents];
-        _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:attendintEvents];
-        _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:maybeEvents];
-        _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:notRepliedEvents];
-        
-        _hostTableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
-        [[_hostTableViewController tableView] setDelegate:self];
-        [[_hostTableViewController tableView] setDataSource:_hostTableViewDataSource];
-        [_hostTableViewController setTitle:@"Host"];
-        self.hostRefreshControl = [[UIRefreshControl alloc] init];
-        [self.hostRefreshControl addTarget:self
-                                    action:@selector(refreshTableViewUsingRefreshControl:)
-                          forControlEvents:UIControlEventValueChanged];
-        [self.hostTableViewController setRefreshControl:self.hostRefreshControl];
-        
-        _attendingTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        [[_attendingTableViewController tableView] setDelegate:self];
-        [[_attendingTableViewController tableView] setDataSource:_attendingTableViewDataSource];
-        [_attendingTableViewController setTitle:@"Attending"];
-        self.attendingRefreshControl= [[UIRefreshControl alloc] init];
-        [self.attendingRefreshControl addTarget:self
-                                         action:@selector(refreshTableViewUsingRefreshControl:)
-                               forControlEvents:UIControlEventValueChanged];
-        [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
-
-            UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
-        footer.backgroundColor = [UIColor clearColor];
-        
-        
-        _maybeTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        [[_maybeTableViewController tableView] setDelegate:self];
-        [[_maybeTableViewController tableView] setDataSource:_maybeTableViewDataSource];
-        [_maybeTableViewController setTitle:@"Maybe"];
-        self.maybeRefreshControl = [[UIRefreshControl alloc] init];
-        [self.maybeRefreshControl addTarget:self
-                                     action:@selector(refreshTableViewUsingRefreshControl:)
-                           forControlEvents:UIControlEventValueChanged];
-        [self.maybeTableViewController setRefreshControl:self.maybeRefreshControl];
-        
-        _notRepliedTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        [[_notRepliedTableViewController tableView] setDelegate:self];
-        [[_notRepliedTableViewController tableView] setDataSource:_notRepliedTableViewDataSource];
-        [_notRepliedTableViewController setTitle:@"No Reply"];
-        self.notRepliedRefreshControl = [[UIRefreshControl alloc] init];
-        [self.notRepliedRefreshControl addTarget:self
-                                          action:@selector(refreshTableViewUsingRefreshControl:)
-                                forControlEvents:UIControlEventValueChanged];
-        [self.notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
-        
+        [self initializeViewControllers];
         _tabBarController = [[UITabBarController alloc] init];
         
         _tabBarController.delegate = self;

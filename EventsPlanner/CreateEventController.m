@@ -177,7 +177,6 @@
             [self.tableViewController.navigationController popViewControllerAnimated:NO];
             [self.eventsListController pushEventDetailsViewControllerWithPartialDetails:eventDetails
                                                                                  isHost:YES
-                                                                               isActive: NO
                                                                              hasReplied:YES];
         }];
         
