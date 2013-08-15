@@ -542,7 +542,6 @@ NSString * const kDeclinedEventsKey = @"declined";
                         }
                     }
                 }
-                [thisEvent saveInBackground];
                 
                 if (!active||showsPastEvents) {
                     // Checking if maybe (host cannot be maybe)
