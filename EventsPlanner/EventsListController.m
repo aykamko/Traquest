@@ -288,6 +288,7 @@
     return 120.0;
 }
 
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSArray *eventsArray =

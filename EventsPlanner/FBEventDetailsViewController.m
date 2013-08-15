@@ -62,7 +62,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, getter = isTracking) BOOL tracking;
 @property (nonatomic, getter = isActive) BOOL active;
 @property (nonatomic, getter = isHost) BOOL host;
-@property (nonatomic, getter = hasReplied) BOOL replied;
 
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 
@@ -86,14 +85,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost
 {
     self = [super init];
     if (self) {
         
         _active = active;
         _host = isHost;
-        _replied = hasReplied;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         
         // By default
@@ -318,12 +316,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                                multiplier:1.0
                                                                  constant:0]];
     
-    // Adding tapGestureRecognizer to eventImageView
     [_coverImageView setUserInteractionEnabled:YES];
-    UITapGestureRecognizer *eventImageRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                           action:@selector(tap:)];
-    [eventImageRecognizer setNumberOfTapsRequired:1];
-    [_coverImageView addGestureRecognizer:eventImageRecognizer];
     
     
     _buttonHolder = [[UIView alloc] init];
@@ -464,6 +457,9 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [_mapView addGestureRecognizer:_singleFingerTap];
     
+
+
+
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
     if (venueDict[@"latitude"]) {
@@ -595,7 +591,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)addStopTrackingButtonAndViewMapButton
 {
-    
     if ([self.startTrackingButton superview]) {
         [self.startTrackingButton removeFromSuperview];
     }
@@ -698,6 +693,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                           pressedImage:[UIImage imageNamed:@"tracking-button-pressed.png"]
                               selector:@selector(startTracking:)
                       dimensionDictKey:@"startTrackingButtonHeight"];
+
 }
 
 - (UIButton *)createStopTrackingButton
