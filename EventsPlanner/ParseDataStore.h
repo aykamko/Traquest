@@ -21,13 +21,16 @@ extern NSString * const trackingObject;
 extern NSString * const kHostEventsKey;
 extern NSString * const kAttendingEventsKey;
 extern NSString * const kMaybeEventsKey;
+extern NSString * const kUnsureEventKey;
 extern NSString * const kNoReplyEventsKey;
+extern NSString * const kDeclinedEventsKey;
 
 @interface ParseDataStore : NSObject
 
 @property (readonly, nonatomic) BOOL isLoggedIn;
 @property (strong, nonatomic) NSString *myId;
 @property (readonly, nonatomic, strong) NSMutableDictionary *trackingCount;
+
 + (ParseDataStore *)sharedStore;
 
 - (void)logInWithCompletion:(void (^)())completionBlock;

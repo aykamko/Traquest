@@ -97,7 +97,7 @@
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
 
-       CLLocation* location = [locations lastObject];
+    CLLocation* location = [locations lastObject];
 
     CLLocationCoordinate2D coordinate = [location coordinate];
     PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude

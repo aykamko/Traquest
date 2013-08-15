@@ -9,6 +9,7 @@
 #import "ParseDataStore.h"
 #import "UIImage+ImageCrop.h"
 #import "FBGraphObject+FixEventCoverPhoto.h"
+#import "EventsListController.h"
 
 #pragma mark Parse String Keys
 
@@ -23,7 +24,9 @@ NSString * const trackingObject = @"trackingDictionary";
 NSString * const kHostEventsKey = @"host";
 NSString * const kAttendingEventsKey = @"attending";
 NSString * const kMaybeEventsKey = @"maybe";
+NSString * const kUnsureEventKey = @"unsure";
 NSString * const kNoReplyEventsKey = @"not_replied";
+NSString * const kDeclinedEventsKey = @"declined";
 
 @interface ParseDataStore () <CLLocationManagerDelegate>
 
@@ -490,13 +493,13 @@ NSString * const kNoReplyEventsKey = @"not_replied";
     NSString *graphPath = @"me?fields=events.limit(1000).type(%@).fields(id,name,"
                           @"cover,admins.fields(id,name),rsvp_status,start_time)";
     NSString *filterKey;
-    if (listKey == kHostEventsKey) {
+    if ([listKey isEqualToString:kHostEventsKey]) {
         filterKey = @"attending";
-    } else if (listKey == kAttendingEventsKey) {
+    } else if ([listKey isEqualToString:kAttendingEventsKey]) {
         filterKey = @"attending";
-    } else if (listKey == kMaybeEventsKey) {
+    } else if ([listKey isEqualToString:kMaybeEventsKey] || [listKey isEqualToString:kUnsureEventKey]) {
         filterKey = @"maybe";
-    } else if (listKey == kNoReplyEventsKey) {
+    } else if ([listKey isEqualToString:kNoReplyEventsKey]) {
         filterKey = @"not_replied";
     } else {
         return;
@@ -526,9 +529,13 @@ NSString * const kNoReplyEventsKey = @"not_replied";
             {
                 [event fixEventCoverPhoto];
                 
-                if (listKey == kMaybeEventsKey || listKey == kNoReplyEventsKey) {
+                if ([listKey isEqualToString:kMaybeEventsKey] ||
+                    [listKey isEqualToString:kUnsureEventKey] ||
+                    [listKey isEqualToString:kNoReplyEventsKey]) {
+                    
                     [specificEvents insertObject:event atIndex:0];
                     continue;
+                    
                 }
                 
                 NSArray *adminArray = event[@"admins"][@"data"];
@@ -540,9 +547,9 @@ NSString * const kNoReplyEventsKey = @"not_replied";
                     }
                 }
                 
-                if (listKey == kHostEventsKey && isHost == YES) {
+                if ([listKey isEqualToString:kHostEventsKey] && isHost == YES) {
                     [specificEvents insertObject:event atIndex:0];
-                } else if (listKey == kAttendingEventsKey && isHost == NO) {
+                } else if ([listKey isEqualToString:kAttendingEventsKey] && isHost == NO) {
                     [specificEvents insertObject:event atIndex:0];
                 }
                 
@@ -691,9 +698,6 @@ NSString * const kNoReplyEventsKey = @"not_replied";
                       newStatus:(NSString *)newStatus
                      completion:(void (^)())completionBlock
 {
-    if ([newStatus isEqualToString:@"unsure"]) {
-        newStatus = @"maybe";
-    }
     
     NSString *graphPath = [NSString stringWithFormat:@"%@/%@/%@", eventId, newStatus, self.myId];
 
@@ -713,8 +717,16 @@ NSString * const kNoReplyEventsKey = @"not_replied";
             
         } else {
             
-            [self fetchEventListDataForListKey:oldStatus completion:nil];
-            [self fetchEventListDataForListKey:newStatus completion:nil];
+            [self fetchEventListDataForListKey:oldStatus completion:^(NSArray *eventsList) {
+                [[EventsListController sharedListController] refreshTableViewForEventsListKey:oldStatus
+                                                                                newEventsList:eventsList
+                                                                  endRefreshForRefreshControl:nil];
+            }];
+            [self fetchEventListDataForListKey:newStatus completion:^(NSArray *eventsList) {
+                [[EventsListController sharedListController] refreshTableViewForEventsListKey:newStatus
+                                                                                newEventsList:eventsList
+                                                                  endRefreshForRefreshControl:nil];
+            }];
             
             if (completionBlock)
                 completionBlock();

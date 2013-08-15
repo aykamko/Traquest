@@ -50,6 +50,21 @@
 
 @implementation EventsListController
 
++ (id)allocWithZone:(struct _NSZone *)zone
+{
+    return [self sharedListController];
+}
+
++ (EventsListController *)sharedListController
+{
+    static EventsListController *sharedListController = nil;
+    if (!sharedListController) {
+        sharedListController = [[super allocWithZone:nil] init];
+    }
+    
+    return sharedListController;
+}
+
 - (id)initWithHostEvents:(NSArray *)hostEvents
          attendingEvents:(NSArray *)attendintEvents
         notRepliedEvents:(NSArray *)notRepliedEvents
@@ -68,20 +83,13 @@
         _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:maybeEvents];
         _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:notRepliedEvents];
         
-//        _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEvents:hostEvents];
-        
-//        _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-//        [[_tableActiveViewController tableView] setDelegate:self];
-//        [[_tableActiveViewController tableView] setDataSource:_tableHostViewDataSource];
-//        [_tableActiveViewController setTitle:@"Active"];
-        
         _hostTableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
         [[_hostTableViewController tableView] setDelegate:self];
         [[_hostTableViewController tableView] setDataSource:_hostTableViewDataSource];
         [_hostTableViewController setTitle:@"Host"];
         self.hostRefreshControl = [[UIRefreshControl alloc] init];
         [self.hostRefreshControl addTarget:self
-                                    action:@selector(refreshTableView:)
+                                    action:@selector(refreshTableViewUsingRefreshControl:)
                           forControlEvents:UIControlEventValueChanged];
         [self.hostTableViewController setRefreshControl:self.hostRefreshControl];
         
@@ -91,18 +99,18 @@
         [_attendingTableViewController setTitle:@"Attending"];
         self.attendingRefreshControl= [[UIRefreshControl alloc] init];
         [self.attendingRefreshControl addTarget:self
-                                     action:@selector(refreshTableView:)
-                           forControlEvents:UIControlEventValueChanged];
+                                         action:@selector(refreshTableViewUsingRefreshControl:)
+                               forControlEvents:UIControlEventValueChanged];
         [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
         
-
+        
         _maybeTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [[_maybeTableViewController tableView] setDelegate:self];
         [[_maybeTableViewController tableView] setDataSource:_maybeTableViewDataSource];
         [_maybeTableViewController setTitle:@"Maybe"];
         self.maybeRefreshControl = [[UIRefreshControl alloc] init];
         [self.maybeRefreshControl addTarget:self
-                                     action:@selector(refreshTableView:)
+                                     action:@selector(refreshTableViewUsingRefreshControl:)
                            forControlEvents:UIControlEventValueChanged];
         [self.maybeTableViewController setRefreshControl:self.maybeRefreshControl];
         
@@ -112,8 +120,8 @@
         [_notRepliedTableViewController setTitle:@"No Reply"];
         self.notRepliedRefreshControl = [[UIRefreshControl alloc] init];
         [self.notRepliedRefreshControl addTarget:self
-                                       action:@selector(refreshTableView:)
-                             forControlEvents:UIControlEventValueChanged];
+                                          action:@selector(refreshTableViewUsingRefreshControl:)
+                                forControlEvents:UIControlEventValueChanged];
         [self.notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
         
         _tabBarController = [[UITabBarController alloc] init];
@@ -155,50 +163,61 @@
              endRefreshForRefreshControl:(UIRefreshControl *)refreshControl
 {
     UITableViewController *tableViewController;
-    if (eventsListKey == kHostEventsKey) {
+    if ([eventsListKey isEqualToString:kHostEventsKey]) {
         tableViewController = self.hostTableViewController;
-    } else if (eventsListKey == kAttendingEventsKey) {
+    } else if ([eventsListKey isEqualToString:kAttendingEventsKey]) {
         tableViewController = self.attendingTableViewController;
-    } else if (eventsListKey == kMaybeEventsKey) {
+    } else if ([eventsListKey isEqualToString:kMaybeEventsKey] || [eventsListKey isEqualToString:kUnsureEventKey]) {
         tableViewController = self.maybeTableViewController;
-    } else if (eventsListKey == kNoReplyEventsKey) {
+    } else if ([eventsListKey isEqualToString:kNoReplyEventsKey]) {
         tableViewController = self.notRepliedTableViewController;
     } else {
         return;
     }
     
     ((EventsTableViewDataSource *)tableViewController.tableView.dataSource).eventArray = eventsList;
-    [self.selectedTableViewController.tableView reloadData];
-    [refreshControl endRefreshing];
+    [tableViewController.tableView reloadData];
+    
+    if (refreshControl) {
+        [refreshControl endRefreshing];
+    }
 }
 
-- (void)refreshTableView:(id)sender
+- (void)refreshTableViewUsingRefreshControl:(id)sender
 {
     
     if ([sender isEqual:self.hostRefreshControl]) {
+        
         [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:^(NSArray *eventsList) {
             [self refreshTableViewForEventsListKey:kHostEventsKey
                                      newEventsList:eventsList
                        endRefreshForRefreshControl:sender];
         }];
+        
     } else if ([sender isEqual:self.attendingRefreshControl]) {
+        
         [[ParseDataStore sharedStore] fetchEventListDataForListKey:kAttendingEventsKey completion:^(NSArray *eventsList) {
             [self refreshTableViewForEventsListKey:kAttendingEventsKey
                                      newEventsList:eventsList
                        endRefreshForRefreshControl:sender];
         }];
+        
     } else if ([sender isEqual:self.maybeRefreshControl]) {
+        
         [[ParseDataStore sharedStore] fetchEventListDataForListKey:kMaybeEventsKey completion:^(NSArray *eventsList) {
             [self refreshTableViewForEventsListKey:kMaybeEventsKey
                                      newEventsList:eventsList
                        endRefreshForRefreshControl:sender];
         }];
+        
     } else if ([sender isEqual:self.notRepliedRefreshControl]) {
+        
         [[ParseDataStore sharedStore] fetchEventListDataForListKey:kNoReplyEventsKey completion:^(NSArray *eventsList) {
             [self refreshTableViewForEventsListKey:kNoReplyEventsKey
                                      newEventsList:eventsList
                        endRefreshForRefreshControl:sender];
         }];
+        
     }
 }
 

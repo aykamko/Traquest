@@ -578,19 +578,23 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (NSString *)statusStringFromEventParameterString:(NSString *)statusParameter
 {
     NSString *statusString;
-    if ([statusParameter isEqualToString:@"attending"]) {
+    if ([statusParameter isEqualToString:@"unsure"]) {
+        statusParameter = kMaybeEventsKey;
+    }
+    
+    if ([statusParameter isEqualToString:kAttendingEventsKey]) {
         
         statusString = @"Going";
         
-    } else if ([statusParameter isEqualToString:@"unsure"]) {
+    } else if ([statusParameter isEqualToString:kMaybeEventsKey]) {
         
         statusString = @"Maybe";
         
-    } else if ([statusParameter isEqualToString:@"declined"]) {
+    } else if ([statusParameter isEqualToString:kMaybeEventsKey]) {
         
         statusString = @"Not Going";
         
-    } else if ([statusParameter isEqualToString:@"not_replied"]) {
+    } else if ([statusParameter isEqualToString:kNoReplyEventsKey]) {
         
         statusString = @"No Reply";
         
@@ -604,15 +608,19 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     NSString *parameterString;
     if ([eventParameter isEqualToString:@"Going"]) {
         
-        parameterString = @"attending";
+        parameterString = kAttendingEventsKey;
         
     } else if ([eventParameter isEqualToString:@"Maybe"]) {
         
-        parameterString = @"unsure";
+        parameterString = kMaybeEventsKey;
         
     } else if ([eventParameter isEqualToString:@"Not Going"]) {
         
-        parameterString = @"declined";
+        parameterString = kDeclinedEventsKey;
+        
+    } else if ([eventParameter isEqualToString:@"No Reply"]) {
+        
+        parameterString = kNoReplyEventsKey;
         
     } else if ([eventParameter isEqualToString:@"No Reply"]) {
         
