@@ -88,6 +88,7 @@
 		7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
+		9079CABE17BEAD18009F3D89 /* noReply@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9079CABD17BEAD18009F3D89 /* noReply@2x.png */; };
 		90B4DDA917BBF1B000E83799 /* cancel-button-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */; };
 		90B4DDAB17BBF1BB00E83799 /* cancel-button-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */; };
 		90B4DDB017BC207D00E83799 /* silver-button-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B4DDAC17BC207D00E83799 /* silver-button-normal.png */; };
@@ -221,6 +222,7 @@
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
 		90202D0017B5BE0C00C0CA66 /* FBIdAnnotationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBIdAnnotationPoint.h; sourceTree = "<group>"; };
 		90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIdAnnotationPoint.m; sourceTree = "<group>"; };
+		9079CABD17BEAD18009F3D89 /* noReply@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "noReply@2x.png"; sourceTree = "<group>"; };
 		90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-normal@2x.png"; sourceTree = "<group>"; };
 		90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-pressed@2x.png"; sourceTree = "<group>"; };
 		90B4DDAC17BC207D00E83799 /* silver-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "silver-button-normal.png"; sourceTree = "<group>"; };
@@ -641,6 +643,7 @@
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7C162C9617BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png in Resources */,
 				90B4DDB217BC207D00E83799 /* silver-button-pressed.png in Resources */,
+				9079CABE17BEAD18009F3D89 /* noReply@2x.png in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
 				90B4DDB017BC207D00E83799 /* silver-button-normal.png in Resources */,
 			);

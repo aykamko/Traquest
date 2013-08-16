@@ -122,12 +122,14 @@
                                                                  style:UIBarButtonItemStyleBordered
                                                                  target:self
                                                                  action:@selector(logUserOut:)];
+
         self.tabBarController.navigationItem.leftBarButtonItem = logoutButton;
-        
-        UIBarButtonItem *newEventButton = [[UIBarButtonItem alloc] initWithTitle:@"+"
-                                                                   style:UIBarButtonItemStyleBordered
-                                                                   target:self
-                                                                   action:@selector(makeNewEvent:)];
+  
+
+        UIBarButtonItem *newEventButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target: self action:@selector(makeNewEvent:)];
+        [logoutButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0], UITextAttributeFont,nil] forState:UIControlStateNormal];
+        //[[UIBarButtonItem appearance] setBackgroundImage:[[UIImage alloc] init] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+
         self.tabBarController.navigationItem.rightBarButtonItem = newEventButton;
         self.tabBarController.navigationItem.hidesBackButton = YES;
         self.tabBarController.navigationController.navigationBar.translucent = NO;
