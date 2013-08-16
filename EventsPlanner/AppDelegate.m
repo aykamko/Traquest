@@ -43,7 +43,9 @@ static const BOOL debugTracking = YES;
     [PFFacebookUtils initializeFacebook];
     
     // Parse Push setup
-    [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
+    [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge |
+                                                     UIRemoteNotificationTypeAlert |
+                                                     UIRemoteNotificationTypeSound];
     
     // Google Maps
     [GMSServices provideAPIKey:@"AIzaSyCYlOnjDI2_s5WPCmeQJ7IMozreNxjyDww"];
@@ -109,18 +111,18 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     NSString *eventId = userInfo[@"eventId"];
     NSString *eventName = userInfo[@"eventName"];
-    [self.eventsNeedingCertification addObject:@{ eventId: eventName }];
+    
+    if (eventId && eventName) {
+        [self.eventsNeedingCertification addObject:@{ eventId: eventName }];
+    } else {
+        [PFPush handlePush:userInfo];
+    }
     
     if ([application applicationState] != UIApplicationStateActive) {
         [PFPush handlePush:userInfo];
     } else {
         [self promptUserAllowTrackingForEvent:eventName eventId:eventId];
     }
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    [[ParseDataStore sharedStore] startTrackingMyLocationIfAllowed];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -130,7 +132,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         NSString *eventName = event[eventId];
         [self promptUserAllowTrackingForEvent:eventName eventId:eventId];
     }
-    //[[ParseDataStore sharedStore] stopTrackingMyLocation];
 }
 
 //- (void)applicationWillEnterForeground:(UIApplication *)application
@@ -157,8 +158,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                    initWithTitle:title
                                    message:eventName
                                    delegate:self
-                                   cancelButtonTitle:@"Don't Allow"
-                                   otherButtonTitles:@"Allow Tracking", @"Allow Anonymously", nil];
+                                   cancelButtonTitle:nil
+                                   otherButtonTitles:@"Allow Tracking", @"Allow Anonymously", @"Don't Allow", nil];
     
     [trackingPrompt show];
     

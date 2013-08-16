@@ -14,6 +14,8 @@
 #pragma mark Parse String Keys
 
 static BOOL showsPastEvents = YES;
+static BOOL kCachingEnabled = NO;
+static BOOL kNewUserFlagDisabled = NO;
 
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
@@ -31,6 +33,7 @@ NSString * const kMaybeEventsKey = @"maybe";
 NSString * const kUnsureEventKey = @"unsure";
 NSString * const kNoReplyEventsKey = @"not_replied";
 NSString * const kDeclinedEventsKey = @"declined";
+
 
 @interface ParseDataStore () <CLLocationManagerDelegate>
 
@@ -50,6 +53,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (id)init
 {
+    
     self = [super init];
     if (self) {
         _endDate = [[NSDate alloc] init];
@@ -144,7 +148,8 @@ NSString * const kDeclinedEventsKey = @"declined";
                 [alert show];
             }
         } else {
-            if ([[PFUser currentUser] isNew]) {
+            
+            if (kNewUserFlagDisabled || [[PFUser currentUser] isNew]) {
                 
                 PFGeoPoint *geoPoint = [PFGeoPoint geoPoint];
                 [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
@@ -170,9 +175,10 @@ NSString * const kDeclinedEventsKey = @"declined";
                 }];
                 
                 PFObject *tracking = [PFObject objectWithClassName:@"TrackingObject"];
+                //[tracking setObject:[PFUser currentUser] forKey:@"user"];
                 [[PFUser currentUser] setObject:tracking forKey:trackingObject];
                 
-                [[PFUser currentUser] saveInBackground];
+                [[PFUser currentUser] save];
                 
             }
             
@@ -431,8 +437,6 @@ NSString * const kDeclinedEventsKey = @"declined";
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:[self cacheDateObjectKeyForEvent:eventId]];
 }
 
-
-
 #pragma mark Facebook Request
 - (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *activeHostEvents,
                                                    NSArray *activeGuestEvents,
@@ -442,23 +446,25 @@ NSString * const kDeclinedEventsKey = @"declined";
                                                    NSArray *noReplyEvents))completionBlock
 {
     
-    // Get cached data if not too old
-    NSDate *oldestCacheDate = [self dateOfOldestCache];
-    if (oldestCacheDate) {
-        NSTimeInterval cacheAge = [oldestCacheDate timeIntervalSinceNow];
-        if (cacheAge > -60 * 0) {
-            NSDictionary *savedEventsList = [self loadAllEventsListsFromCacheAsKeyedDictionary];
-            if (savedEventsList) {
-                if (!self.myId) {
-                    self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:@"myFbId"];
+    if (kCachingEnabled == YES) {
+        // Get cached data if not too old
+        NSDate *oldestCacheDate = [self dateOfOldestCache];
+        if (oldestCacheDate) {
+            NSTimeInterval cacheAge = [oldestCacheDate timeIntervalSinceNow];
+            if (cacheAge > -60 * 10) {
+                NSDictionary *savedEventsList = [self loadAllEventsListsFromCacheAsKeyedDictionary];
+                if (savedEventsList) {
+                    if (!self.myId) {
+                        self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:@"myFbId"];
+                    }
+                    completionBlock(savedEventsList[kActiveHostEventsKey],
+                                    savedEventsList[kActiveGuestEventsKey],
+                                    savedEventsList[kHostEventsKey],
+                                    savedEventsList[kAttendingEventsKey],
+                                    savedEventsList[kMaybeEventsKey],
+                                    savedEventsList[kNoReplyEventsKey]);
+                    return;
                 }
-                completionBlock(savedEventsList[kActiveHostEventsKey],
-                                savedEventsList[kActiveGuestEventsKey],
-                                savedEventsList[kHostEventsKey],
-                                savedEventsList[kAttendingEventsKey],
-                                savedEventsList[kMaybeEventsKey],
-                                savedEventsList[kNoReplyEventsKey]);
-                return;
             }
         }
     }
@@ -479,11 +485,17 @@ NSString * const kDeclinedEventsKey = @"declined";
         } else {
             
             if (!self.myId) {
+                
                 // Store myId locally and in parse, if it's not there already
                 self.myId = result[@"id"];
                 [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:@"myFbId"];
                 [[PFUser currentUser] setObject:_myId forKey:facebookID];
-                [[PFUser currentUser] saveInBackground];
+                
+                PFObject *trackingObj = [[PFUser currentUser] objectForKey:trackingObject];
+                [trackingObj setObject:self.myId forKey:facebookID];
+                
+                [[PFUser currentUser] save];
+                
             }
             
             FBGraphObject *fbGraphObj = (FBGraphObject *)result;
@@ -783,14 +795,22 @@ NSString * const kDeclinedEventsKey = @"declined";
 #pragma mark Parse Request
 - (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock
 {
-    PFQuery *geopointsQuery = [PFUser query];
-//    NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
-    [geopointsQuery whereKey:facebookID containedIn:guestIds];
-    [geopointsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+    NSString *eventIdKey = [NSString stringWithFormat:@"E%@",eventId];
+    PFQuery *allowedQuery = [PFQuery queryWithClassName:@"TrackingObject"];
+    [allowedQuery whereKey:facebookID containedIn:guestIds];
+    [allowedQuery whereKey:eventIdKey containedIn:@[allowed, anonymous]];
+    
+    PFQuery *userQuery = [PFUser query];
+    [userQuery whereKey:facebookID matchesKey:facebookID inQuery:allowedQuery];
+    
+    [userQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
         for (PFUser *friend in objects) {
             
-            [userLocations setObject:friend[@"location"] forKey:friend[facebookID]];
+            PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
+            NSString *fbId = [friend objectForKey:facebookID];
+            [userLocations setObject:geoPoint forKey:fbId];
+            
         }
         
         [_trackingCount setObject:[NSNumber numberWithInt:objects.count] forKey:eventId];
@@ -947,6 +967,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName};
             
             [trackingAllowedNotification setData:eventIdDict];
+            
             [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
                 if (succeeded) {

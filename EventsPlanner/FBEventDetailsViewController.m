@@ -811,6 +811,11 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)doSomething:(id)sender {
     
     [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"]];
+    [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{@"eventId": _eventDetails[@"id"]} block:^(id object, NSError *error) {
+        if (error) {
+            NSLog(@"deleting in cloud failed");
+        }
+    }];
     [self.viewMapButton removeFromSuperview];
     [self.stopTrackingButton removeFromSuperview];
     [self addStartTrackingButton];
