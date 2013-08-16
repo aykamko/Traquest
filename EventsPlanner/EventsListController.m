@@ -165,6 +165,7 @@
                                                   isHost:(BOOL)isHost
                                               hasReplied:(BOOL)replied
 {
+    
     self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
                                                                                           isActive:active
                                                                                             isHost:isHost
@@ -212,11 +213,17 @@
     [[_tableActiveViewController tableView] setDelegate:self];
     [[_tableActiveViewController tableView] setDataSource:_tableActiveViewDataSource];
     [_tableActiveViewController setTitle:@"Active"];
+    UIImage *clockIcon = [UIImage imageNamed:@"Clock.png"];
+    [[_tableActiveViewController tabBarItem] setImage: clockIcon];
+    
     
     _hostTableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
     [[_hostTableViewController tableView] setDelegate:self];
     [[_hostTableViewController tableView] setDataSource:_hostTableViewDataSource];
     [_hostTableViewController setTitle:@"Host"];
+    UIImage *friendIcon = [UIImage imageNamed:@"hostIcon.png"];
+    [[_hostTableViewController tabBarItem] setImage:friendIcon];
+    
     self.hostRefreshControl = [[UIRefreshControl alloc] init];
     [self.hostRefreshControl addTarget:self
                                 action:@selector(refreshTableViewUsingRefreshControl:)
@@ -227,6 +234,9 @@
     [[_attendingTableViewController tableView] setDelegate:self];
     [[_attendingTableViewController tableView] setDataSource:_attendingTableViewDataSource];
     [_attendingTableViewController setTitle:@"Attending"];
+    UIImage *checkIcon = [UIImage imageNamed:@"Checkmark.png"];
+    [[_attendingTableViewController tabBarItem] setImage:checkIcon];
+    
     self.attendingRefreshControl= [[UIRefreshControl alloc] init];
     [self.attendingRefreshControl addTarget:self
                                      action:@selector(refreshTableViewUsingRefreshControl:)
@@ -241,6 +251,9 @@
     [[_maybeTableViewController tableView] setDelegate:self];
     [[_maybeTableViewController tableView] setDataSource:_maybeTableViewDataSource];
     [_maybeTableViewController setTitle:@"Maybe"];
+    UIImage *questionIcon = [UIImage imageNamed:@"questionmark.png"];
+    [[_maybeTableViewController tabBarItem] setImage:questionIcon];
+    
     self.maybeRefreshControl = [[UIRefreshControl alloc] init];
     [self.maybeRefreshControl addTarget:self
                                  action:@selector(refreshTableViewUsingRefreshControl:)
@@ -251,6 +264,9 @@
     [[_notRepliedTableViewController tableView] setDelegate:self];
     [[_notRepliedTableViewController tableView] setDataSource:_notRepliedTableViewDataSource];
     [_notRepliedTableViewController setTitle:@"No Reply"];
+    UIImage *ellipsisIcon = [UIImage imageNamed:@"noReply.png"];
+    [[_notRepliedTableViewController tabBarItem] setImage:ellipsisIcon];
+    
     self.notRepliedRefreshControl = [[UIRefreshControl alloc] init];
     [self.notRepliedRefreshControl addTarget:self
                                       action:@selector(refreshTableViewUsingRefreshControl:)
@@ -339,13 +355,6 @@
         tableViewController = self.notRepliedTableViewController;
     } else {
         return;
-    }
-    
-    ((EventsTableViewDataSource *)tableViewController.tableView.dataSource).eventArray = eventsList;
-    [tableViewController.tableView reloadData];
-    
-    if (refreshControl) {
-        [refreshControl endRefreshing];
     }
 }
 

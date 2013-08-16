@@ -14,7 +14,12 @@
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */; };
 		60E093C717AC5211007CE1C8 /* FBEventDetailsTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C517AC5211007CE1C8 /* FBEventDetailsTableDataSource.m */; };
+		7609B87917BDA615009663D8 /* Clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7609B87817BDA615009663D8 /* Clock@2x.png */; };
+		7609B87B17BDA637009663D8 /* Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7609B87A17BDA637009663D8 /* Checkmark@2x.png */; };
+		7609B88317BDABA0009663D8 /* questionmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7609B88217BDABA0009663D8 /* questionmark@2x.png */; };
 		760BDC3317A9D3D4008A1877 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */; };
+		76502FF217BEA17B00EC839B /* hostIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76502FF117BEA17B00EC839B /* hostIcon@2x.png */; };
+		76502FF417BEA28200EC839B /* noReply@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76502FF317BEA28200EC839B /* noReply@2x.png */; };
 		768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */; };
 		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
 		7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */; };
@@ -114,7 +119,12 @@
 		60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsViewController.m; sourceTree = "<group>"; };
 		60E093C417AC5211007CE1C8 /* FBEventDetailsTableDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsTableDataSource.h; sourceTree = "<group>"; };
 		60E093C517AC5211007CE1C8 /* FBEventDetailsTableDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBEventDetailsTableDataSource.m; sourceTree = "<group>"; };
+		7609B87817BDA615009663D8 /* Clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Clock@2x.png"; path = "../../Downloads/PP - Free iPhone Toolbar Icons 3/60 Pixel PNG/Clock@2x.png"; sourceTree = "<group>"; };
+		7609B87A17BDA637009663D8 /* Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Checkmark@2x.png"; path = "../../Downloads/PP - Free iPhone Toolbar Icons 3/60 Pixel PNG/Checkmark@2x.png"; sourceTree = "<group>"; };
+		7609B88217BDABA0009663D8 /* questionmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "questionmark@2x.png"; path = "../../Downloads/questionmark@2x.png"; sourceTree = "<group>"; };
 		760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		76502FF117BEA17B00EC839B /* hostIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "hostIcon@2x.png"; path = "Image Assets/hostIcon@2x.png"; sourceTree = SOURCE_ROOT; };
+		76502FF317BEA28200EC839B /* noReply@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "noReply@2x.png"; path = "Image Assets/noReply@2x.png"; sourceTree = SOURCE_ROOT; };
 		768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
 		768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
 		7698B93117AAE8AB00D351BF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
@@ -431,6 +441,11 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				76502FF317BEA28200EC839B /* noReply@2x.png */,
+				76502FF117BEA17B00EC839B /* hostIcon@2x.png */,
+				7609B88217BDABA0009663D8 /* questionmark@2x.png */,
+				7609B87817BDA615009663D8 /* Clock@2x.png */,
+				7609B87A17BDA637009663D8 /* Checkmark@2x.png */,
 				90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */,
 				90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */,
 				7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */,
@@ -608,6 +623,8 @@
 				7CE05FCF17B33BDB004BF47C /* tracking-button-normal@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90B4DDB317BC207D00E83799 /* silver-button-pressed@2x.png in Resources */,
+				76502FF417BEA28200EC839B /* noReply@2x.png in Resources */,
+				7609B88317BDABA0009663D8 /* questionmark@2x.png in Resources */,
 				90B4DDA917BBF1B000E83799 /* cancel-button-normal@2x.png in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,
@@ -622,8 +639,11 @@
 				6065E46517ACA3C8003B947E /* eventCoverPhoto.png in Resources */,
 				7C418C7917A082030084330C /* Images.xcassets in Resources */,
 				7C162C9617BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png in Resources */,
+				7609B87B17BDA637009663D8 /* Checkmark@2x.png in Resources */,
 				90B4DDB217BC207D00E83799 /* silver-button-pressed.png in Resources */,
 				7CE2DAA517A09BC500834B6F /* login-button-small@2x.png in Resources */,
+				7609B87917BDA615009663D8 /* Clock@2x.png in Resources */,
+				76502FF217BEA17B00EC839B /* hostIcon@2x.png in Resources */,
 				90B4DDB017BC207D00E83799 /* silver-button-normal.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -749,7 +769,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphonesimulator6.0]" = "iPhone Developer";
-
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -791,7 +810,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphonesimulator6.0]" = "iPhone Developer";
-
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
