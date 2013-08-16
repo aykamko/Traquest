@@ -341,7 +341,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)setDateOfAllEventsLists
 {
-    NSArray *eventsListByKey = @[kHostEventsKey, kMaybeEventsKey, kAttendingEventsKey, kNoReplyEventsKey];
+    NSArray *eventsListByKey = @[kActiveHostEventsKey, kActiveGuestEventsKey,kHostEventsKey, kMaybeEventsKey, kAttendingEventsKey, kNoReplyEventsKey];
     for (NSString *key in eventsListByKey) {
         [self setDateOfCacheForEventsListOfKey:key];
     }
@@ -349,7 +349,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (NSDate *)dateOfOldestCache
 {
-    NSArray *eventsListByKey = @[kHostEventsKey, kMaybeEventsKey, kAttendingEventsKey, kNoReplyEventsKey];
+    NSArray *eventsListByKey = @[kActiveHostEventsKey, kActiveGuestEventsKey,kHostEventsKey, kMaybeEventsKey, kAttendingEventsKey, kNoReplyEventsKey];
     NSDate *oldestCacheDate = [NSDate date];
     for (NSString *key in eventsListByKey) {
         NSDate *currentCacheDate = [self dateOfCacheForEventsListOfKey:key];
@@ -507,31 +507,17 @@ NSString * const kDeclinedEventsKey = @"declined";
                 BOOL active = NO;
                 [event fixEventCoverPhoto];
                 
-                PFObject *thisEvent;
-                NSString *eventId = event[@"id"];
-                PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
-                [eventQuery whereKey:@"eventId" equalTo:eventId];
-                
-                NSArray *objects = [eventQuery findObjects];
-                if ([objects count]==0) {
-                    thisEvent = [PFObject objectWithClassName:@"Event"];
-                    [thisEvent setObject:eventId forKey:@"eventId"];
-                } else {
-                    thisEvent = [objects objectAtIndex:0];
-
-                }
-                
                 NSString *startTimeString = event[@"start_time"];
-                if ([startTimeString rangeOfString:@"T"].location == NSNotFound) {
-                    [thisEvent setObject:[NSNull null] forKey:@"startDate"];
+                if ([startTimeString rangeOfString:@"T"].location==NSNotFound) {
+                    [event setObject:[NSNull null] forKey:@"startDate"];
                 } else {
                     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
                     
                     NSDate *eventDate = [formatter dateFromString:startTimeString];
                     NSDate *endTrackingDate = [[NSDate alloc] initWithTimeInterval:(60*60) sinceDate:eventDate];
                     NSDate *startTrackingDate = [[NSDate alloc] initWithTimeInterval:(-2*60*60) sinceDate:eventDate];
-                    [thisEvent setObject:endTrackingDate forKey:@"endDate"];
-                    [thisEvent setObject:startTrackingDate forKey:@"startDate"];
+                    [event setObject:endTrackingDate forKey:@"endDate"];
+                    [event setObject:startTrackingDate forKey:@"startDate"];
                     if ([startTrackingDate compare:[NSDate date]] == NSOrderedAscending) {
                         if ([endTrackingDate compare:[NSDate date]]==NSOrderedAscending) {
                             if (!showsPastEvents) {
@@ -542,7 +528,26 @@ NSString * const kDeclinedEventsKey = @"declined";
                         }
                     }
                 }
+                __block PFObject *thisEvent;
+                NSString *eventId = event[@"id"];
+                PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
+                [eventQuery whereKey:@"eventId" equalTo:eventId];
                 
+                [eventQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    if ([objects count]==0) {
+                        thisEvent = [PFObject objectWithClassName:@"Event"];
+                        [thisEvent setObject:eventId forKey:@"eventId"];
+                    } else {
+                        thisEvent = [objects objectAtIndex:0];
+                    }
+                    NSLog(@"%@", event[@"startDate"]);
+                    if (![event[@"startDate"] isEqual: [NSNull null]]) {
+                        [thisEvent setObject:event[@"startDate"] forKey:@"startDate"];
+                        [thisEvent setObject:event[@"endDate"] forKey:@"endDate"];
+                    }
+                    [thisEvent saveInBackground];
+                }];
+                                
                 if (!active||showsPastEvents) {
                     // Checking if maybe (host cannot be maybe)
                     NSString *rsvpStatus = event[@"rsvp_status"];

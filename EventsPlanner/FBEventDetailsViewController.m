@@ -282,7 +282,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 -(void)updateMapZoomLocation: (CLLocationCoordinate2D) location {
     [_mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 400, 400) animated:NO];
-
 }
 
 
