@@ -366,6 +366,13 @@
     } else {
         return;
     }
+    
+    ((EventsTableViewDataSource *)tableViewController.tableView.dataSource).eventArray = eventsList;
+    [tableViewController.tableView reloadData];
+    
+    if (refreshControl) {
+        [refreshControl endRefreshing];
+    }
 }
 
 - (void)refreshTableViewUsingRefreshControl:(id)sender

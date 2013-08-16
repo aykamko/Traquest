@@ -27,7 +27,7 @@ static const float kLongitudeAsjustment = 0;
 
 static NSInteger const kActionSheetCancelButtonIndex = 3;
 
-@interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate, MKMapViewDelegate>
+@interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate, MKMapViewDelegate, UIScrollViewDelegate>
 {
     CLLocationCoordinate2D _venueLocation;
     UITabBarController *_tabBarController;
@@ -255,6 +255,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     _scrollView = [[UIScrollView alloc] init];
     [_scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_scrollView setBackgroundColor:[UIColor whiteColor]];
+    [_scrollView setDelegate:self];
     
     [self.view addSubview:_scrollView];
     [_viewsDictionary addEntriesFromDictionary:@{ @"_scrollView":_scrollView }];
@@ -839,8 +840,20 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     return parameterString;
 }
-#pragma mark Segmented Control
 
+#pragma mark Scroll View Delegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    int yPosition = scrollView.contentOffset.y;
+    if (yPosition < 30) {
+        scrollView.bounces = NO;
+    } else {
+        scrollView.bounces = YES;
+    }
+}
+
+#pragma mark Segmented Control
 - (NSInteger)segmentedControlIndexForPermission:(NSString *)permission
 {
     if ([permission isEqualToString:allowed]) {
