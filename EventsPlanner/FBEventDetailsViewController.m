@@ -914,6 +914,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             [self loadMapView:nil];
             [self addStopTrackingButtonAndViewMapButton];
         }];
+
     }];
     
 }

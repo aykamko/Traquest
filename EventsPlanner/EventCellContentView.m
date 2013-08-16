@@ -62,7 +62,7 @@
         // Event Date Label properties
         [_eventDateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
         NSLayoutConstraint *dateBottomConstraint = [NSLayoutConstraint constraintWithItem:self
-                                                                                 attribute:NSLayoutAttributeBottom
+                                                                                 attribute:NSLayoutAttributeCenterY
                                                                                  relatedBy:NSLayoutRelationEqual
                                                                                     toItem:_eventDateLabel
                                                                                  attribute:NSLayoutAttributeBottom
