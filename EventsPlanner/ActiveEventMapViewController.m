@@ -190,6 +190,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
         }
         
         pinView.canShowCallout = YES;
+        pinView.animatesDrop = YES;
         
     } else {
         

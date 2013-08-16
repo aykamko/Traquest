@@ -19,7 +19,7 @@
 #import "ActiveEventsStatsViewController.h"
 #import "EventsListController.h"
 
-static const float TrackingButtonFontSize = 20.0;
+static const float kButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
 static const float kLatitudeAdjustment = 0.0008;
 static const float kLongitudeAsjustment = 0;
@@ -30,7 +30,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 {
     CLLocationCoordinate2D _venueLocation;
     UITabBarController *_tabBarController;
-    UIScrollView *_scrollView;
     UIImageView *_coverImageView;
     UILabel *_titleLabel;
     UIView *_buttonHolder;
@@ -53,9 +52,11 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 }
 
+@property (nonatomic, strong) UIScrollView *scrollView;
+
 @property (nonatomic, strong) NSArray *verticalLayoutContraints;
 
-@property (nonatomic,strong) NSString *layoutConstraint;
+@property (nonatomic, strong) NSString *layoutConstraint;
 
 @property (nonatomic, strong) NSString *status;
 
@@ -73,13 +74,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, strong) UIButton *startTrackingButton;
 @property (nonatomic, strong) UIButton *stopTrackingButton;
 @property (nonatomic, strong) UIButton *viewMapButton;
+@property (nonatomic, strong) UISegmentedControl *segmentedControl;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 @property (nonatomic, strong) FBEventDetailsTableDelegate *detailsTableDelegate;
 
 - (void)loadMapView:(id)sender;
-
 - (void)changeRsvpStatus:(id)sender;
+- (void)cancelTracking:(id)sender;
 
 @end
 
@@ -143,36 +145,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 }
 
 
--(void) tap: (UIGestureRecognizer*) gr {
-    //push new popover view with full image
-}
-
--(void) startButtonTouch: (id) sender {
-    //set button to be highlighted
-    [sender setBackgroundColor: [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
-}
 
 #pragma mark invite and change RSVP
--(void) inviteFriends: (id) sender {
-    
-    [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    FBFriendPickerViewController *friendPicker = [[FBFriendPickerViewController alloc] init];
-    
-    [friendPicker loadData];
-    [friendPicker setTitle:@"Invite Friends"];
-    [friendPicker presentModallyFromViewController:self animated:YES handler:^(FBViewController *sender, BOOL donePressed) {
-        
-        NSMutableArray *usersToInvite = [[NSMutableArray alloc] init];
-        
-        for (id<FBGraphUser> user in friendPicker.selection) {
-            [usersToInvite addObject:(NSString *)user[@"id"]];
-        }
-        
-        [[ParseDataStore sharedStore] inviteFriendsToEvent:_eventDetails[@"id"] withFriends:usersToInvite completion:nil];
-        
-    }];
-    
-}
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
@@ -218,8 +192,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
 }
 
-
-
 - (void)changeRsvpStatus:(id)sender
 {
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
@@ -235,7 +207,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         
     }
 }
-
 
 - (void)resetButtonBackGroundColor:(id)sender
 {
@@ -264,32 +235,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     return _tabBarController;
 }
 
-- (void)loadMapView:(id)sender
-{
-    _tabBarController = [self tabBarControllerForMapView];
-    [[self navigationController] pushViewController:_tabBarController animated:YES];
-}
-
-#pragma mark Push and Load Active Map
-
-- (void)promptGuestsForTracking: (id) sender {
-    
-    [self loadMapView:nil];
-    [_startTrackingButton removeFromSuperview];
-    [self addStopTrackingButtonAndViewMapButton];
-    
-    [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"]];
-    [[ParseDataStore sharedStore] pushNotificationToGuestOfEvent:_eventDetails[@"id"] completion:nil];
-    
-}
-
 #pragma mark Map Zoom
 
--(void)updateMapZoomLocation: (CLLocationCoordinate2D) location {
+-(void)updateMapZoomLocation: (CLLocationCoordinate2D) location
+{
     [_mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 400, 400) animated:NO];
 }
-
-
 
 #pragma mark Contraint Methods
 
@@ -494,7 +445,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_spinner removeFromSuperview];
     _spinner = nil;
     
-    
     [_dimensionsDict
      addEntriesFromDictionary:@{ @"screenWidthWithMargin":[NSNumber numberWithFloat:
                                                            ([UIScreen mainScreen].bounds.size.width -
@@ -510,16 +460,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_mapView setZoomEnabled:NO];
     [_mapView setUserInteractionEnabled:YES];
     
-    
     _singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                action:@selector(clickedOnMap:)];
     
     [_singleFingerTap setNumberOfTouchesRequired:1];
-    NSLog(@"Wrapper size and stuff: %@", NSStringFromCGRect(_wrapper.frame));
     
     [_mapView addGestureRecognizer:_singleFingerTap];
-    //[_wrapper addGestureRecognizer:_singleFingerTap];
-    NSLog(@"transparent view: %@", NSStringFromCGRect(_transparentView.frame));
     
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
@@ -584,10 +530,20 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [_dimensionsDict addEntriesFromDictionary:@{ @"detailsTableContentHeight":[NSNumber numberWithFloat:[_detailsTable contentSize].height] }];
 
+    [_scrollView addConstraints:[NSLayoutConstraint
+                                 constraintsWithVisualFormat:@"H:|-(sideMargin)-[_detailsTable(screenWidthWithMargin)]-(sideMargin)-|"
+                                 options:0
+                                 metrics:_dimensionsDict
+                                 views:_viewsDictionary]];
+    
     if (self.isTracking) {
         
-        [self addStopTrackingButtonAndViewMapButton];
-        
+        if (self.isHost) {
+            [self addStopTrackingButtonAndViewMapButton];
+        } else {
+            [self addViewMapButtonAndSegmentedControlForTrackingSettings];
+        }
+    
     } else if (self.isHost) {
         
         [self addStartTrackingButton];
@@ -603,153 +559,196 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         
     }
     
-    [_scrollView addConstraints:[NSLayoutConstraint
-                                 constraintsWithVisualFormat:@"H:|-(sideMargin)-[_detailsTable(screenWidthWithMargin)]-(sideMargin)-|"
-                                 options:0
-                                 metrics:_dimensionsDict
-                                 views:_viewsDictionary]];
-    
 }
 
 - (void)addStartTrackingButton{
     
-    _startTrackingButton = [[UIButton alloc] init];
-    
-    UIImage *buttonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                 pathForResource:@"tracking-button@2x"
-                                                                 ofType:@"png"]];
-    UIImage *buttonImage = [buttonBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    UIImage *buttonPressedBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                        pathForResource:@"tracking-button-pressed@2x"
-                                                                        ofType:@"png"]];
-    UIImage *buttonPressedImage = [buttonPressedBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    
-    [_dimensionsDict addEntriesFromDictionary:
-     @{ @"trackingButtonImageHeight":[NSNumber numberWithFloat:buttonBaseImage.size.height] }];
-    
-    [ _startTrackingButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
-    [_startTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateSelected];
-    [_startTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-    
-    [_startTrackingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_startTrackingButton setTitle:@"Start Tracking" forState:UIControlStateNormal];
-    [_startTrackingButton setTintColor:[UIColor blackColor]];
-    [[_startTrackingButton titleLabel] setFont:[UIFont boldSystemFontOfSize:TrackingButtonFontSize]];
-    
-    [_startTrackingButton addTarget:self
-                             action:@selector(promptGuestsForTracking:)
-                   forControlEvents:UIControlEventTouchUpInside];
-    
-    [_scrollView addSubview:_startTrackingButton];
-    [_viewsDictionary addEntriesFromDictionary:@{ @"_startTrackingButton":_startTrackingButton }];
-    
-    if(_verticalLayoutContraints){
-        [_scrollView removeConstraints:_verticalLayoutContraints];
+    if ([self.stopTrackingButton superview]) {
+        [self.stopTrackingButton removeFromSuperview];
     }
     
-    _layoutConstraint =  @"V:[_buttonHolder]-[_startTrackingButton(trackingButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
-    _verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint options:0 metrics:_dimensionsDict views:_viewsDictionary];
+    if ([self.viewMapButton superview]) {
+        [self.viewMapButton removeFromSuperview];
+    }
     
-    [_scrollView addConstraints:_verticalLayoutContraints];
-    [_scrollView addConstraints:[NSLayoutConstraint
-                                 constraintsWithVisualFormat:@"H:|-(sideMargin)-[_startTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
-                                 options:0
-                                 metrics:_dimensionsDict
-                                 views:_viewsDictionary]];
+    self.startTrackingButton = [self createStartTrackingButton];
+    
+    [self.scrollView addSubview:self.startTrackingButton];
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"startTrackingButton": self.startTrackingButton }];
+    
+    if (self.verticalLayoutContraints) {
+        [self.scrollView removeConstraints:self.verticalLayoutContraints];
+    }
+    
+    self.layoutConstraint =  @"V:[_buttonHolder]-[startTrackingButton(startTrackingButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
+    self.verticalLayoutContraints = [NSLayoutConstraint
+                                     constraintsWithVisualFormat:self.layoutConstraint
+                                     options:0
+                                     metrics:self.dimensionsDict
+                                     views:self.viewsDictionary];
+    
+    [self.scrollView addConstraints:self.verticalLayoutContraints];
+    [self.scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[startTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
+                                     options:0
+                                     metrics:self.dimensionsDict
+                                     views:self.viewsDictionary]];
     
 }
 
--(void)addStopTrackingButtonAndViewMapButton{
+- (void)addStopTrackingButtonAndViewMapButton
+{
     
-    _viewMapButton = [[UIButton alloc]init];
-    
-    UIImage *viewMapButtonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                        pathForResource:@"silver-button-normal@2x"
-                                                                        ofType:@"png"]];
-    UIImage *viewMapButtonImage = [viewMapButtonBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    UIImage *viewMapButtonPressedBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                               pathForResource:@"silver-button-pressed@2x"
-                                                                               ofType:@"png"]];
-    UIImage *viewMapButtonPressedImage = [viewMapButtonPressedBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    
-    
-    [_dimensionsDict addEntriesFromDictionary:
-     @{ @"viewMapButtonImageHeight":[NSNumber numberWithFloat:viewMapButtonBaseImage.size.height] }];
-    
-    
-    [_viewMapButton setBackgroundImage:viewMapButtonImage forState:UIControlStateNormal];
-    [_viewMapButton setBackgroundImage:viewMapButtonPressedImage forState:UIControlStateSelected];
-    [_viewMapButton setBackgroundImage:viewMapButtonPressedImage forState:UIControlStateHighlighted];
-    
-    [_viewMapButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_viewMapButton setTitle:@"View Map" forState:UIControlStateNormal];
-    [_viewMapButton setTintColor:[UIColor blackColor]];
-    [[_viewMapButton titleLabel] setFont:[UIFont boldSystemFontOfSize:TrackingButtonFontSize]];
-    
-    [_viewMapButton addTarget:self
-                       action:@selector(loadMapView:)
-             forControlEvents:UIControlEventTouchUpInside];
-    
-    [_scrollView addSubview:_viewMapButton];
-    [_viewsDictionary addEntriesFromDictionary:@{ @"_viewMapButton":_viewMapButton }];
-    
-    
-    _stopTrackingButton = [[UIButton alloc] init];
-    
-    UIImage *buttonBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                 pathForResource:@"cancel-button-normal@2x"
-                                                                 ofType:@"png"]];
-    UIImage *buttonImage = [buttonBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    UIImage *buttonPressedBaseImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                                                        pathForResource:@"cancel-button-pressed@2x"
-                                                                        ofType:@"png"]];
-    UIImage *buttonPressedImage = [buttonPressedBaseImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-    
-    
-    [_dimensionsDict addEntriesFromDictionary:
-     @{ @"trackingButtonImageHeight":[NSNumber numberWithFloat:buttonBaseImage.size.height] }];
-    
-    
-    [ _stopTrackingButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
-    [_stopTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateSelected];
-    [_stopTrackingButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-    
-    [_stopTrackingButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_stopTrackingButton setTitle:@"Stop Tracking" forState:UIControlStateNormal];
-    [_stopTrackingButton setTintColor:[UIColor blackColor]];
-    [[_stopTrackingButton titleLabel] setFont:[UIFont boldSystemFontOfSize:TrackingButtonFontSize]];
-    
-    [_stopTrackingButton addTarget:self
-                            action:@selector(doSomething:)
-                  forControlEvents:UIControlEventTouchUpInside];
-    [_scrollView addSubview:_stopTrackingButton];
-    [_viewsDictionary addEntriesFromDictionary:@{ @"_stopTrackingButton":_stopTrackingButton }];
-
-    
-    if(_verticalLayoutContraints){
-        [_scrollView removeConstraints:_verticalLayoutContraints];
+    if ([self.startTrackingButton superview]) {
+        [self.startTrackingButton removeFromSuperview];
     }
     
-    _layoutConstraint = @"V:[_buttonHolder]-[_viewMapButton(viewMapButtonImageHeight)]-[_detailsTable(detailsTableContentHeight)]-[_stopTrackingButton(trackingButtonImageHeight)]-|";
+    self.viewMapButton = [self createViewMapButton];
+    
+    [self.scrollView addSubview:self.viewMapButton];
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"viewMapButton": self.viewMapButton }];
+    
+    
+    self.stopTrackingButton = [self createStopTrackingButton];
+    [self.scrollView addSubview:self.stopTrackingButton];
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"stopTrackingButton": self.stopTrackingButton }];
+    
+    if (self.verticalLayoutContraints) {
+        [self.scrollView removeConstraints:self.verticalLayoutContraints];
+    }
+    
+    self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(sideMargin)-[stopTrackingButton(stopTrackingButtonHeight)]-|";
     self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
                                                                             options:0
                                                                             metrics:self.dimensionsDict
                                                                               views:self.viewsDictionary];
-    [_scrollView addConstraints:self.verticalLayoutContraints];
-    [_scrollView addConstraints:[NSLayoutConstraint
-                                 constraintsWithVisualFormat:@"H:|-(sideMargin)-[_viewMapButton(screenWidthWithMargin)]-(sideMargin)-|"
-                                 options:0
-                                 metrics:_dimensionsDict
-                                 views:_viewsDictionary]];
-    [_scrollView addConstraints:[NSLayoutConstraint
-                                 constraintsWithVisualFormat:@"H:|-(sideMargin)-[_stopTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
-                                 options:0
-                                 metrics:_dimensionsDict
-                                 views:_viewsDictionary]];
-
+    [self.scrollView addConstraints:self.verticalLayoutContraints];
+    [self.scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[viewMapButton(screenWidthWithMargin)]-(sideMargin)-|"
+                                     options:0
+                                     metrics:self.dimensionsDict
+                                     views:self.viewsDictionary]];
+    [self.scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[stopTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
+                                     options:0
+                                     metrics:self.dimensionsDict
+                                     views:self.viewsDictionary]];
+    
 }
 
+- (void)addViewMapButtonAndSegmentedControlForTrackingSettings
+{
+    
+    self.viewMapButton = [self createViewMapButton];
+    
+    [self.scrollView addSubview:self.viewMapButton];
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"viewMapButton": self.viewMapButton }];
+    
+    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"Allow", @"Anonymous", @"Disallow"]];
+    [self.segmentedControl setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.segmentedControl addTarget:self
+                               action:@selector(handleSegmentedControl:)
+                     forControlEvents:UIControlEventValueChanged];
+    
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"segmentedControl": self.segmentedControl }];
+    [self.dimensionsDict addEntriesFromDictionary:
+          @{ @"segmentedControlHeight": self.dimensionsDict[@"viewMapButtonHeight"] }];
+    
+    if (self.verticalLayoutContraints) {
+        [self.scrollView removeConstraints:self.verticalLayoutContraints];
+    }
+    
+    self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
+    self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
+                                                                            options:0
+                                                                            metrics:self.dimensionsDict
+                                                                              views:self.viewsDictionary];
+    [self.scrollView addConstraints:self.verticalLayoutContraints];
+    [self.scrollView addConstraints:[NSLayoutConstraint
+                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[viewMapButton(screenWidthWithMargin)]-(sideMargin)-|"
+                                     options:0
+                                     metrics:self.dimensionsDict
+                                     views:self.viewsDictionary]];
+    
+    [[ParseDataStore sharedStore] fetchPermissionForEvent:self.eventDetails[@"id"] completion:^(NSString *identity) {
+        
+        NSInteger selectedIndex = [self segmentedControlIndexForPermission:identity];
+        [self.segmentedControl setSelectedSegmentIndex:selectedIndex];
+        
+        [self.scrollView addSubview:self.segmentedControl];
+        
+        [self.scrollView removeConstraints:self.verticalLayoutContraints];
+        
+        self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-[segmentedControl(segmentedControlHeight)]-|";
+        self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
+                                                                                options:0
+                                                                                metrics:self.dimensionsDict
+                                                                                  views:self.viewsDictionary];
+        [self.scrollView addConstraints:self.verticalLayoutContraints];
+        [self.scrollView addConstraints:[NSLayoutConstraint
+                                         constraintsWithVisualFormat:@"H:|-(sideMargin)-[segmentedControl(screenWidthWithMargin)]-(sideMargin)-|"
+                                         options:0
+                                         metrics:self.dimensionsDict
+                                         views:self.viewsDictionary]];
+    }];
+    
+}
 
+- (UIButton *)createStartTrackingButton
+{
+    return [self createButtonWithTitle:@"Start Tracking"
+                           normalImage:[UIImage imageNamed:@"tracking-button-normal.png"]
+                          pressedImage:[UIImage imageNamed:@"tracking-button-pressed.png"]
+                              selector:@selector(startTracking:)
+                      dimensionDictKey:@"startTrackingButtonHeight"];
+}
+
+- (UIButton *)createStopTrackingButton
+{
+    return [self createButtonWithTitle:@"Stop Tracking"
+                           normalImage:[UIImage imageNamed:@"cancel-button-normal.png"]
+                          pressedImage:[UIImage imageNamed:@"cancel-button-pressed.png"]
+                              selector:@selector(cancelTracking:)
+                      dimensionDictKey:@"stopTrackingButtonHeight"];
+}
+
+- (UIButton *)createViewMapButton
+{
+    return [self createButtonWithTitle:@"View Map"
+                           normalImage:[UIImage imageNamed:@"silver-button-normal.png"]
+                          pressedImage:[UIImage imageNamed:@"silver-button-pressed.png"]
+                              selector:@selector(loadMapView:)
+                      dimensionDictKey:@"viewMapButtonHeight"];
+}
+
+- (UIButton *)createButtonWithTitle:(NSString *)title
+                        normalImage:(UIImage *)normalImage
+                       pressedImage:(UIImage *)pressedImage
+                           selector:(SEL)selector
+                   dimensionDictKey:(NSString *)dimensionDictKey
+{
+    UIButton *button = [[UIButton alloc] init];
+    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    UIImage *buttonBaseNormalImage = normalImage;
+    UIImage *buttonNormalImage = [buttonBaseNormalImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
+    UIImage *buttonBasePressedImage = pressedImage;
+    UIImage *buttonPressedImage = [buttonBasePressedImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
+    
+    [_dimensionsDict addEntriesFromDictionary:
+         @{ dimensionDictKey:[NSNumber numberWithFloat:buttonBaseNormalImage.size.height] }];
+    
+    [button setBackgroundImage:buttonNormalImage forState:UIControlStateNormal];
+    [button setBackgroundImage:buttonPressedImage forState:UIControlStateSelected];
+    [button setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    
+    [button setTitle:title forState:UIControlStateNormal];
+    [[button titleLabel] setFont:[UIFont boldSystemFontOfSize:kButtonFontSize]];
+    
+    [button addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
+    
+    return button;
+}
 
 - (NSString *)statusStringFromEventParameterString:(NSString *)statusParameter
 {
@@ -808,9 +807,37 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     return parameterString;
 }
 
+#pragma mark Segmented Control
 
-- (void)doSomething:(id)sender {
-    
+- (NSInteger)segmentedControlIndexForPermission:(NSString *)permission
+{
+    if ([permission isEqualToString:allowed]) {
+        return 0;
+    } else if ([permission isEqualToString:anonymous]) {
+        return 1;
+    } else if ([permission isEqualToString:notAllowed]) {
+        return 2;
+    } else {
+        return 9;
+    }
+}
+
+#pragma mark Selectors For Buttons
+
+- (void)handleSegmentedControl:(UISegmentedControl *)segmentedControl
+{
+    NSInteger selectedSegmentIndex = segmentedControl.selectedSegmentIndex;
+    if (selectedSegmentIndex == 0) {
+        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:allowed];
+    } else if (selectedSegmentIndex == 1) {
+        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:anonymous];
+    } else if (selectedSegmentIndex == 2) {
+        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:notAllowed];
+    }
+}
+
+- (void)cancelTracking:(id)sender
+{
     [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"]];
     [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{@"eventId": _eventDetails[@"id"]} block:^(id object, NSError *error) {
         if (error) {
@@ -820,6 +847,52 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [self.viewMapButton removeFromSuperview];
     [self.stopTrackingButton removeFromSuperview];
     [self addStartTrackingButton];
+}
+
+- (void)startTracking:(id)sender
+{
+    [self loadMapView:nil];
+    [self addStopTrackingButtonAndViewMapButton];
+    
+    [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"]];
+    [[ParseDataStore sharedStore] pushNotificationToGuestOfEvent:_eventDetails[@"id"] completion:nil];
+}
+
+- (void)loadMapView:(id)sender
+{
+    _tabBarController = [self tabBarControllerForMapView];
+    [[self navigationController] pushViewController:_tabBarController animated:YES];
+}
+
+-(void)tap:(UIGestureRecognizer*)gr
+{
+    //push new popover view with full image
+}
+
+-(void)startButtonTouch:(id)sender
+{
+    //set button to be highlighted
+    [sender setBackgroundColor: [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+}
+
+-(void)inviteFriends:(id)sender {
+    
+    [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+    FBFriendPickerViewController *friendPicker = [[FBFriendPickerViewController alloc] init];
+    
+    [friendPicker loadData];
+    [friendPicker setTitle:@"Invite Friends"];
+    [friendPicker presentModallyFromViewController:self animated:YES handler:^(FBViewController *sender, BOOL donePressed) {
+        
+        NSMutableArray *usersToInvite = [[NSMutableArray alloc] init];
+        
+        for (id<FBGraphUser> user in friendPicker.selection) {
+            [usersToInvite addObject:(NSString *)user[@"id"]];
+        }
+        
+        [[ParseDataStore sharedStore] inviteFriendsToEvent:_eventDetails[@"id"] withFriends:usersToInvite completion:nil];
+        
+    }];
     
 }
 

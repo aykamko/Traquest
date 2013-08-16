@@ -71,7 +71,7 @@
 		7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
 		7CE05FCE17B33BDB004BF47C /* tracking-button-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */; };
-		7CE05FCF17B33BDB004BF47C /* tracking-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */; };
+		7CE05FCF17B33BDB004BF47C /* tracking-button-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE05FCD17B33BDB004BF47C /* tracking-button-normal@2x.png */; };
 		7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */; };
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
@@ -189,7 +189,7 @@
 		7CCF244717AB657C009855B5 /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCell.h; sourceTree = "<group>"; };
 		7CCF244817AB657C009855B5 /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCell.m; sourceTree = "<group>"; };
 		7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button-pressed@2x.png"; sourceTree = "<group>"; };
-		7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button@2x.png"; sourceTree = "<group>"; };
+		7CE05FCD17B33BDB004BF47C /* tracking-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button-normal@2x.png"; sourceTree = "<group>"; };
 		7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed.png"; sourceTree = "<group>"; };
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
@@ -434,7 +434,7 @@
 				90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */,
 				90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */,
 				7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */,
-				7CE05FCD17B33BDB004BF47C /* tracking-button@2x.png */,
+				7CE05FCD17B33BDB004BF47C /* tracking-button-normal@2x.png */,
 				7C162C9417BC97F10043CAA9 /* loginBackgroundIPhonePortrait.png */,
 				7C162C9517BC97F10043CAA9 /* loginBackgroundIPhonePortrait@2x.png */,
 				90B4DDAC17BC207D00E83799 /* silver-button-normal.png */,
@@ -605,7 +605,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7CE05FCF17B33BDB004BF47C /* tracking-button@2x.png in Resources */,
+				7CE05FCF17B33BDB004BF47C /* tracking-button-normal@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90B4DDB317BC207D00E83799 /* silver-button-pressed@2x.png in Resources */,
 				90B4DDA917BBF1B000E83799 /* cancel-button-normal@2x.png in Resources */,
