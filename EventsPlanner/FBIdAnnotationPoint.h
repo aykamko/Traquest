@@ -10,7 +10,9 @@
 
 @interface FBIdAnnotationPoint : MKPointAnnotation
 
-@property (nonatomic,strong) NSString *fbId;
-- (id)initWithFbId:(NSString *) fbId;
+@property (nonatomic, readonly) BOOL anonymous;
+@property (nonatomic, strong) NSString *fbId;
+
+- (id)initWithFbId:(NSString *)fbId anonymity:(BOOL)anonymity;
 
 @end

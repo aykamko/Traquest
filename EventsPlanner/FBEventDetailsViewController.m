@@ -18,6 +18,7 @@
 #import "FBEventDetailsTableDelegate.h"
 #import "ActiveEventsStatsViewController.h"
 #import "EventsListController.h"
+#import "Toast+UIView.h"
 
 static const float kButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
@@ -644,7 +645,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [self.scrollView addSubview:self.viewMapButton];
     [self.viewsDictionary addEntriesFromDictionary:@{ @"viewMapButton": self.viewMapButton }];
     
-    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"Allow", @"Anonymous", @"Disallow"]];
+    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"Allow", @"Anon", @"Disallow"]];
     [self.segmentedControl setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.segmentedControl addTarget:self
                                action:@selector(handleSegmentedControl:)
@@ -838,15 +839,19 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)cancelTracking:(id)sender
 {
+    [self.scrollView makeToastActivity];
+    
     [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"]];
     [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{@"eventId": _eventDetails[@"id"]} block:^(id object, NSError *error) {
         if (error) {
             NSLog(@"deleting in cloud failed");
+        } else {
+            [self.scrollView hideToastActivity];
+            [self.viewMapButton removeFromSuperview];
+            [self.stopTrackingButton removeFromSuperview];
+            [self addStartTrackingButton];
         }
     }];
-    [self.viewMapButton removeFromSuperview];
-    [self.stopTrackingButton removeFromSuperview];
-    [self addStartTrackingButton];
 }
 
 - (void)startTracking:(id)sender

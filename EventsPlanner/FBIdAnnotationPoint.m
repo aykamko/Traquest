@@ -10,11 +10,12 @@
 
 @implementation FBIdAnnotationPoint
 
--(id)initWithFbId: (NSString *) fbId
+- (id)initWithFbId:(NSString *)fbId anonymity:(BOOL)anonymity;
 {
     self = [super init];
     if(self){
         _fbId = fbId;
+        _anonymous = anonymity;
     }
     
     return self;

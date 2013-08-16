@@ -94,35 +94,6 @@ NSString * const kDeclinedEventsKey = @"declined";
     return NO;
 }
 
--(void)fetchLocationDataForIds: (NSDictionary *) guestDetails
-{
-    PFQuery *trackingQuery = [PFUser query];
-    [trackingQuery whereKey: @"fbID" containedIn:[guestDetails allKeys]];
-    //[trackingQuery whereKey:@"trackingAllowed" equalTo:@"YES"];
-    
-    [trackingQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        for (PFUser *friend in objects) //for every user that allows tracking
-        {
-            NSString *friendID = friend[@"fbID"];
-            guestDetails[friendID][@"location"] = friend[@"location"];
-        }
-    }];;
-}
-
-- (void)fetchGeopointsForIds:(NSArray *)guestIds completion:(void (^)(NSDictionary *userLocations))completionBlock
-{
-    PFQuery *geopointsQuery = [PFUser query];
-    [geopointsQuery whereKey:@"fbID" containedIn:guestIds];
-    //[geopointsQuery whereKey:@"Allowed" equalTo:@"YES"];
-    [geopointsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
-        for (PFUser *friend in objects) {
-            userLocations[friend[@"fbID"]] = friend[@"location"];
-        }
-        completionBlock([[NSDictionary alloc] initWithDictionary:userLocations]);
-    }];
-}
-
 - (void)logInWithCompletion:(void (^)())completionBlock
 {
     // Set permissions required from the facebook user account
@@ -501,6 +472,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                                     savedEventsList[kAttendingEventsKey],
                                     savedEventsList[kMaybeEventsKey],
                                     savedEventsList[kNoReplyEventsKey]);
+                    NSLog(@"cached list");
                     return;
                 }
             }
@@ -877,8 +849,8 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             for (PFUser *friend in userAnonObjects) {
                 PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
-                NSInteger fbIdHash = [[friend objectForKey:facebookID] hash];;
-                [allowedLocations setObject:geoPoint forKey:[NSNumber numberWithInteger:fbIdHash]];
+                NSString *fbIdHash = [NSString stringWithFormat:@"%d", [[friend objectForKey:facebookID] hash]];
+                [anonLocations setObject:geoPoint forKey:fbIdHash];
             }
             
             [_trackingCount setObject:[NSNumber numberWithInt:allowedLocations.count + anonLocations.count] forKey:eventId];

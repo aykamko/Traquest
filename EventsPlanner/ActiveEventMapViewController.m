@@ -80,7 +80,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
     
     [self.mapView setMapType:MKMapTypeStandard];
     
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(_venueLocation, 500, 500);
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(_venueLocation, 1500, 1500);
     [self.mapView setRegion:region animated:YES];
     
     MKPointAnnotation *venuePin = [[MKPointAnnotation alloc] init];
@@ -132,7 +132,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
             
             if (!point) {
             
-                point = [[FBIdAnnotationPoint alloc] initWithFbId:fbId];
+                point = [[FBIdAnnotationPoint alloc] initWithFbId:fbId anonymity:NO];
                 point.coordinate = currentCoordinate;
                 point.title = currentName;
                 [_mapView addAnnotation:point];
@@ -153,11 +153,11 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
             CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(geoPoint.latitude,
                                                                                   geoPoint.longitude);
             
-            MKPointAnnotation *point = self.anonAnnotationPointDict[fbIdHash];
+            FBIdAnnotationPoint *point = self.anonAnnotationPointDict[fbIdHash];
             
             if (!point) {
                 
-                point = [[MKPointAnnotation alloc] init];
+                point = [[FBIdAnnotationPoint alloc] initWithFbId:fbIdHash anonymity:YES];
                 point.coordinate = currentCoordinate;
                 point.title = @"Anonymous";
                 [self.mapView addAnnotation:point];
@@ -169,6 +169,19 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
                 
             }
             
+        }
+        
+        for (NSString *key in pastAnnotationIds) {
+            
+            NSMutableDictionary *properDict;
+            if (self.anonAnnotationPointDict[key]) {
+                properDict = self.anonAnnotationPointDict;
+            } else {
+                properDict = self.friendAnnotationPointDict;
+            }
+            
+            [self.mapView removeAnnotation:properDict[key]];
+            [properDict removeObjectForKey:key];
         }
         
         if (self.zoomToFit) {
@@ -194,8 +207,10 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
             pinView.pinColor = MKPinAnnotationColorRed;
         } else {
             pinView.pinColor = MKPinAnnotationColorGreen;
-            pinView.leftCalloutAccessoryView = [[UIImageView alloc]
-                                                initWithImage:self.guestData[fbIdAnnotation.fbId][@"userPic"]];
+            if (!fbIdAnnotation.anonymous) {
+                pinView.leftCalloutAccessoryView = [[UIImageView alloc]
+                                                    initWithImage:self.guestData[fbIdAnnotation.fbId][@"userPic"]];
+            }
         }
         
         pinView.canShowCallout = YES;
@@ -212,7 +227,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
 
 - (void)zoomToFitMapAnnotations
 {
-    if ([self.mapView.annotations count] == 0){
+    if ([self.mapView.annotations count] <= 1){
         return;
     }
     
