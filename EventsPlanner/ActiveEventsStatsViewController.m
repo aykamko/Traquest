@@ -36,9 +36,11 @@
         self.tableView.scrollEnabled = YES;
         self.tableView.separatorColor = [UIColor grayColor];
    
+        UITabBarItem *icon = [self tabBarItem];
+        [icon setImage:[UIImage imageNamed:@"listFinal.png"]];
         
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-       self.tableView.layer.cornerRadius = 0.0;
+        self.tableView.layer.cornerRadius = 0.0;
         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:
                                                  [NSURL URLWithString:@"https://www.quiltsrjewels.com/store/images/17770862.jpg"]]];
 

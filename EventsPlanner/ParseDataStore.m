@@ -907,6 +907,9 @@ NSString * const kDeclinedEventsKey = @"declined";
     
     for (id obj in guestArray)
     {
+        if ([obj[@"id"] isEqualToString:self.myId]) {
+            continue;
+        }
         [guestIds addObject:obj[@"id"]];
     }
     

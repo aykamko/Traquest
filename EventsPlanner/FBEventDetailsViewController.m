@@ -243,26 +243,30 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 #pragma mark MapView
 
-- (void)loadMapView:(id)sender
+- (UITabBarController *)tabBarControllerForMapView
 {
-    _statsViewController =[[ActiveEventsStatsViewController alloc]initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
+    _tabBarController = [[UITabBarController alloc] init];
+    
+    _statsViewController = [[ActiveEventsStatsViewController alloc] initWithGuestArray:self.eventDetails[@"attending"][@"data"]
+                                                                               eventId:self.eventDetails[@"id"]
+                                                                         venueLocation:_venueLocation];
     _statsViewController.title = @"Stats";
     
-    _item= [_statsViewController tabBarItem];
-    _briefcase= [UIImage imageNamed:@"listFinal.png"];
-    [_item setImage:_briefcase];
-    
-    _tabBarController=[[UITabBarController alloc]init];
-    _mapViewController  = [[ActiveEventMapViewController alloc]
-                           initWithGuestArray:_eventDetails[@"attending"][@"data"] eventId:_eventDetails[@"id"] venueLocation:_venueLocation];
+    _mapViewController = [[ActiveEventMapViewController alloc] initWithGuestArray:self.eventDetails[@"attending"][@"data"]
+                                                                          eventId:self.eventDetails[@"id"]
+                                                                    venueLocation:_venueLocation];
     _mapViewController.title = @"Map";
     
     self.navigationController.title = self.tabBarItem.title;
     [_tabBarController setViewControllers:@[_mapViewController, _statsViewController]];
     
+    return _tabBarController;
+}
+
+- (void)loadMapView:(id)sender
+{
+    _tabBarController = [self tabBarControllerForMapView];
     [[self navigationController] pushViewController:_tabBarController animated:YES];
-    self.navigationController.title = self.tabBarItem.title;
-    
 }
 
 #pragma mark Push and Load Active Map

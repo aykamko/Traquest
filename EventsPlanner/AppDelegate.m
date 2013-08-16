@@ -12,6 +12,7 @@
 #import "FBLoginViewController.h"
 #import "ParseDataStore.h"
 #import "EventsListController.h"
+#import "FBEventDetailsViewController.h"
 
 static const BOOL debugTracking = YES;
 
@@ -180,9 +181,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:identity];
     [self.eventsNeedingCertification removeObjectAtIndex:0];
     
-//    if (([self.eventsNeedingCertification count] == 0) && (identity != notAllowed)) {
-//        self.navController setViewControllers:<#(NSArray *)#> animated:<#(BOOL)#>
-//    }
 }
 
 @end

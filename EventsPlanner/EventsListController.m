@@ -236,7 +236,10 @@
     
 }
 
-- (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)replied
+- (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails
+                                                isActive:(BOOL)active
+                                                  isHost:(BOOL)isHost
+                                              hasReplied:(BOOL)replied
 {
     self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
                                                                                           isActive:active
@@ -249,6 +252,26 @@
                                                                   action:nil];
     [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
     [self.tabBarController.navigationController pushViewController:_eventDetailsViewController animated:YES];
+}
+
+- (FBEventDetailsViewController *)detailsViewControllerForEvent:(NSString *)eventId
+{
+    NSDictionary *chosenEvent;
+    NSArray *possibleArrays = @[self.attendingEvents, self.maybeAttending];
+    
+    for (NSArray *eventArray in possibleArrays) {
+        for (NSDictionary *event in eventArray) {
+            if ([event[@"id"] isEqualToString:eventId]) {
+                chosenEvent = event;
+                break;
+            }
+        }
+    }
+    
+    return [[FBEventDetailsViewController alloc] initWithPartialDetails:chosenEvent
+                                                               isActive:YES
+                                                                 isHost:NO
+                                                             hasReplied:YES];
 }
 
 #pragma mark  Create New Event
