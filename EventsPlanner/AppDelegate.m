@@ -120,14 +120,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     if (eventId && eventName) {
         [self.eventsNeedingCertification addObject:@{ eventId: eventName }];
-    } else {
-        [PFPush handlePush:userInfo];
-    }
-    
-    if ([application applicationState] != UIApplicationStateActive) {
-        [PFPush handlePush:userInfo];
-    } else {
-        [self promptUserAllowTrackingForEvent:eventName eventId:eventId];
+        if ([application applicationState] != UIApplicationStateActive) {
+            [PFPush handlePush:userInfo];
+        } else {
+            [self promptUserAllowTrackingForEvent:eventName eventId:eventId];
+        }
     }
 }
 

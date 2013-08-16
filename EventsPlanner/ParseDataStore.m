@@ -993,7 +993,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             for (id obj in guestObjArray) {
                 if ([obj[@"id"] isEqualToString:self.myId]) {
-                    continue;
+                    //continue;
                 }
                 [guestIds addObject:obj[@"id"]];
             }
@@ -1007,10 +1007,10 @@ NSString * const kDeclinedEventsKey = @"declined";
             PFPush *trackingAllowedNotification = [[PFPush alloc] init];
             [trackingAllowedNotification setQuery:installationQuery];
             
-            NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName};
+            NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName, @"aps":@{@"alert": @"alert"}};
             
             [trackingAllowedNotification setData:eventIdDict];
-            [trackingAllowedNotification setMessage:@"The host of an event wants to track your location."];
+//            [trackingAllowedNotification setMessage:@"The host of an event wants to track your location."];
             
             [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
