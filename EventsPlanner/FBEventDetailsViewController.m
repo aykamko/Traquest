@@ -824,8 +824,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)clickedOnMap:(UITapGestureRecognizer *)recognizer
 {
-    NSLog(@"clicked the map");
-    
     MKMapView *plainMap = [[MKMapView alloc] init];
     [plainMap setRegion:MKCoordinateRegionMakeWithDistance(_venueLocation, 200, 200) animated:NO];
     

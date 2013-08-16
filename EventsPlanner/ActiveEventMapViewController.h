@@ -14,4 +14,5 @@
 
 - (id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D) venueLocation;
 
+
 @end

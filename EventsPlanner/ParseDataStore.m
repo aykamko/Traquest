@@ -541,7 +541,6 @@ NSString * const kDeclinedEventsKey = @"declined";
                         }
                     }
                 }
-                
                 __block PFObject *thisEvent;
                 NSString *eventId = event[@"id"];
                 PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
