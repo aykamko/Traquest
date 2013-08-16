@@ -597,16 +597,14 @@ NSString * const kDeclinedEventsKey = @"declined";
                 }
                 
                 if (isHost == YES) {
+                    [hostEvents insertObject:event atIndex:0];
                     if (active) {
                         [activeHostEvents insertObject:event atIndex:0];
-                    } else {
-                        [hostEvents insertObject:event atIndex:0];
                     }
                 } else {
+                    [attendingEvents insertObject:event atIndex:0];
                     if (active) {
                         [activeGuestEvents insertObject:event atIndex:0];
-                    } else {
-                        [attendingEvents insertObject:event atIndex:0];
                     }
                 }
                 
