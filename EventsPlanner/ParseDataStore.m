@@ -14,7 +14,7 @@
 #pragma mark Parse String Keys
 
 static BOOL showsPastEvents = YES;
-static BOOL kCachingEnabled = YES;
+static BOOL kCachingEnabled = NO;
 
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
