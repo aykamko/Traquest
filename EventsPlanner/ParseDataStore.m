@@ -15,7 +15,6 @@
 
 static BOOL showsPastEvents = YES;
 static BOOL kCachingEnabled = YES;
-static BOOL kNewUserFlagDisabled = NO;
 
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
@@ -120,7 +119,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
         } else {
             
-            if (kNewUserFlagDisabled || [[PFUser currentUser] isNew]) {
+            if ([[PFUser currentUser] isNew]) {
                 
                 PFGeoPoint *geoPoint = [PFGeoPoint geoPoint];
                 [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
@@ -140,6 +139,8 @@ NSString * const kDeclinedEventsKey = @"declined";
                         
                     } else {
                         
+                        [[NSUserDefaults standardUserDefaults] setObject:result[@"id"] forKey:facebookID];
+                        
                         [[PFUser currentUser] setObject:result[@"id"] forKey:facebookID];
                         
                         PFObject *tracking = [PFObject objectWithClassName:@"TrackingObject"];
@@ -150,12 +151,6 @@ NSString * const kDeclinedEventsKey = @"declined";
                         
                     }
                 }];
-                
-                PFObject *tracking = [PFObject objectWithClassName:@"TrackingObject"];
-                //[tracking setObject:[PFUser currentUser] forKey:@"user"];
-                [[PFUser currentUser] setObject:tracking forKey:trackingObject];
-                
-                [[PFUser currentUser] saveInBackground];
                 
             }
             
@@ -448,7 +443,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                 NSDictionary *savedEventsList = [self loadAllEventsListsFromCacheAsKeyedDictionary];
                 if (savedEventsList) {
                     if (!self.myId) {
-                        self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:@"myFbId"];
+                        self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:facebookID];
                         [[PFUser currentUser] setObject:_myId forKey:facebookID];
                         
                         PFQuery *trackingObjectQuery = [PFQuery queryWithClassName:@"TrackingObject"];
@@ -498,7 +493,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                 
                 // Store myId locally and in parse, if it's not there already
                 self.myId = result[@"id"];
-                [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:@"myFbId"];
+                [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:facebookID];
                 [[PFUser currentUser] setObject:_myId forKey:facebookID];
                 
                 PFQuery *trackingObjectQuery = [PFQuery queryWithClassName:@"TrackingObject"];
@@ -1006,8 +1001,8 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             PFPush *trackingAllowedNotification = [[PFPush alloc] init];
             [trackingAllowedNotification setQuery:installationQuery];
-            
-            NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName, @"aps":@{@"alert": @"alert"}};
+            NSString *message = [NSString stringWithFormat:@"The event \"%@\" wants to track your location", eventName];
+            NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName, @"aps":@{@"alert":message}};
             
             [trackingAllowedNotification setData:eventIdDict];
 //            [trackingAllowedNotification setMessage:@"The host of an event wants to track your location."];
