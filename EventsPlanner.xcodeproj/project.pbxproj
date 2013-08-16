@@ -20,6 +20,8 @@
 		760BDC3317A9D3D4008A1877 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */; };
 		76502FF217BEA17B00EC839B /* hostIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76502FF117BEA17B00EC839B /* hostIcon@2x.png */; };
 		76502FF417BEA28200EC839B /* noReply@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76502FF317BEA28200EC839B /* noReply@2x.png */; };
+		76502FE917BE976700EC839B /* noReply@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76502FE817BE976700EC839B /* noReply@2x.png */; };
+		76502FF017BE9CBB00EC839B /* hostIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 76502FEF17BE9CBB00EC839B /* hostIcon@2x.png */; };
 		768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */; };
 		7698B93217AAE8AB00D351BF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698B93117AAE8AB00D351BF /* GoogleMaps.framework */; };
 		7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7698B93317AAE8BE00D351BF /* GoogleMaps.bundle */; };
@@ -76,7 +78,6 @@
 		7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBBD70E17AB987700ED9DAB /* UIImage+ImageCrop.m */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
 		7CE05FCE17B33BDB004BF47C /* tracking-button-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */; };
-		7CE05FCF17B33BDB004BF47C /* tracking-button-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE05FCD17B33BDB004BF47C /* tracking-button-normal@2x.png */; };
 		7CE2DAA217A09BC500834B6F /* login-button-small-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */; };
 		7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
@@ -125,6 +126,8 @@
 		760BDC3217A9D3D4008A1877 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		76502FF117BEA17B00EC839B /* hostIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "hostIcon@2x.png"; path = "Image Assets/hostIcon@2x.png"; sourceTree = SOURCE_ROOT; };
 		76502FF317BEA28200EC839B /* noReply@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "noReply@2x.png"; path = "Image Assets/noReply@2x.png"; sourceTree = SOURCE_ROOT; };
+		76502FE817BE976700EC839B /* noReply@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "noReply@2x.png"; path = "../../Downloads/noReply@2x.png"; sourceTree = "<group>"; };
+		76502FEF17BE9CBB00EC839B /* hostIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "hostIcon@2x.png"; path = "Image Assets/hostIcon@2x.png"; sourceTree = SOURCE_ROOT; };
 		768ED85217AA08CB00A80271 /* ActiveEventMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventMapViewController.m; sourceTree = "<group>"; };
 		768ED85417AA08D200A80271 /* ActiveEventMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveEventMapViewController.h; sourceTree = "<group>"; };
 		7698B93117AAE8AB00D351BF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
@@ -441,8 +444,10 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				76502FF317BEA28200EC839B /* noReply@2x.png */,
-				76502FF117BEA17B00EC839B /* hostIcon@2x.png */,
+
+				76502FEF17BE9CBB00EC839B /* hostIcon@2x.png */,
+				76502FE817BE976700EC839B /* noReply@2x.png */,
+				7609B88617BDAD2C009663D8 /* friend@2x.png */,
 				7609B88217BDABA0009663D8 /* questionmark@2x.png */,
 				7609B87817BDA615009663D8 /* Clock@2x.png */,
 				7609B87A17BDA637009663D8 /* Checkmark@2x.png */,
@@ -620,11 +625,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7CE05FCF17B33BDB004BF47C /* tracking-button-normal@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90B4DDB317BC207D00E83799 /* silver-button-pressed@2x.png in Resources */,
 				76502FF417BEA28200EC839B /* noReply@2x.png in Resources */,
 				7609B88317BDABA0009663D8 /* questionmark@2x.png in Resources */,
+				76502FF017BE9CBB00EC839B /* hostIcon@2x.png in Resources */,
+				76502FE917BE976700EC839B /* noReply@2x.png in Resources */,
 				90B4DDA917BBF1B000E83799 /* cancel-button-normal@2x.png in Resources */,
 				7CE2DAA317A09BC500834B6F /* login-button-small-pressed@2x.png in Resources */,
 				7CE2DAA417A09BC500834B6F /* login-button-small.png in Resources */,

@@ -95,6 +95,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         _active = active;
         _host = isHost;
         _replied = hasReplied;
+
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         
         // By default
