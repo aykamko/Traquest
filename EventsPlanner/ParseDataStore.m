@@ -966,7 +966,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 
 #pragma mark Push Notifications
--(void) pushNotificationToGuestOfEvent:(NSString *)eventId completion:(void (^)())completionBlock
+- (void)pushNotificationToGuestOfEvent:(NSString *)eventId completion:(void (^)())completionBlock
 {
     NSString *graphPath = [NSString stringWithFormat:
                            @"%@?fields=attending.fields(id,name,picture.height(100).width(100)),name", eventId];
@@ -1010,6 +1010,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName};
             
             [trackingAllowedNotification setData:eventIdDict];
+            [trackingAllowedNotification setMessage:@"The host of an event wants to track your location."];
             
             [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
