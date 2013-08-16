@@ -971,10 +971,10 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 
 #pragma mark Fetch Friends
-- (void)fetchFriendsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIds, NSString *eventName))completionBlock
+- (void)fetchFriendsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *guestObjArray, NSString *eventName))completionBlock
 {
     NSString *graphPath = [NSString stringWithFormat:
-                           @"%@?fields=attending.fields(id),name", eventId];
+                           @"%@?fields=attending.fields(id,name,picture.height(100).width(100)),name", eventId];
     
     FBRequest *request = [FBRequest requestForGraphPath:graphPath];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -992,30 +992,30 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             NSString *eventName = result[@"name"];
             NSArray *guestObjArray = result[@"attending"][@"data"];
-            NSLog(@"%@", guestObjArray);
-            
-            NSMutableArray *guestIds = [[NSMutableArray alloc] init];
-            
-            for (id obj in guestObjArray) {
-                if ([obj[@"id"] isEqualToString:self.myId]) {
-                    continue;
-                }
-                [guestIds addObject:obj[@"id"]];
-            }
             
             if (completionBlock) {
-                completionBlock(guestIds, eventName);
+                completionBlock(guestObjArray, eventName);
             }
         }
     }];
 }
 
 #pragma mark Push Notifications
-- (void)pushNotificationsToGuestsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIdsArray))completionBlock;
+- (void)pushNotificationsToGuestsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *guestObjArray))completionBlock;
 {
-    [self fetchFriendsOfEvent:eventId completion:^(NSArray *friendIds, NSString *eventName) {
+    [self fetchFriendsOfEvent:eventId completion:^(NSArray *guestObjArray, NSString *eventName) {
+        
+        NSMutableArray *guestIds = [[NSMutableArray alloc] init];
+        
+        for (id obj in guestObjArray) {
+            if ([obj[@"id"] isEqualToString:self.myId]) {
+                continue;
+            }
+            [guestIds addObject:obj[@"id"]];
+        }
+            
         PFQuery *userQuery = [PFUser query];
-        [userQuery whereKey:facebookID containedIn:friendIds];
+        [userQuery whereKey:facebookID containedIn:guestIds];
         
         PFQuery *installationQuery = [PFInstallation query];
         [installationQuery whereKey:@"user" matchesQuery:userQuery];
@@ -1035,7 +1035,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
             
             if (completionBlock) {
-                completionBlock(friendIds);
+                completionBlock(guestObjArray);
             }
             
         }];

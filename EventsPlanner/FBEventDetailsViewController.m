@@ -64,6 +64,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, getter = isHost) BOOL host;
 @property (nonatomic, getter = hasReplied) BOOL replied;
 
+@property (nonatomic) BOOL fetchedNewData;
 
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 
@@ -907,6 +908,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [self.scrollView makeToastActivity];
     [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"] completion:^{
         [[ParseDataStore sharedStore] pushNotificationsToGuestsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIdsArray) {
+            self.fetchedNewData = YES;
+            self.eventDetails[@"attending"][@"data"] = friendIdsArray;
             [self.scrollView hideToastActivity];
             [self loadMapView:nil];
             [self addStopTrackingButtonAndViewMapButton];
@@ -917,6 +920,17 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)loadMapView:(id)sender
 {
+    if (self.fetchedNewData == NO) {
+        [[ParseDataStore sharedStore] fetchFriendsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIds, NSString *eventName) {
+            self.eventDetails[@"attending"][@"data"] = friendIds;
+            _tabBarController = [self tabBarControllerForMapView];
+            [[self navigationController] pushViewController:_tabBarController animated:YES];
+        }];
+        return;
+    }
+    
+    //TODO: so so so so bad omfg
+    self.fetchedNewData = NO;
     _tabBarController = [self tabBarControllerForMapView];
     [[self navigationController] pushViewController:_tabBarController animated:YES];
 }
