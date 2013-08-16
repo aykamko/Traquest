@@ -207,7 +207,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
             pinView.pinColor = MKPinAnnotationColorRed;
         } else {
             pinView.pinColor = MKPinAnnotationColorGreen;
-            if (!fbIdAnnotation.anonymous) {
+            if (fbIdAnnotation.anonymous == NO) {
                 pinView.leftCalloutAccessoryView = [[UIImageView alloc]
                                                     initWithImage:self.guestData[fbIdAnnotation.fbId][@"userPic"]];
             }

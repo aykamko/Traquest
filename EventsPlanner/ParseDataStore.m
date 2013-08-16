@@ -556,12 +556,14 @@ NSString * const kDeclinedEventsKey = @"declined";
                         }
                     }
                 }
+                
                 __block PFObject *thisEvent;
                 NSString *eventId = event[@"id"];
                 PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
                 [eventQuery whereKey:@"eventId" equalTo:eventId];
                 
                 [eventQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    
                     if ([objects count]==0) {
                         thisEvent = [PFObject objectWithClassName:@"Event"];
                         [thisEvent setObject:eventId forKey:@"eventId"];
@@ -1001,6 +1003,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             PFPush *trackingAllowedNotification = [[PFPush alloc] init];
             [trackingAllowedNotification setQuery:installationQuery];
+            
             NSString *message = [NSString stringWithFormat:@"The event \"%@\" wants to track your location", eventName];
             NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName, @"aps":@{@"alert":message}};
             
