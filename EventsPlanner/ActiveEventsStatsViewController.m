@@ -214,15 +214,15 @@
 #pragma mark fetching GeoPoints
 -(void)setDict
 {
-    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.friendDetailsDict allKeys] eventId:self.eventID completion:^(NSDictionary *userLocations) {
+    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.friendDetailsDict allKeys] eventId:self.eventID completion:^(NSDictionary *allowedLocations, NSSet *anonLocations) {
         
-        for (NSString *fbId in [userLocations allKeys])
+        for (NSString *fbId in [allowedLocations allKeys])
         {
             if ([fbId isEqualToString:[[ParseDataStore sharedStore] myId]]) {
                 continue;
             }
             
-            self.friendDetailsDict[fbId][@"geopoint"] = userLocations[fbId];
+            self.friendDetailsDict[fbId][@"geopoint"] = allowedLocations[fbId];
         }
       
     }];

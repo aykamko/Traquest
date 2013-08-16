@@ -18,6 +18,7 @@
 #import "FBEventDetailsTableDelegate.h"
 #import "ActiveEventsStatsViewController.h"
 #import "EventsListController.h"
+
 static const float TrackingButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
 static const float kLatitudeAdjustment = 0.0008;
@@ -543,15 +544,16 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         MKGeocodingService *geocoder = [[MKGeocodingService alloc] init];
         
         [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
-            CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
-            _venueLocation = coordinate;
-            [self updateMapZoomLocation:_venueLocation];
-            
-            MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
-            annot.coordinate = _venueLocation;
-            
-            [_mapView addAnnotation:annot];
-            
+            if (geocode) {
+                CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
+                _venueLocation = coordinate;
+                [self updateMapZoomLocation:_venueLocation];
+                
+                MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
+                annot.coordinate = _venueLocation;
+                
+                [_mapView addAnnotation:annot];
+            }
         }];
         
     }
@@ -805,7 +807,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     return parameterString;
 }
-
 
 
 - (void)doSomething:(id)sender {

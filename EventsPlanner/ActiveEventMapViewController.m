@@ -13,7 +13,7 @@
 #import "Toast+UIView.h"
 #import "FBIdAnnotationPoint.h"
 
-static const NSInteger UpdateFrequencyInSeconds = 3.0;
+static const NSInteger UpdateFrequencyInSeconds = 2.0;
 
 
 @interface ActiveEventMapViewController ()
@@ -25,8 +25,8 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
 
 @property (strong, nonatomic) NSString *eventId;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
-@property (strong, nonatomic) NSMutableDictionary *friendDetailsDict;
 @property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
+@property (strong, nonatomic) NSMutableSet *anonAnnotationPointDict;
 
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) UIView *toastSpinner;
@@ -52,7 +52,8 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
         _venueLocation = venueLocation;
         _eventId = eventId;
         _friendAnnotationPointDict = [[NSMutableDictionary alloc] init];
-        _friendDetailsDict = [[NSMutableDictionary alloc] init];
+        _anonAnnotationPointDict = [[NSMutableSet alloc] init];
+        _guestData = [[NSMutableDictionary alloc] init];
         for (FBGraphObject *user in guestArray) {
             UIImage *userPic = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:user[@"picture"][@"data"][@"url"]]]];
             NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
@@ -60,7 +61,7 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
                                                                                @"name":user[@"name"],
                                                                                @"userPic":userPic }];
 
-            [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
+            [[self guestData] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
             
         }
     }
@@ -104,24 +105,29 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
 #pragma mark Adding Annotations and Map View
 - (void)updateMarkersOnMap
 {
-    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.friendDetailsDict allKeys] eventId:self.eventId completion:^(NSDictionary *userLocations) {
+    for (MKPointAnnotation* annot in _anonAnnotationPointDict) {
+        [_mapView removeAnnotation: annot];
+    }
+    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.guestData allKeys] eventId:self.eventId completion:^(NSDictionary *allowedLocations, NSSet *anonLocations) {
         
-        for (NSString *fbId in [userLocations allKeys]) {
+        NSMutableSet *pastAnnotationIds = [NSMutableSet setWithArray:[_friendAnnotationPointDict allKeys]];
+        for (NSString *fbId in [allowedLocations allKeys]) {
+            [pastAnnotationIds removeObject:fbId];
             
             if ([fbId isEqualToString:[[ParseDataStore sharedStore] myId]]) {
                 continue;
             }
             
-            self.friendDetailsDict[fbId][@"geopoint"] = userLocations[fbId];
-            PFGeoPoint *currentGeopoint = self.friendDetailsDict[fbId][@"geopoint"];
+            self.guestData[fbId][@"geopoint"] = allowedLocations[fbId];
+            PFGeoPoint *currentGeopoint = self.guestData[fbId][@"geopoint"];
             
             CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
                                                                                   currentGeopoint.longitude);
             
-            NSString *currentName = self.friendDetailsDict[fbId][@"name"];
-            UIImage *preImage = self.friendDetailsDict[fbId][@"userPic"];
+            NSString *currentName = self.guestData[fbId][@"name"];
+            UIImage *preImage = self.guestData[fbId][@"userPic"];
             UIImage *postImage = [self resizeImage:preImage];
-            self.friendDetailsDict[fbId][@"userPic"] = postImage;
+            self.guestData[fbId][@"userPic"] = postImage;
             
             FBIdAnnotationPoint *point = self.friendAnnotationPointDict[fbId];
             
@@ -138,6 +144,22 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
                 point.coordinate = currentCoordinate;
                 
             }
+        }
+        for (NSString *Id in pastAnnotationIds) {
+            [self.mapView removeAnnotation:self.friendAnnotationPointDict[Id]];
+            [_friendAnnotationPointDict removeObjectForKey:Id];
+        }
+        
+        for (PFGeoPoint *geoPoint in anonLocations) {
+            CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(geoPoint.latitude,
+                                                                                  geoPoint.longitude);
+            
+            FBIdAnnotationPoint *point = [[FBIdAnnotationPoint alloc] init];
+            point.coordinate = currentCoordinate;
+            point.title = @"Anonymous";
+            [_anonAnnotationPointDict addObject:point];
+            [_mapView addAnnotation:point];
+            
         }
         
         if (self.zoomToFit) {
@@ -164,7 +186,7 @@ static const NSInteger UpdateFrequencyInSeconds = 3.0;
         } else {
             pinView.pinColor = MKPinAnnotationColorGreen;
             pinView.leftCalloutAccessoryView = [[UIImageView alloc]
-                                                initWithImage:self.friendDetailsDict[fbIdAnnotation.fbId][@"userPic"]];
+                                                initWithImage:self.guestData[fbIdAnnotation.fbId][@"userPic"]];
         }
         
         pinView.canShowCallout = YES;

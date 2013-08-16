@@ -45,6 +45,9 @@
                                                          options:kNilOptions
                                                            error:&error];
     
+    if ([json[@"status"] isEqualToString:@"ZERO_RESULTS"]) {
+        return nil;
+    }
     NSArray *results = [json objectForKey:@"results"];
     NSDictionary *result = [results objectAtIndex:0];
     NSString *address = [result objectForKey:@"formatted_address"];

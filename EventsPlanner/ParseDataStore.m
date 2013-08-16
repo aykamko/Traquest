@@ -171,14 +171,15 @@ NSString * const kDeclinedEventsKey = @"declined";
                         
                         [[PFUser currentUser] setObject:result[@"id"] forKey:facebookID];
                         
+                        PFObject *tracking = [PFObject objectWithClassName:@"TrackingObject"];
+                        [tracking setObject:result[@"id"] forKey:facebookID];
+                        [[PFUser currentUser] setObject:tracking forKey:trackingObject];
+                        
+                        [[PFUser currentUser] saveInBackground];
+                        
                     }
                 }];
                 
-                PFObject *tracking = [PFObject objectWithClassName:@"TrackingObject"];
-                //[tracking setObject:[PFUser currentUser] forKey:@"user"];
-                [[PFUser currentUser] setObject:tracking forKey:trackingObject];
-                
-                [[PFUser currentUser] save];
                 
             }
             
@@ -491,8 +492,8 @@ NSString * const kDeclinedEventsKey = @"declined";
                 [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:@"myFbId"];
                 [[PFUser currentUser] setObject:_myId forKey:facebookID];
                 
-                PFObject *trackingObj = [[PFUser currentUser] objectForKey:trackingObject];
-                [trackingObj setObject:self.myId forKey:facebookID];
+//                PFObject *trackingObj = [[PFUser currentUser] objectForKey:trackingObject];
+//                [trackingObj setObject:self.myId forKey:facebookID];
                 
                 [[PFUser currentUser] save];
                 
@@ -792,28 +793,47 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 
 #pragma mark Parse Request
-- (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *userLocations))completionBlock
+- (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *allowedLocations, NSSet * anonLocations))completionBlock
 {
     NSString *eventIdKey = [NSString stringWithFormat:@"E%@",eventId];
-    PFQuery *allowedQuery = [PFQuery queryWithClassName:@"TrackingObject"];
-    [allowedQuery whereKey:facebookID containedIn:guestIds];
-    [allowedQuery whereKey:eventIdKey containedIn:@[allowed, anonymous]];
+    PFQuery *trackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
+    [trackingQuery whereKey:facebookID containedIn:guestIds];
+    [trackingQuery whereKey:eventIdKey equalTo:allowed];
     
-    PFQuery *userQuery = [PFUser query];
-    [userQuery whereKey:facebookID matchesKey:facebookID inQuery:allowedQuery];
+    PFQuery *userAllowedQuery = [PFUser query];
+    [userAllowedQuery whereKey:facebookID matchesKey:facebookID inQuery:trackingQuery];
     
-    [userQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        NSMutableDictionary *userLocations = [[NSMutableDictionary alloc] init];
-        for (PFUser *friend in objects) {
+    
+    PFQuery *secondTrackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
+    [secondTrackingQuery whereKey:facebookID containedIn:guestIds];
+    [secondTrackingQuery whereKey:eventIdKey equalTo:anonymous];
+    
+    PFQuery *userAnonQuery = [PFUser query];
+    [userAnonQuery whereKey:facebookID matchesKey:facebookID inQuery:secondTrackingQuery];
+    
+    [userAllowedQuery findObjectsInBackgroundWithBlock:^(NSArray *userAllowedObjects, NSError *error) {
+        __block NSMutableDictionary *allowedLocations = [[NSMutableDictionary alloc] init];
+        for (PFUser *friend in userAllowedObjects) {
             
             PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
             NSString *fbId = [friend objectForKey:facebookID];
-            [userLocations setObject:geoPoint forKey:fbId];
+            [allowedLocations setObject:geoPoint forKey:fbId];
             
         }
         
-        [_trackingCount setObject:[NSNumber numberWithInt:objects.count] forKey:eventId];
-        completionBlock([[NSDictionary alloc] initWithDictionary:userLocations]);
+        [userAnonQuery findObjectsInBackgroundWithBlock:^(NSArray *userAnonObjects, NSError *error) {
+
+            NSMutableSet *anonLocations = [[NSMutableSet alloc] init];
+            
+            for (PFUser *friend in userAnonObjects) {
+                PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
+                [anonLocations addObject:geoPoint];
+            }
+            
+            [_trackingCount setObject:[NSNumber numberWithInt:allowedLocations.count + anonLocations.count] forKey:eventId];
+            
+            completionBlock([[NSDictionary alloc] initWithDictionary:allowedLocations], [[NSSet alloc] initWithSet:anonLocations]);
+        }];
     }];
 }
 
