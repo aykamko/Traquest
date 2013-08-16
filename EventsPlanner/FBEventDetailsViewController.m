@@ -579,7 +579,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             [self addViewMapButtonAndSegmentedControlForTrackingSettings];
         }
     
-    } else if (self.isHost) {
+    } else if (self.isHost && [self isActive]) {
         
         [self addStartTrackingButton];
 
