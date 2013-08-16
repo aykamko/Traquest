@@ -841,16 +841,18 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 
 #pragma mark Parse Request
-- (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId completion:(void (^)(NSDictionary *allowedLocations, NSSet * anonLocations))completionBlock
+- (void)fetchGeopointsForIds:(NSArray *)guestIds
+                     eventId:(NSString *)eventId
+                  completion:(void (^)(NSDictionary *allowedLocations, NSDictionary *anonLocations))completionBlock
 {
     NSString *eventIdKey = [NSString stringWithFormat:@"E%@",eventId];
     PFQuery *trackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
     [trackingQuery whereKey:facebookID containedIn:guestIds];
+    [trackingQuery whereKey:facebookID notEqualTo:self.myId];
     [trackingQuery whereKey:eventIdKey equalTo:allowed];
     
     PFQuery *userAllowedQuery = [PFUser query];
     [userAllowedQuery whereKey:facebookID matchesKey:facebookID inQuery:trackingQuery];
-    
     
     PFQuery *secondTrackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
     [secondTrackingQuery whereKey:facebookID containedIn:guestIds];
@@ -871,16 +873,18 @@ NSString * const kDeclinedEventsKey = @"declined";
         
         [userAnonQuery findObjectsInBackgroundWithBlock:^(NSArray *userAnonObjects, NSError *error) {
 
-            NSMutableSet *anonLocations = [[NSMutableSet alloc] init];
+            NSMutableDictionary *anonLocations = [[NSMutableDictionary alloc] init];
             
             for (PFUser *friend in userAnonObjects) {
                 PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
-                [anonLocations addObject:geoPoint];
+                NSInteger fbIdHash = [[friend objectForKey:facebookID] hash];;
+                [allowedLocations setObject:geoPoint forKey:[NSNumber numberWithInteger:fbIdHash]];
             }
             
             [_trackingCount setObject:[NSNumber numberWithInt:allowedLocations.count + anonLocations.count] forKey:eventId];
             
-            completionBlock([[NSDictionary alloc] initWithDictionary:allowedLocations], [[NSSet alloc] initWithSet:anonLocations]);
+            completionBlock([[NSDictionary alloc] initWithDictionary:allowedLocations],
+                            [[NSDictionary alloc] initWithDictionary:anonLocations]);
         }];
     }];
 }

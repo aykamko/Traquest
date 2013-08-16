@@ -20,13 +20,15 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
 
 @property (nonatomic) BOOL zoomToFit;
 
+@property (strong, nonatomic) NSMutableDictionary *anonGuestLocations;
+
 @property (strong, nonatomic) NSTimer *timer;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 
 @property (strong, nonatomic) NSString *eventId;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
 @property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
-@property (strong, nonatomic) NSMutableSet *anonAnnotationPointDict;
+@property (strong, nonatomic) NSMutableDictionary *anonAnnotationPointDict;
 
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) UIView *toastSpinner;
@@ -52,7 +54,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
         _venueLocation = venueLocation;
         _eventId = eventId;
         _friendAnnotationPointDict = [[NSMutableDictionary alloc] init];
-        _anonAnnotationPointDict = [[NSMutableSet alloc] init];
+        _anonAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _guestData = [[NSMutableDictionary alloc] init];
         for (FBGraphObject *user in guestArray) {
             UIImage *userPic = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:user[@"picture"][@"data"][@"url"]]]];
@@ -105,18 +107,15 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
 #pragma mark Adding Annotations and Map View
 - (void)updateMarkersOnMap
 {
-    for (MKPointAnnotation* annot in _anonAnnotationPointDict) {
-        [_mapView removeAnnotation: annot];
-    }
-    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.guestData allKeys] eventId:self.eventId completion:^(NSDictionary *allowedLocations, NSSet *anonLocations) {
+    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.guestData allKeys] eventId:self.eventId completion:^(NSDictionary *allowedLocations, NSDictionary *anonLocations) {
         
-        NSMutableSet *pastAnnotationIds = [NSMutableSet setWithArray:[_friendAnnotationPointDict allKeys]];
+        NSMutableArray *allKeys = [[NSMutableArray alloc] init];
+        [allKeys addObjectsFromArray:[self.friendAnnotationPointDict allKeys]];
+        [allKeys addObjectsFromArray:[self.anonAnnotationPointDict allKeys]];
+        NSMutableSet *pastAnnotationIds = [NSMutableSet setWithArray:allKeys];
+        
         for (NSString *fbId in [allowedLocations allKeys]) {
             [pastAnnotationIds removeObject:fbId];
-            
-            if ([fbId isEqualToString:[[ParseDataStore sharedStore] myId]]) {
-                continue;
-            }
             
             self.guestData[fbId][@"geopoint"] = allowedLocations[fbId];
             PFGeoPoint *currentGeopoint = self.guestData[fbId][@"geopoint"];
@@ -145,20 +144,30 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
                 
             }
         }
-        for (NSString *Id in pastAnnotationIds) {
-            [self.mapView removeAnnotation:self.friendAnnotationPointDict[Id]];
-            [_friendAnnotationPointDict removeObjectForKey:Id];
-        }
         
-        for (PFGeoPoint *geoPoint in anonLocations) {
+        for (NSString *fbIdHash in [anonLocations allKeys]) {
+            [pastAnnotationIds removeObject:fbIdHash];
+            
+            PFGeoPoint *geoPoint = anonLocations[fbIdHash];
+            
             CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(geoPoint.latitude,
                                                                                   geoPoint.longitude);
             
-            FBIdAnnotationPoint *point = [[FBIdAnnotationPoint alloc] init];
-            point.coordinate = currentCoordinate;
-            point.title = @"Anonymous";
-            [_anonAnnotationPointDict addObject:point];
-            [_mapView addAnnotation:point];
+            MKPointAnnotation *point = self.anonAnnotationPointDict[fbIdHash];
+            
+            if (!point) {
+                
+                point = [[MKPointAnnotation alloc] init];
+                point.coordinate = currentCoordinate;
+                point.title = @"Anonymous";
+                [self.mapView addAnnotation:point];
+                self.anonAnnotationPointDict[fbIdHash] = point;
+                
+            } else {
+                
+                point.coordinate = currentCoordinate;
+                
+            }
             
         }
         
