@@ -278,7 +278,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [self addStopTrackingButtonAndViewMapButton];
     
     [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"]];
-    [[ParseDataStore sharedStore] notifyUsersWithCompletion:_eventDetails[@"id"] guestArray:_eventDetails[@"attending"][@"data"] completion:nil];
+    [[ParseDataStore sharedStore] pushNotificationToGuestOfEvent:_eventDetails[@"id"] completion:nil];
     
 }
 

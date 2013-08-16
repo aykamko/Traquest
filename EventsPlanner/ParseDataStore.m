@@ -279,10 +279,11 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
-    if ([_endDate compare:[NSDate date]]==NSOrderedAscending) {
-        [manager stopUpdatingLocation];
-        return;
-    }
+//    if ([_endDate compare:[NSDate date]] == NSOrderedAscending) {
+//        [manager stopUpdatingLocation];
+//        return;
+//    }
+    
     CLLocation *location = [locations lastObject];
     
     if (self.locationCompletionBlock) {
@@ -528,6 +529,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                         }
                     }
                 }
+                
                 __block PFObject *thisEvent;
                 NSString *eventId = event[@"id"];
                 PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
@@ -901,43 +903,63 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 
 #pragma mark Push Notifications
--(void) notifyUsersWithCompletion:(NSString *)eventId guestArray:(NSArray*)guestArray completion:(void (^)())completionBlock
+-(void) pushNotificationToGuestOfEvent:(NSString *)eventId completion:(void (^)())completionBlock
 {
-    NSMutableArray *guestIds = [[NSMutableArray alloc] init];
+    NSString *graphPath = [NSString stringWithFormat:
+                           @"%@?fields=attending.fields(id,name,picture.height(100).width(100)),name", eventId];
     
-    for (id obj in guestArray)
-    {
-        if ([obj[@"id"] isEqualToString:self.myId]) {
-            continue;
-        }
-        [guestIds addObject:obj[@"id"]];
-    }
-    
-    PFQuery *userQuery = [PFUser query];
-    [userQuery whereKey:facebookID containedIn:guestIds];
-    
-    PFQuery *installationQuery = [PFInstallation query];
-    [installationQuery whereKey:@"user" matchesQuery:userQuery];
-    
-    PFPush *trackingAllowedNotification = [[PFPush alloc] init];
-    [trackingAllowedNotification setQuery:installationQuery];
-    
-    FBRequest *request = [FBRequest requestForGraphPath:[NSString stringWithFormat:@"%@?fields=name",eventId]];
-    
+    FBRequest *request = [FBRequest requestForGraphPath:graphPath];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NSString *eventName = result[@"name"];
-        NSDictionary *eventIdDict = @{@"eventId": eventId,@"eventName":eventName};
-
-        [trackingAllowedNotification setData:eventIdDict];
         
-        [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                NSLog(@"push succeded");
+        if (error) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error getting event details!"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            
+        } else {
+            
+            NSString *eventName = result[@"name"];
+            NSArray *guestObjArray = result[@"attending"][@"data"];
+            NSLog(@"%@", guestObjArray);
+            
+            NSMutableArray *guestIds = [[NSMutableArray alloc] init];
+            
+            for (id obj in guestObjArray) {
+                if ([obj[@"id"] isEqualToString:self.myId]) {
+                    continue;
+                }
+                [guestIds addObject:obj[@"id"]];
             }
-            if (completionBlock) {
-                completionBlock();
-            }
-        }];
+            
+            PFQuery *userQuery = [PFUser query];
+            [userQuery whereKey:facebookID containedIn:guestIds];
+            
+            PFQuery *installationQuery = [PFInstallation query];
+            [installationQuery whereKey:@"user" matchesQuery:userQuery];
+            
+            PFPush *trackingAllowedNotification = [[PFPush alloc] init];
+            [trackingAllowedNotification setQuery:installationQuery];
+            
+            NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName};
+            
+            [trackingAllowedNotification setData:eventIdDict];
+            [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    NSLog(@"push succeded");
+                }
+                
+                if (completionBlock) {
+                    completionBlock();
+                }
+                
+            }];
+            
+        }
     }];
 }
 
