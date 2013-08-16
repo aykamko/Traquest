@@ -906,12 +906,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 {
     [self.scrollView makeToastActivity];
     [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"] completion:^{
-        [[ParseDataStore sharedStore] pushNotificationToGuestOfEvent:_eventDetails[@"id"] completion:nil];
-        [self.scrollView hideToastActivity];
+        [[ParseDataStore sharedStore] pushNotificationsToGuestsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIdsArray) {
+            [self.scrollView hideToastActivity];
+            [self loadMapView:nil];
+            [self addStopTrackingButtonAndViewMapButton];
+        }];
     }];
     
-    [self loadMapView:nil];
-    [self addStopTrackingButtonAndViewMapButton];
 }
 
 - (void)loadMapView:(id)sender

@@ -948,6 +948,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     FBRequest *newEventRequest = [FBRequest requestWithGraphPath:graphPath
                                                       parameters:eventParameters
                                                       HTTPMethod:@"POST"];
+    
     [newEventRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         
         if (error) {
@@ -969,11 +970,11 @@ NSString * const kDeclinedEventsKey = @"declined";
     }];
 }
 
-#pragma mark Push Notifications
-- (void)pushNotificationToGuestOfEvent:(NSString *)eventId completion:(void (^)())completionBlock
+#pragma mark Fetch Friends
+- (void)fetchFriendsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIds, NSString *eventName))completionBlock
 {
     NSString *graphPath = [NSString stringWithFormat:
-                           @"%@?fields=attending.fields(id,name,picture.height(100).width(100)),name", eventId];
+                           @"%@?fields=attending.fields(id),name", eventId];
     
     FBRequest *request = [FBRequest requestForGraphPath:graphPath];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -1002,33 +1003,42 @@ NSString * const kDeclinedEventsKey = @"declined";
                 [guestIds addObject:obj[@"id"]];
             }
             
-            PFQuery *userQuery = [PFUser query];
-            [userQuery whereKey:facebookID containedIn:guestIds];
-            
-            PFQuery *installationQuery = [PFInstallation query];
-            [installationQuery whereKey:@"user" matchesQuery:userQuery];
-            
-            PFPush *trackingAllowedNotification = [[PFPush alloc] init];
-            [trackingAllowedNotification setQuery:installationQuery];
-            
-            NSString *message = [NSString stringWithFormat:@"The event \"%@\" wants to track your location", eventName];
-            NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName, @"aps":@{@"alert":message}};
-            
-            [trackingAllowedNotification setData:eventIdDict];
-            
-            [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                if (succeeded) {
-                    NSLog(@"push succeded");
-                }
-                
-                if (completionBlock) {
-                    completionBlock();
-                }
-                
-            }];
-            
+            if (completionBlock) {
+                completionBlock(guestIds, eventName);
+            }
         }
+    }];
+}
+
+#pragma mark Push Notifications
+- (void)pushNotificationsToGuestsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIdsArray))completionBlock;
+{
+    [self fetchFriendsOfEvent:eventId completion:^(NSArray *friendIds, NSString *eventName) {
+        PFQuery *userQuery = [PFUser query];
+        [userQuery whereKey:facebookID containedIn:friendIds];
+        
+        PFQuery *installationQuery = [PFInstallation query];
+        [installationQuery whereKey:@"user" matchesQuery:userQuery];
+        
+        PFPush *trackingAllowedNotification = [[PFPush alloc] init];
+        [trackingAllowedNotification setQuery:installationQuery];
+        
+        NSString *message = [NSString stringWithFormat:@"The event \"%@\" wants to track your location", eventName];
+        NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName, @"aps":@{@"alert":message}};
+        
+        [trackingAllowedNotification setData:eventIdDict];
+        
+        [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            if (succeeded) {
+                NSLog(@"push succeded");
+            }
+            
+            if (completionBlock) {
+                completionBlock(friendIds);
+            }
+            
+        }];
     }];
 }
 

@@ -68,8 +68,7 @@ extern NSString * const kDeclinedEventsKey;
                       newStatus:(NSString *)status
                      completion:(void (^)())completionBlock;
 
-- (void)pushNotificationToGuestOfEvent:(NSString *)eventId
-                            completion:(void (^)())completionBlock;
+- (void)pushNotificationsToGuestsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIdsArray))completionBlock;
 
 - (void)createEventWithParameters:(NSDictionary *)eventParameters
                        completion:(void (^)(NSString *newEventId))completionBlock;

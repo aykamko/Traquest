@@ -178,6 +178,13 @@
                                                     completion:nil];
         }
         
+        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:^(NSArray *eventsList) {
+            [self.eventsListController refreshTableViewForEventsListKey:kHostEventsKey
+                                                          newEventsList:eventsList
+                                            endRefreshForRefreshControl:nil];
+        }];
+        
+        
         [[ParseDataStore sharedStore] fetchPartialEventDetailsForNewEvent:newEventId completion:^(NSDictionary *eventDetails) {
             [spinner stopAnimating];
             [self.tableViewController.navigationController popViewControllerAnimated:NO];
@@ -185,12 +192,6 @@
                                                                                isActive:NO
                                                                                  isHost:YES
                                                                              hasReplied:YES];
-        }];
-        
-        [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:^(NSArray *eventsList) {
-            [self.eventsListController refreshTableViewForEventsListKey:kHostEventsKey
-                                                          newEventsList:eventsList
-                                            endRefreshForRefreshControl:nil];
         }];
         
     }];
