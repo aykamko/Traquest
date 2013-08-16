@@ -20,7 +20,7 @@
     }
     return self;
 }
-
+#pragma mark Table View Methods
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     

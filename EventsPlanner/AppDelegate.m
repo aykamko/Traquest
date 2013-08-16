@@ -80,8 +80,14 @@ static const BOOL debugTracking = YES;
                                                                             maybeAttending:maybeAttendingEvent];
             
             [[self.eventsListController presentableViewController] navigationItem].hidesBackButton = YES;
-            
+            //self.navController.title =[[[_eventsListController presentableViewController]selectedViewController]title];
+
+          //  self.navController.navigationBar.topItem.title = [[[_eventsListController presentableViewController]selectedViewController]title];
             [self.navController pushViewController:[_eventsListController presentableViewController] animated:YES];
+            
+            
+
+            
             [self.window makeKeyAndVisible];
             
         }];
@@ -94,7 +100,7 @@ static const BOOL debugTracking = YES;
 }
 
 // Parse Push setup
-
+#pragma mark Parse Push Setup
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
     // Store the deviceToken in the current installation and save it to Parse.
@@ -134,21 +140,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
 }
 
-//- (void)applicationWillEnterForeground:(UIApplication *)application
-//{
-//}
-//
-//- (void)applicationWillTerminate:(UIApplication *)application
-//{
-//}
-//
-//- (void)applicationWillResignActive:(UIApplication *)application
-//{
-//}
-//
-//- (void)applicationWillResignActive:(UIApplication *)application
-//{
-//}
 
 - (void)promptUserAllowTrackingForEvent:(NSString *)eventName eventId:(NSString *)eventId {
     

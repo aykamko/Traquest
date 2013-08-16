@@ -94,11 +94,14 @@ NSString * const kFBGraphUserIdKey = @"id";
                                                                         views:viewsDict]];
 }
 
+#pragma mark search Bar Methods
+
 - (void)handleSearchWithoutResign:(id)sender
 {
     self.searchText = self.searchBar.text;
     [self updateView];
 }
+
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
@@ -120,6 +123,7 @@ NSString * const kFBGraphUserIdKey = @"id";
     [self handleSearchWithoutResign:nil];
 }
 
+#pragma mark Friend Picker Methods
 - (BOOL)friendPickerViewController:(FBFriendPickerViewController *)friendPicker
                  shouldIncludeUser:(id<FBGraphUser>)user
 {
@@ -139,12 +143,6 @@ NSString * const kFBGraphUserIdKey = @"id";
     }
     return YES;
 }
-
-- (void)cancel:(id)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)facebookViewControllerDoneWasPressed:(id)sender
 {
     NSMutableArray *invitedFriends = [[NSMutableArray alloc] init];
@@ -155,5 +153,12 @@ NSString * const kFBGraphUserIdKey = @"id";
     
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+#pragma mark Cancel Method
+- (void)cancel:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 @end

@@ -47,8 +47,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
     UITabBarItem *_item;
     UIImage *_briefcase;
-    UIView *_transparentView;
-    UIView *_wrapper;
     UITapGestureRecognizer *_singleFingerTap ;
 
 }
@@ -145,8 +143,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [super viewWillAppear:animated];
 }
 
-
-
 #pragma mark invite and change RSVP
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -214,7 +210,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
 
-#pragma mark MapView
+#pragma mark Map Methods
 
 - (UITabBarController *)tabBarControllerForMapView
 {
@@ -516,7 +512,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_detailsTable setDataSource:_dataSource];
     [_detailsTable setDelegate:_detailsTableDelegate];
 
-    [_detailsTable setTableHeaderView:_wrapper];
+    [_detailsTable setTableHeaderView:_mapView];
     
     //setting some UI aspects of tableview
     [_detailsTable setTableHeaderView:_mapView];
@@ -807,7 +803,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     return parameterString;
 }
-
 #pragma mark Segmented Control
 
 - (NSInteger)segmentedControlIndexForPermission:(NSString *)permission
@@ -823,8 +818,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     }
 }
 
-#pragma mark Selectors For Buttons
-
 - (void)handleSegmentedControl:(UISegmentedControl *)segmentedControl
 {
     NSInteger selectedSegmentIndex = segmentedControl.selectedSegmentIndex;
@@ -837,10 +830,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     }
 }
 
-- (void)cancelTracking:(id)sender
-{
+#pragma mark Methods for Buttons Pressed
+
+- (void)cancelTracking:(id)sender {
     [self.scrollView makeToastActivity];
-    
     [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"]];
     [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{@"eventId": _eventDetails[@"id"]} block:^(id object, NSError *error) {
         if (error) {
@@ -884,7 +877,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
     FBFriendPickerViewController *friendPicker = [[FBFriendPickerViewController alloc] init];
-    
     [friendPicker loadData];
     [friendPicker setTitle:@"Invite Friends"];
     [friendPicker presentModallyFromViewController:self animated:YES handler:^(FBViewController *sender, BOOL donePressed) {

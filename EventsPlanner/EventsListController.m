@@ -15,32 +15,6 @@
 
 @interface EventsListController() <UITableViewDelegate, UITabBarControllerDelegate>
 
-/*<<<<<<< HEAD
-@property (nonatomic, strong) UITableViewController *hostTableViewController;
-@property (nonatomic, strong) UITableViewController *attendingTableViewController;
-@property (nonatomic, strong) UITableViewController *maybeTableViewController;
-@property (nonatomic, strong) UITableViewController *notRepliedTableViewController;
-@property (nonatomic, strong) UITableViewController *activeTableViewController;
-
-@property (nonatomic, strong) UITableViewController *selectedTableViewController;
-
-@property (nonatomic, strong) EventsTableViewDataSource *hostTableViewDataSource;
-@property (nonatomic, strong) EventsTableViewDataSource *attendingTableViewDataSource;
-@property (nonatomic, strong) EventsTableViewDataSource *maybeTableViewDataSource;
-@property (nonatomic, strong) EventsTableViewDataSource *notRepliedTableViewDataSource;
-
-
-@property (nonatomic, strong) UITabBarController *tabBarController;
-
-@property (nonatomic, strong) NSArray *hostEvents;
-@property (nonatomic, strong) NSArray *attendingEvents;
-@property (nonatomic, strong) NSArray *notRepliedEvents;
-@property (nonatomic, strong) NSArray *maybeEvents;
-
-
-
-@property (nonatomic, strong) NSArray *friendsArray;
-=======*/
 
 @property (nonatomic, strong) UITableViewController *tableActiveViewController;
 
@@ -132,8 +106,10 @@
                                                 _maybeTableViewController,
                                                 _notRepliedTableViewController]];
         
+        
         self.selectedTableViewController = self.tableActiveViewController;
-
+        
+        _tabBarController.navigationItem.title = self.selectedTableViewController.title;
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
                                                                  style:UIBarButtonItemStyleBordered
                                                                  target:self
@@ -150,11 +126,201 @@
     }
     return self;
 }
-
+#pragma mark tabBar Controller Method
 - (void)tabBarController:(UITabBarController *)tabBarController
  didSelectViewController:(UIViewController *)viewController
 {
     self.selectedTableViewController = (UITableViewController *)viewController;
+    _tabBarController.navigationItem.title = viewController.title;
+}
+
+- (id)presentableViewController
+{
+    
+    return self.tabBarController;
+}
+
+
+
+#pragma mark Log out Method
+
+- (IBAction)logUserOut:(id)sender{
+    
+    [[ParseDataStore sharedStore]logOutWithCompletion:^{
+        [self.tabBarController.navigationController popViewControllerAnimated:YES];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another user, "
+                                                                @"please logout of Facebook in your settings."
+                                                        message:Nil
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }];
+    
+}
+
+- (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails
+                                                isActive:(BOOL)active
+                                                  isHost:(BOOL)isHost
+                                              hasReplied:(BOOL)replied
+{
+    self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
+                                                                                          isActive:active
+                                                                                            isHost:isHost
+                                                                                        hasReplied:replied];
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
+                                                                   style:UIBarButtonItemStyleBordered
+                                                                  target:nil
+                                                                  action:nil];
+    [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
+    [self.tabBarController.navigationController pushViewController:_eventDetailsViewController animated:YES];
+}
+
+- (FBEventDetailsViewController *)detailsViewControllerForEvent:(NSString *)eventId
+{
+    NSDictionary *chosenEvent;
+    NSArray *possibleArrays = @[self.attendingEvents, self.maybeAttending];
+    
+    for (NSArray *eventArray in possibleArrays) {
+        for (NSDictionary *event in eventArray) {
+            if ([event[@"id"] isEqualToString:eventId]) {
+                chosenEvent = event;
+                break;
+            }
+        }
+    }
+    
+    return [[FBEventDetailsViewController alloc] initWithPartialDetails:chosenEvent
+                                                               isActive:YES
+                                                                 isHost:NO
+                                                             hasReplied:YES];
+}
+
+
+-(void)initializeViewControllers{
+    
+    _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_allActiveEvents];
+    
+    _hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
+    _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
+    _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeAttending];
+    _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_notReplyEvents];
+    
+    _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [[_tableActiveViewController tableView] setDelegate:self];
+    [[_tableActiveViewController tableView] setDataSource:_tableActiveViewDataSource];
+    [_tableActiveViewController setTitle:@"Active"];
+    
+    _hostTableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
+    [[_hostTableViewController tableView] setDelegate:self];
+    [[_hostTableViewController tableView] setDataSource:_hostTableViewDataSource];
+    [_hostTableViewController setTitle:@"Host"];
+    self.hostRefreshControl = [[UIRefreshControl alloc] init];
+    [self.hostRefreshControl addTarget:self
+                                action:@selector(refreshTableViewUsingRefreshControl:)
+                      forControlEvents:UIControlEventValueChanged];
+    [self.hostTableViewController setRefreshControl:self.hostRefreshControl];
+    
+    _attendingTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [[_attendingTableViewController tableView] setDelegate:self];
+    [[_attendingTableViewController tableView] setDataSource:_attendingTableViewDataSource];
+    [_attendingTableViewController setTitle:@"Attending"];
+    self.attendingRefreshControl= [[UIRefreshControl alloc] init];
+    [self.attendingRefreshControl addTarget:self
+                                     action:@selector(refreshTableViewUsingRefreshControl:)
+                           forControlEvents:UIControlEventValueChanged];
+    [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
+    
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
+    footer.backgroundColor = [UIColor clearColor];
+    
+    
+    _maybeTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [[_maybeTableViewController tableView] setDelegate:self];
+    [[_maybeTableViewController tableView] setDataSource:_maybeTableViewDataSource];
+    [_maybeTableViewController setTitle:@"Maybe"];
+    self.maybeRefreshControl = [[UIRefreshControl alloc] init];
+    [self.maybeRefreshControl addTarget:self
+                                 action:@selector(refreshTableViewUsingRefreshControl:)
+                       forControlEvents:UIControlEventValueChanged];
+    [self.maybeTableViewController setRefreshControl:self.maybeRefreshControl];
+    
+    _notRepliedTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [[_notRepliedTableViewController tableView] setDelegate:self];
+    [[_notRepliedTableViewController tableView] setDataSource:_notRepliedTableViewDataSource];
+    [_notRepliedTableViewController setTitle:@"No Reply"];
+    self.notRepliedRefreshControl = [[UIRefreshControl alloc] init];
+    [self.notRepliedRefreshControl addTarget:self
+                                      action:@selector(refreshTableViewUsingRefreshControl:)
+                            forControlEvents:UIControlEventValueChanged];
+    [self.notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
+    
+    
+}
+
+
+#pragma mark  Create New Event
+- (IBAction)makeNewEvent:(id)sender
+{
+    self.createEventController = [[CreateEventController alloc] initWithListController:self];
+    
+    [self.tabBarController.navigationController
+             pushViewController:self.createEventController.presentableViewController
+             animated:YES];
+}
+
+#pragma mark Table View Methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    // Hide footer
+    return 90;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 0.1;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 120.0;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSArray *eventsArray =
+        ((EventsTableViewDataSource *)self.selectedTableViewController.tableView.dataSource).eventArray;
+    NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
+    
+    if (self.selectedTableViewController == self.tableActiveViewController) {
+        
+        if ([_activeHostEvents containsObject:currentEventDetails]) {
+            
+            [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:YES isHost:YES hasReplied:YES];
+        } else {
+            [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:YES isHost:NO hasReplied:YES];
+        }
+        
+    } else if (self.selectedTableViewController == self.hostTableViewController) {
+        
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:YES hasReplied:YES];
+        
+    
+    } else if (self.selectedTableViewController == self.attendingTableViewController) {
+        
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:YES];
+        
+    } else if (self.selectedTableViewController == self.maybeTableViewController) {
+        
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:YES];
+        
+    } else if (self.selectedTableViewController == self.notRepliedTableViewController) {
+        
+        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:NO];
+    }
+    
 }
 
 - (void)refreshTableViewForEventsListKey:(NSString *)eventsListKey
@@ -220,186 +386,5 @@
     }
 }
 
-- (IBAction)logUserOut:(id)sender{
-    
-    [[ParseDataStore sharedStore]logOutWithCompletion:^{
-        [self.tabBarController.navigationController popViewControllerAnimated:YES];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"To login as another user, "
-                                                                @"please logout of Facebook in your settings."
-                                                        message:Nil
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-    }];
-    
-}
-
-- (void)pushEventDetailsViewControllerWithPartialDetails:(NSDictionary *)partialDetails
-                                                isActive:(BOOL)active
-                                                  isHost:(BOOL)isHost
-                                              hasReplied:(BOOL)replied
-{
-    self.eventDetailsViewController = [[FBEventDetailsViewController alloc] initWithPartialDetails:partialDetails
-                                                                                          isActive:active
-                                                                                            isHost:isHost
-                                                                                        hasReplied:replied];
-    
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Events List"
-                                                                   style:UIBarButtonItemStyleBordered
-                                                                  target:nil
-                                                                  action:nil];
-    [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
-    [self.tabBarController.navigationController pushViewController:_eventDetailsViewController animated:YES];
-}
-
-- (FBEventDetailsViewController *)detailsViewControllerForEvent:(NSString *)eventId
-{
-    NSDictionary *chosenEvent;
-    NSArray *possibleArrays = @[self.attendingEvents, self.maybeAttending];
-    
-    for (NSArray *eventArray in possibleArrays) {
-        for (NSDictionary *event in eventArray) {
-            if ([event[@"id"] isEqualToString:eventId]) {
-                chosenEvent = event;
-                break;
-            }
-        }
-    }
-    
-    return [[FBEventDetailsViewController alloc] initWithPartialDetails:chosenEvent
-                                                               isActive:YES
-                                                                 isHost:NO
-                                                             hasReplied:YES];
-}
-
-#pragma mark  Create New Event
-- (IBAction)makeNewEvent:(id)sender
-{
-    self.createEventController = [[CreateEventController alloc] initWithListController:self];
-    
-    [self.tabBarController.navigationController
-             pushViewController:self.createEventController.presentableViewController
-             animated:YES];
-}
-
-#pragma mark return tab Bar Controller
-- (id)presentableViewController
-{
-    return self.tabBarController;
-}
-
-#pragma mark Table View Delegate Methods
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    // Hide footer
-    return 90;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 0.1;
-}
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 120.0;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSArray *eventsArray =
-        ((EventsTableViewDataSource *)self.selectedTableViewController.tableView.dataSource).eventArray;
-    NSDictionary *currentEventDetails = [eventsArray objectAtIndex:[indexPath row]];
-    
-    if (self.selectedTableViewController == self.tableActiveViewController) {
-        
-        if ([_activeHostEvents containsObject:currentEventDetails]) {
-            [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:YES isHost:YES hasReplied:YES];
-        } else {
-            [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:YES isHost:NO hasReplied:YES];
-        }
-        
-    } else if (self.selectedTableViewController == self.hostTableViewController) {
-        
-        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:YES hasReplied:YES];
-    
-    } else if (self.selectedTableViewController == self.attendingTableViewController) {
-        
-        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:YES];
-        
-    } else if (self.selectedTableViewController == self.maybeTableViewController) {
-        
-        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:YES];
-        
-    } else if (self.selectedTableViewController == self.notRepliedTableViewController) {
-        
-        [self pushEventDetailsViewControllerWithPartialDetails:currentEventDetails isActive:NO isHost:NO hasReplied:NO];
-    }
-    
-}
-
-#pragma mark initialize View Controllers
--(void)initializeViewControllers{
-    
-    _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_allActiveEvents];
-    
-    _hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
-    _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
-    _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeAttending];
-    _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_notReplyEvents];
-    
-    _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_tableActiveViewController tableView] setDelegate:self];
-    [[_tableActiveViewController tableView] setDataSource:_tableActiveViewDataSource];
-    [_tableActiveViewController setTitle:@"Active"];
-    
-    _hostTableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
-    [[_hostTableViewController tableView] setDelegate:self];
-    [[_hostTableViewController tableView] setDataSource:_hostTableViewDataSource];
-    [_hostTableViewController setTitle:@"Host"];
-    self.hostRefreshControl = [[UIRefreshControl alloc] init];
-    [self.hostRefreshControl addTarget:self
-                                action:@selector(refreshTableViewUsingRefreshControl:)
-                      forControlEvents:UIControlEventValueChanged];
-    [self.hostTableViewController setRefreshControl:self.hostRefreshControl];
-    
-    _attendingTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_attendingTableViewController tableView] setDelegate:self];
-    [[_attendingTableViewController tableView] setDataSource:_attendingTableViewDataSource];
-    [_attendingTableViewController setTitle:@"Attending"];
-    self.attendingRefreshControl= [[UIRefreshControl alloc] init];
-    [self.attendingRefreshControl addTarget:self
-                                     action:@selector(refreshTableViewUsingRefreshControl:)
-                           forControlEvents:UIControlEventValueChanged];
-    [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
-    
-    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
-    footer.backgroundColor = [UIColor clearColor];
-    
-    
-    _maybeTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_maybeTableViewController tableView] setDelegate:self];
-    [[_maybeTableViewController tableView] setDataSource:_maybeTableViewDataSource];
-    [_maybeTableViewController setTitle:@"Maybe"];
-    self.maybeRefreshControl = [[UIRefreshControl alloc] init];
-    [self.maybeRefreshControl addTarget:self
-                                 action:@selector(refreshTableViewUsingRefreshControl:)
-                       forControlEvents:UIControlEventValueChanged];
-    [self.maybeTableViewController setRefreshControl:self.maybeRefreshControl];
-    
-    _notRepliedTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_notRepliedTableViewController tableView] setDelegate:self];
-    [[_notRepliedTableViewController tableView] setDataSource:_notRepliedTableViewDataSource];
-    [_notRepliedTableViewController setTitle:@"No Reply"];
-    self.notRepliedRefreshControl = [[UIRefreshControl alloc] init];
-    [self.notRepliedRefreshControl addTarget:self
-                                      action:@selector(refreshTableViewUsingRefreshControl:)
-                            forControlEvents:UIControlEventValueChanged];
-    [self.notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
-    
-
-}
 
 @end

@@ -38,7 +38,7 @@
     }
     return self;
 }
-
+#pragma mark Table View Methods
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 3;
@@ -185,6 +185,8 @@
     }
 }
 
+#pragma mark Textfield Methods
+
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     if ([textField isEqual:self.nameTextField]) {
@@ -205,18 +207,5 @@
     [textField resignFirstResponder];
     return YES;
 }
-
-//- (CGFloat)heightForTextView:(UITextView*)textView containingString:(NSString*)string
-//{
-//    float height = [string sizeWithFont:[UIFont systemFontOfSize:kDefaultTableCellFontSize]
-//                      constrainedToSize:CGSizeMake(textView.contentSize.width, 9999.f)
-//                          lineBreakMode:NSLineBreakByWordWrapping].height;
-//    return height;
-//}
-//
-//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-//{
-//    return YES;
-//}
 
 @end

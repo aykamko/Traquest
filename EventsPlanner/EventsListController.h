@@ -37,6 +37,5 @@ typedef enum eventType {
                            newEventsList:(NSArray *)eventsList
              endRefreshForRefreshControl:(UIRefreshControl *)refreshControl;
 
-//- (FBEventDetailsViewController *)detailsViewControllerForEvent:(NSString *)eventId;
 
 @end

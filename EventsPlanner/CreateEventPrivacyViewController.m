@@ -64,6 +64,7 @@ NSString * const kInviteOnlyPrivacyString = @"Invite Only";
     self.title = @"Select Privacy";
 }
 
+#pragma mark Table View Methods
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     _privacyType = self.privacyTypesArray[indexPath.row];
@@ -95,7 +96,7 @@ NSString * const kInviteOnlyPrivacyString = @"Invite Only";
 {
     return [self.privacyTypesArray count];
 }
-
+#pragma mark Privacy Methods
 - (void)cancelSetPrivacy:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];

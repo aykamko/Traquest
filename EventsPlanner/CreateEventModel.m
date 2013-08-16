@@ -85,7 +85,7 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
     
     [self.delegate reloadTableView];
 }
-
+#pragma Valid Event
 - (NSDictionary *)validEvent
 {
     if (!self.isValidEvent) {

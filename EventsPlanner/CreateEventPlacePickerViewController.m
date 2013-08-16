@@ -62,7 +62,6 @@ NSString * const kLocationNamePlacePickerKey = @"name";
 
 - (void)loadView
 {
-//    [super loadView];
     self.view = [[UIView alloc] init];
     self.view.backgroundColor = [UIColor orangeColor];
     
@@ -183,7 +182,7 @@ NSString * const kLocationNamePlacePickerKey = @"name";
                                                                             views:loadedViewsDict]];
     }];
 }
-
+#pragma  mark Search Bar Methods
 - (void)handleSearchWithoutResign:(id)sender
 {
     if ([self.searchBar.text isEqualToString:@""]) {
@@ -212,7 +211,7 @@ NSString * const kLocationNamePlacePickerKey = @"name";
     [self.searchBar resignFirstResponder];
     [self handleSearchWithoutResign:nil];
 }
-
+#pragma mark Place Picker
 - (BOOL)placePickerViewController:(FBPlacePickerViewController *)placePicker
                shouldIncludePlace:(id<FBGraphPlace>)place
 {
@@ -232,12 +231,13 @@ NSString * const kLocationNamePlacePickerKey = @"name";
     }
     return YES;
 }
-
+#pragma mark cancel method
 - (void)cancel:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark Facebook Button Pressed Done
 - (void)facebookViewControllerDoneWasPressed:(id)sender
 {
     self.createEventModel.locationId = self.selection[kLocationIdPlacePickerKey];

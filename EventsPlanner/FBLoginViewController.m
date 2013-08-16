@@ -46,7 +46,7 @@
     [self.navigationController.navigationBar setTranslucent:NO];
     [super viewWillDisappear:animated];
 }
-
+#pragma mark login method
 /* Login to facebook method */
 - (IBAction)loginButtonTouchHandler:(id)sender  {
     
@@ -59,7 +59,7 @@
     }];
    
 }
-
+#pragma mark List View Methods
 - (void)setEventsListView
 {
 
@@ -87,6 +87,7 @@
     
 }
 
+#pragma mark Constraint Methods
 - (void)drawLayout {
     
     NSMutableDictionary *viewDict = [[NSMutableDictionary alloc] init];
@@ -199,13 +200,7 @@
                                                           attribute:NSLayoutAttributeCenterY
                                                          multiplier:1.0
                                                            constant:0.0]];
-    
-//    
-//    UITextView *description=[[UITextView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
-//    description.center=CGPointMake(self.view.center.x, self.view.center.y+200);
-//    description.backgroundColor=[UIColor clearColor];
-//    description.text=@"Login to view and plan your Facebook events!";
-//    [description setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15]];
+
     
 }
 

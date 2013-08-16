@@ -132,7 +132,7 @@ NSString * const kAllDayCellLabelText = @"All Day";
                                                                       metrics:0
                                                                         views:viewDict]];
 }
-
+#pragma mark Table View Methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.allDaySwitch.isOn) {
@@ -225,6 +225,8 @@ NSString * const kAllDayCellLabelText = @"All Day";
     }
 }
 
+#pragma mark Timer Methods
+
 - (void)updateTimeInSelectedCell:(id)sender
 {
     if ([self.selectedCellIndexPath compare:kAllDayCellIndexPath] == NSOrderedSame) {
@@ -254,11 +256,9 @@ NSString * const kAllDayCellLabelText = @"All Day";
     //TODO: figure out all day events
     if (endTimeCell) {
         if (allDaySwitch.isOn) {
-//            self.mutableEventTimeDict[kAllDayDictKey] = [NSNumber numberWithBool:YES];
             [self.timeDetailTableView deleteRowsAtIndexPaths:@[kEndTimeCellIndexPath]
                                             withRowAnimation:UITableViewRowAnimationBottom];
         } else {
-//            self.mutableEventTimeDict[kAllDayDictKey] = [NSNumber numberWithBool:NO];
             [self.timeDetailTableView insertRowsAtIndexPaths:@[kEndTimeCellIndexPath]
                                             withRowAnimation:UITableViewRowAnimationBottom];
         }

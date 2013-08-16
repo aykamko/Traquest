@@ -76,11 +76,7 @@
     return self;
 }
 
-- (UIViewController *)presentableViewController
-{
-    return [self tableViewController];
-}
-
+#pragma mark change Status
 - (void)changeStatus
 {
     NSString *selectedCellString = [[_selectedCell textLabel] text];
@@ -88,12 +84,17 @@
     
     [_tableViewController.navigationController popViewControllerAnimated:YES];
 }
-
+#pragma mark Methods for Different Views
 - (void)cancelView
 {
     [_tableViewController.navigationController popViewControllerAnimated:YES];
 }
+- (UIViewController *)presentableViewController
+{
+    return [self tableViewController];
+}
 
+#pragma mark Tableview Methods
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     

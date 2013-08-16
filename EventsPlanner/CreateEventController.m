@@ -77,6 +77,8 @@
     return self;
 }
 
+#pragma mark Extra Methods
+
 - (void)didSetNameAndDescription
 {
     self.tableViewController.navigationItem.rightBarButtonItem.enabled = YES;
@@ -91,6 +93,8 @@
 {
     return self.tableViewController;
 }
+
+#pragma mark Table View Methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -149,11 +153,13 @@
     }
     return kTableCellMargin;
 }
-
+#pragma mark cancel method
 - (void)cancel:(id)sender
 {
     [self.tableViewController.navigationController popViewControllerAnimated:YES];
 }
+
+#pragma mark create Event
 
 - (void)createEvent:(id)sender
 {

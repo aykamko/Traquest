@@ -29,6 +29,14 @@
     return self;
 }
 
+
+
+#pragma mark Details Methods
+
+
+- (void) updateObject: (NSString *) value forKey: (NSString *) key {
+    [_mutableDetailsDict setObject:value forKey:key];
+}
 - (NSArray *)orderedDetailsKeys
 {
     return [NSArray arrayWithArray:self.mutableOrderedDetailsKeys];
@@ -92,7 +100,7 @@
     details[@"owner"] = hostString;
 }
 
-
+#pragma mark Table View Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [_mutableOrderedDetailsKeys count];
@@ -118,8 +126,6 @@
     return cell;
 }
 
-- (void) updateObject: (NSString *) value forKey: (NSString *) key {
-    [_mutableDetailsDict setObject:value forKey:key];
-}
+
 
 @end
