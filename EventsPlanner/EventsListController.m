@@ -99,6 +99,13 @@
         [self initializeViewControllers];
         
         _tabBarController = [[UITabBarController alloc] init];
+        
+        float statusBarSize = 20.0f;
+        
+        CGRect newFrame = _tabBarController.view.frame;
+        newFrame.size.height += statusBarSize;
+        _tabBarController.view.frame = newFrame;
+        
         _tabBarController.delegate = self;
         
         [_tabBarController setViewControllers:@[_tableActiveViewController,

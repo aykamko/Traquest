@@ -80,9 +80,7 @@ static const BOOL debugTracking = YES;
                                                                             maybeAttending:maybeAttendingEvent];
             
             [[self.eventsListController presentableViewController] navigationItem].hidesBackButton = YES;
-            //self.navController.title =[[[_eventsListController presentableViewController]selectedViewController]title];
-
-          //  self.navController.navigationBar.topItem.title = [[[_eventsListController presentableViewController]selectedViewController]title];
+            
             [self.navController pushViewController:[_eventsListController presentableViewController] animated:YES];
             
             
