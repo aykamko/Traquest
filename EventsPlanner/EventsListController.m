@@ -57,6 +57,7 @@
 
 @implementation EventsListController
 
+
 + (id)allocWithZone:(struct _NSZone *)zone
 {
     return [self sharedListController];
