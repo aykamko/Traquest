@@ -76,6 +76,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
     [super loadView];
     self.mapView = [[MKMapView alloc] initWithFrame:self.view.bounds];
     self.mapView.delegate = self;
+//    self.mapView.showsUserLocation = YES;
     [self.view addSubview:self.mapView];
     
     [self.mapView setMapType:MKMapTypeStandard];

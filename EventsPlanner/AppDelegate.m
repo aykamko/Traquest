@@ -165,7 +165,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         identity = notAllowed;
     }
     
-    [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:identity];
+    
+    [[ParseDataStore sharedStore] changePermissionForEvent:eventId identity:identity completion:nil];
     [self.eventsNeedingCertification removeObjectAtIndex:0];
     
 }

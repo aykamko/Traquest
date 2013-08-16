@@ -195,7 +195,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     [_locationManager startUpdatingLocation];
 }
 
-- (void)changePermissionForEvent:(NSString *)eventId identity:(NSString *)identity
+- (void)changePermissionForEvent:(NSString *)eventId identity:(NSString *)identity completion:(void (^)())completionBlock
 {
     
     PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
@@ -209,6 +209,10 @@ NSString * const kDeclinedEventsKey = @"declined";
         [trackingObject setObject:identity forKey:eventIdKey];
         [self startTrackingMyLocationIfAllowed];
         [trackingObject saveInBackground];
+        
+        if (completionBlock) {
+            completionBlock();
+        }
         
     }];
 }
@@ -233,7 +237,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     }];
 }
 
-- (void)setTrackingStatus:(BOOL)isTracking event:(NSString *)eventId
+- (void)setTrackingStatus:(BOOL)isTracking event:(NSString *)eventId completion:(void (^)())completion;
 {
     PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
     [eventQuery whereKey:@"eventId" equalTo:eventId];
@@ -243,6 +247,10 @@ NSString * const kDeclinedEventsKey = @"declined";
         PFObject *thisEvent = [objects firstObject];
         [thisEvent setObject:[NSNumber numberWithBool:isTracking] forKey:@"isTracking"];
         [thisEvent saveInBackground];
+        
+        if (completion) {
+            completion();
+        }
         
     }];
 }
@@ -829,6 +837,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     [userAnonQuery whereKey:facebookID matchesKey:facebookID inQuery:secondTrackingQuery];
     
     [userAllowedQuery findObjectsInBackgroundWithBlock:^(NSArray *userAllowedObjects, NSError *error) {
+        
         __block NSMutableDictionary *allowedLocations = [[NSMutableDictionary alloc] init];
         for (PFUser *friend in userAllowedObjects) {
             
@@ -988,7 +997,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             for (id obj in guestObjArray) {
                 if ([obj[@"id"] isEqualToString:self.myId]) {
-                    //continue;
+                    continue;
                 }
                 [guestIds addObject:obj[@"id"]];
             }
@@ -1006,7 +1015,6 @@ NSString * const kDeclinedEventsKey = @"declined";
             NSDictionary *eventIdDict = @{@"eventId": eventId, @"eventName":eventName, @"aps":@{@"alert":message}};
             
             [trackingAllowedNotification setData:eventIdDict];
-//            [trackingAllowedNotification setMessage:@"The host of an event wants to track your location."];
             
             [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 

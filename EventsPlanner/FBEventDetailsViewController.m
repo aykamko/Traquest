@@ -869,13 +869,18 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)handleSegmentedControl:(UISegmentedControl *)segmentedControl
 {
+    void (^completionBlock)() = ^() {
+        [self.view hideToastActivity];
+    };
+    
+    [self.view makeToastActivity];
     NSInteger selectedSegmentIndex = segmentedControl.selectedSegmentIndex;
     if (selectedSegmentIndex == 0) {
-        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:allowed];
+        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:allowed completion:completionBlock];
     } else if (selectedSegmentIndex == 1) {
-        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:anonymous];
+        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:anonymous completion:completionBlock];
     } else if (selectedSegmentIndex == 2) {
-        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:notAllowed];
+        [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:notAllowed completion:completionBlock];
     }
 }
 
@@ -883,26 +888,30 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)cancelTracking:(id)sender {
     [self.scrollView makeToastActivity];
-    [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"]];
-    [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{@"eventId": _eventDetails[@"id"]} block:^(id object, NSError *error) {
-        if (error) {
-            NSLog(@"deleting in cloud failed");
-        } else {
-            [self.scrollView hideToastActivity];
-            [self.viewMapButton removeFromSuperview];
-            [self.stopTrackingButton removeFromSuperview];
-            [self addStartTrackingButton];
-        }
+    [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"] completion:^{
+        [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{@"eventId": _eventDetails[@"id"]} block:^(id object, NSError *error) {
+            if (error) {
+                NSLog(@"deleting in cloud failed");
+            } else {
+                [self.scrollView hideToastActivity];
+                [self.viewMapButton removeFromSuperview];
+                [self.stopTrackingButton removeFromSuperview];
+                [self addStartTrackingButton];
+            }
+        }];
     }];
 }
 
 - (void)startTracking:(id)sender
 {
+    [self.scrollView makeToastActivity];
+    [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"] completion:^{
+        [[ParseDataStore sharedStore] pushNotificationToGuestOfEvent:_eventDetails[@"id"] completion:nil];
+        [self.scrollView hideToastActivity];
+    }];
+    
     [self loadMapView:nil];
     [self addStopTrackingButtonAndViewMapButton];
-    
-    [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"]];
-    [[ParseDataStore sharedStore] pushNotificationToGuestOfEvent:_eventDetails[@"id"] completion:nil];
 }
 
 - (void)loadMapView:(id)sender
