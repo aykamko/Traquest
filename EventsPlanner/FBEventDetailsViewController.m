@@ -62,6 +62,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, getter = isTracking) BOOL tracking;
 @property (nonatomic, getter = isActive) BOOL active;
 @property (nonatomic, getter = isHost) BOOL host;
+@property (nonatomic, getter = hasReplied) BOOL replied;
+
 
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 
@@ -85,13 +87,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @implementation FBEventDetailsViewController
 
-- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost
+- (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied
 {
     self = [super init];
     if (self) {
         
         _active = active;
         _host = isHost;
+        _replied = hasReplied;
         _eventDetails = [[NSMutableDictionary alloc] initWithDictionary:partialDetails];
         
         // By default
