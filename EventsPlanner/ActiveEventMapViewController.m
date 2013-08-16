@@ -109,13 +109,11 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
 {
     [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.guestData allKeys] eventId:self.eventId completion:^(NSDictionary *allowedLocations, NSDictionary *anonLocations) {
         
-        NSMutableArray *allKeys = [[NSMutableArray alloc] init];
-        [allKeys addObjectsFromArray:[self.friendAnnotationPointDict allKeys]];
-        [allKeys addObjectsFromArray:[self.anonAnnotationPointDict allKeys]];
-        NSMutableSet *pastAnnotationIds = [NSMutableSet setWithArray:allKeys];
+        // Allowed points
+        NSMutableSet *pastAllowedLocationIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
         
         for (NSString *fbId in [allowedLocations allKeys]) {
-            [pastAnnotationIds removeObject:fbId];
+            [pastAllowedLocationIds removeObject:fbId];
             
             self.guestData[fbId][@"geopoint"] = allowedLocations[fbId];
             PFGeoPoint *currentGeopoint = self.guestData[fbId][@"geopoint"];
@@ -145,8 +143,24 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
             }
         }
         
+        for (NSString *key in pastAllowedLocationIds) {
+            
+            NSMutableDictionary *properDict;
+            if (self.anonAnnotationPointDict[key]) {
+                properDict = self.anonAnnotationPointDict;
+            } else {
+                properDict = self.friendAnnotationPointDict;
+            }
+            
+            [self.mapView removeAnnotation:properDict[key]];
+            [properDict removeObjectForKey:key];
+        }
+        
+        // Anonymous points
+        NSMutableSet *pastAnonymousLocationIds = [NSMutableSet setWithArray:[self.anonAnnotationPointDict allKeys]];
+        
         for (NSString *fbIdHash in [anonLocations allKeys]) {
-            [pastAnnotationIds removeObject:fbIdHash];
+            [pastAnonymousLocationIds removeObject:fbIdHash];
             
             PFGeoPoint *geoPoint = anonLocations[fbIdHash];
             
@@ -171,7 +185,7 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
             
         }
         
-        for (NSString *key in pastAnnotationIds) {
+        for (NSString *key in pastAnonymousLocationIds) {
             
             NSMutableDictionary *properDict;
             if (self.anonAnnotationPointDict[key]) {
