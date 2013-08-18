@@ -208,9 +208,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 {
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
+
 #pragma mark Map Zoom
 
--(void)updateMapZoomLocation: (CLLocationCoordinate2D) location
+- (void)updateMapZoomLocation:(CLLocationCoordinate2D)location
 {
     [_mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 400, 400) animated:NO];
 }

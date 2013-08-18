@@ -17,6 +17,7 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
 
 @property (strong, nonatomic) NSTimer *timer;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
+
 @property NSString *eventId;
 
 @property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
@@ -45,7 +46,6 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
         [_tabBarController setViewControllers:@[_mapController, _statsController]];
         _statsController.title = @"Stats";
         _mapController.title = @"Map";
-        
         
         [self setTimer:[NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
                                                                                       target:self
