@@ -34,7 +34,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
 
-
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, weak) UIImageView *coverImageView;
 @property (nonatomic, weak) UILabel *titleLabel;

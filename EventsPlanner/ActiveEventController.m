@@ -13,19 +13,33 @@
 
 static const NSInteger UpdateFrequencyInSeconds = 4.0;
 
+<<<<<<< HEAD
 @interface ActiveEventController () 
 
 @property (strong, nonatomic) NSTimer *timer;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
 
 @property (strong, nonatomic) NSString *eventId;
+=======
+@interface ActiveEventController ()
+
+@property (strong, nonatomic) NSTimer *timer;
+@property (nonatomic) CLLocationCoordinate2D venueLocation;
+@property NSString *eventId;
+>>>>>>> Fetched data better
 
 @property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
 @property (strong, nonatomic) NSMutableDictionary *anonAnnotationPointDict;
 
+<<<<<<< HEAD
 @property (weak, nonatomic) ActiveEventMapViewController *mapController;
 @property (weak, nonatomic) ActiveEventsStatsViewController *statsController;
 @property (strong, nonatomic) UITabBarController *tabBarController;
+=======
+@property ActiveEventMapViewController *mapController;
+@property ActiveEventsStatsViewController *statsController;
+@property UITabBarController *tabBarController;
+>>>>>>> Fetched data better
 
 @end
 
@@ -40,6 +54,7 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
         _venueLocation = venueLocation;
         
         _tabBarController = [[UITabBarController alloc] init];
+<<<<<<< HEAD
         ActiveEventMapViewController *mapController = [[ActiveEventMapViewController alloc]
                                                        initWithEventId:eventId venueLocation:venueLocation];
         ActiveEventsStatsViewController *statsController = [[ActiveEventsStatsViewController alloc]
@@ -61,12 +76,23 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
     NSDictionary *userInfo = [notification userInfo];
     UIViewController *nextController = [userInfo objectForKey:@"UINavigationControllerNextVisibleViewController"];
     if (nextController == self.tabBarController) {
+=======
+        _mapController = [[ActiveEventMapViewController alloc] initWithEventId:eventId venueLocation:venueLocation];
+        _statsController = [[ActiveEventsStatsViewController alloc] initWithEventId:eventId venueLocation:venueLocation];
+        
+        [_tabBarController setViewControllers:@[_mapController, _statsController]];
+        _statsController.title = @"Stats";
+        _mapController.title = @"Map";
+        
+        
+>>>>>>> Fetched data better
         [self setTimer:[NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
                                                                                       target:self
                                                                                     selector:@selector(updateLocationData)
                                                                                     userInfo:nil
                                                                                      repeats:YES]];
         [[self timer] fire];
+<<<<<<< HEAD
     } else {
         [self.timer invalidate];
         self.timer = nil;
@@ -96,6 +122,35 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
 
 - (UITabBarController *) presentableViewController {
     return self.tabBarController;
+=======
+    }
+    return self;
+}
+
+- (void)updateLocationData {
+    [[ParseDataStore sharedStore] fetchUsersForEvent:self.eventId completion:^(NSArray *allowedUsers, NSArray *anonUsers) {
+        NSMutableDictionary *allowedDictionary = [[NSMutableDictionary alloc] init];
+        for (PFUser *user in allowedUsers) {
+            [allowedDictionary setObject:user[locationKey] forKey:user[facebookID]];
+        }
+        NSMutableDictionary *anonDictionary = [[NSMutableDictionary alloc] init];
+        for (PFUser *user in anonUsers) {
+            NSString *key = [NSString stringWithFormat:@"%d",[user[facebookID] hash]];
+            [anonDictionary setObject:user[locationKey] forKey:key];
+        }
+        [_mapController updateMarkersOnMapWithAllowedGuests:allowedDictionary withAnonGuests:anonDictionary];
+    }];
+}
+
+- (void)goBack {
+    [self.timer invalidate];
+    self.timer = nil;
+    [self.tabBarController.navigationController popViewControllerAnimated:YES];
+}
+
+-(UITabBarController *) presentableViewController {
+    return _tabBarController;
+>>>>>>> Fetched data better
 }
 
 @end

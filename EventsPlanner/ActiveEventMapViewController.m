@@ -46,7 +46,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
         _friendAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _anonAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _guestData = [[NSMutableDictionary alloc] init];
-        
     }
     
     return self;

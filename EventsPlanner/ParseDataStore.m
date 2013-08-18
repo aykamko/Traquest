@@ -145,6 +145,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                         
                         [[PFUser currentUser] setObject:result[@"name"] forKey:@"name"];
                         [[PFUser currentUser] setObject:result[@"id"] forKey:facebookID];
+
                         [[PFUser currentUser] saveInBackground];
                         
                     }
@@ -251,6 +252,24 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
         }];
     }];
+//    
+//    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
+//    [trackingObj whereKey:facebookID equalTo:self.myId];
+//    
+//    [trackingObj findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//        
+//        PFObject *trackingObject = [objects firstObject];
+//        NSString *eventIdKey = [NSString stringWithFormat:@"E%@", eventId];
+//        
+//        [trackingObject setObject:identity forKey:eventIdKey];
+//        [self startTrackingMyLocationIfAllowed];
+//        [trackingObject saveInBackground];
+//        
+//        if (completionBlock) {
+//            completionBlock();
+//        }
+//        
+//    }];
 }
 
 - (void)fetchPermissionForEvent:(NSString *)eventId
@@ -284,6 +303,22 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
         }];
     }];
+//    
+//    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
+//    [trackingObj whereKey:facebookID equalTo:self.myId];
+//    
+//    [trackingObj findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//        
+//        PFObject *trackingObject = [objects firstObject];
+//        NSString *eventIdKey = [NSString stringWithFormat:@"E%@", eventId];
+//        
+//        NSString *identity = [trackingObject objectForKey:eventIdKey];
+//        
+//        if (completionBlock) {
+//            completionBlock(identity);
+//        }
+//        
+//    }];
 }
 
 - (void)setTrackingStatus:(BOOL)isTracking event:(NSString *)eventId completion:(void (^)())completion;
@@ -539,6 +574,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                     if (!self.myId) {
                         self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:facebookID];
                         [[PFUser currentUser] setObject:_myId forKey:facebookID];
+
                     }
                     completionBlock(savedEventsList[kActiveHostEventsKey],
                                     savedEventsList[kActiveGuestEventsKey],
@@ -573,6 +609,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                 self.myId = result[@"id"];
                 [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:facebookID];
                 [[PFUser currentUser] setObject:_myId forKey:facebookID];
+
             }
             
             FBGraphObject *fbGraphObj = (FBGraphObject *)result;
@@ -934,9 +971,57 @@ NSString * const kDeclinedEventsKey = @"declined";
                 }
             }];
         }];
-        
     }];
 }
+
+//- (void)fetchGeopointsForIds:(NSArray *)guestIds
+//                     eventId:(NSString *)eventId
+//                  completion:(void (^)(NSDictionary *allowedLocations, NSDictionary *anonLocations))completionBlock
+//{
+//    NSString *eventIdKey = [NSString stringWithFormat:@"E%@",eventId];
+//    PFQuery *trackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
+//    [trackingQuery whereKey:facebookID containedIn:guestIds];
+//    [trackingQuery whereKey:facebookID notEqualTo:self.myId];
+//    [trackingQuery whereKey:eventIdKey equalTo:allowed];
+//    
+//    PFQuery *userAllowedQuery = [PFUser query];
+//    [userAllowedQuery whereKey:facebookID matchesKey:facebookID inQuery:trackingQuery];
+//    
+//    PFQuery *secondTrackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
+//    [secondTrackingQuery whereKey:facebookID containedIn:guestIds];
+//    [secondTrackingQuery whereKey:eventIdKey equalTo:anonymous];
+//    
+//    PFQuery *userAnonQuery = [PFUser query];
+//    [userAnonQuery whereKey:facebookID matchesKey:facebookID inQuery:secondTrackingQuery];
+//    
+//    [userAllowedQuery findObjectsInBackgroundWithBlock:^(NSArray *userAllowedObjects, NSError *error) {
+//        
+//        __block NSMutableDictionary *allowedLocations = [[NSMutableDictionary alloc] init];
+//        for (PFUser *friend in userAllowedObjects) {
+//            
+//            PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
+//            NSString *fbId = [friend objectForKey:facebookID];
+//            [allowedLocations setObject:geoPoint forKey:fbId];
+//            
+//        }
+//        
+//        [userAnonQuery findObjectsInBackgroundWithBlock:^(NSArray *userAnonObjects, NSError *error) {
+//
+//            NSMutableDictionary *anonLocations = [[NSMutableDictionary alloc] init];
+//            
+//            for (PFUser *friend in userAnonObjects) {
+//                PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
+//                NSString *fbIdHash = [NSString stringWithFormat:@"%d", [[friend objectForKey:facebookID] hash]];
+//                [anonLocations setObject:geoPoint forKey:fbIdHash];
+//            }
+//            
+//            [_trackingCount setObject:[NSNumber numberWithInt:allowedLocations.count + anonLocations.count] forKey:eventId];
+//            
+//            completionBlock([[NSDictionary alloc] initWithDictionary:allowedLocations],
+//                            [[NSDictionary alloc] initWithDictionary:anonLocations]);
+//        }];
+//    }];
+//}
 
 #pragma mark Edit Event Details
 - (void)inviteFriendsToEvent:(NSString *)eventId withFriends:(NSArray *)friendIdArray completion:(void (^)())completionBlock
