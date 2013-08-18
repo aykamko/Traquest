@@ -930,6 +930,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 //    
 //    [self.navigationItem setBackBarButtonItem:backButton];
     
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self.activeEventController action:@selector(goBack)];
+    
     [[self navigationController] pushViewController:tabBarController animated:YES];
 }
 

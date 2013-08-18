@@ -158,10 +158,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
             [self zoomToFitMapAnnotations];
             self.zoomToFit = NO;
         }
-    
-    
-    
-   
 
 }
 

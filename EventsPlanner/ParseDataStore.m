@@ -143,9 +143,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                         [[NSUserDefaults standardUserDefaults] setObject:result[@"id"] forKey:facebookID];
                         
                         [[PFUser currentUser] setObject:result[@"name"] forKey:@"name"];
-                        
                         [[PFUser currentUser] setObject:result[@"id"] forKey:facebookID];
-                        
                         [[PFUser currentUser] saveInBackground];
                         
                     }
@@ -237,6 +235,24 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
         }];
     }];
+//    
+//    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
+//    [trackingObj whereKey:facebookID equalTo:self.myId];
+//    
+//    [trackingObj findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//        
+//        PFObject *trackingObject = [objects firstObject];
+//        NSString *eventIdKey = [NSString stringWithFormat:@"E%@", eventId];
+//        
+//        [trackingObject setObject:identity forKey:eventIdKey];
+//        [self startTrackingMyLocationIfAllowed];
+//        [trackingObject saveInBackground];
+//        
+//        if (completionBlock) {
+//            completionBlock();
+//        }
+//        
+//    }];
 }
 
 - (void)fetchPermissionForEvent:(NSString *)eventId
@@ -916,6 +932,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                 }
             }];
         }];
+        
     }];
 }
 
