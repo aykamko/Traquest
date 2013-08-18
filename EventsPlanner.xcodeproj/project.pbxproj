@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6065E46717AE1ADA003B947E /* ParseDataStore.m */; };
 		60AF6D4617B2C07100991386 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60AF6D4517B2C07100991386 /* StoreKit.framework */; };
+		60C8746617C01F09000C6926 /* ActiveEventController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C8746517C01F09000C6926 /* ActiveEventController.m */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
 		60E093C617AC5211007CE1C8 /* FBEventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C317AC5211007CE1C8 /* FBEventDetailsViewController.m */; };
 		60E093C717AC5211007CE1C8 /* FBEventDetailsTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E093C517AC5211007CE1C8 /* FBEventDetailsTableDataSource.m */; };
@@ -116,6 +117,8 @@
 		6065E46617AE1ADA003B947E /* ParseDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDataStore.h; sourceTree = "<group>"; };
 		6065E46717AE1ADA003B947E /* ParseDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDataStore.m; sourceTree = "<group>"; };
 		60AF6D4517B2C07100991386 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		60C8746417C01F09000C6926 /* ActiveEventController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveEventController.h; sourceTree = "<group>"; };
+		60C8746517C01F09000C6926 /* ActiveEventController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventController.m; sourceTree = "<group>"; };
 		60D520AC17A18EE9009CD642 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		60D520B617A1C967009CD642 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		60E093C217AC5211007CE1C8 /* FBEventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBEventDetailsViewController.h; sourceTree = "<group>"; };
@@ -439,6 +442,8 @@
 				90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */,
 				90130EBD17A31D450038BBFB /* ActiveEventsStatsViewController.h */,
 				90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */,
+				60C8746417C01F09000C6926 /* ActiveEventController.h */,
+				60C8746517C01F09000C6926 /* ActiveEventController.m */,
 			);
 			name = "Active Event View Stuff";
 			sourceTree = "<group>";
@@ -696,6 +701,7 @@
 				7CBBD70F17AB987700ED9DAB /* UIImage+ImageCrop.m in Sources */,
 				7CE691EE17B74F5700D3D8AB /* CreateEventPrivacyViewController.m in Sources */,
 				7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */,
+				60C8746617C01F09000C6926 /* ActiveEventController.m in Sources */,
 				7CE691E917B6EE2C00D3D8AB /* GraphicsConstants.m in Sources */,
 				90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */,
 				7CCF244917AB657C009855B5 /* EventCell.m in Sources */,

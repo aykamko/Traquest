@@ -58,8 +58,9 @@ extern NSString * const kDeclinedEventsKey;
 - (void)fetchPartialEventDetailsForNewEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 
 - (void)fetchFriendsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIds, NSString *eventName))completionBlock;
-- (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId
-                  completion:(void (^)(NSDictionary *allowedLocations, NSDictionary *anonLocations))completionBlock;
+-(void) fetchUsersForEvent: (NSString *) eventId completion: (void(^)(NSArray *allowedUsers, NSArray *anonUsers)) completionBlock;
+//- (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId
+//                  completion:(void (^)(NSDictionary *allowedLocations, NSDictionary *anonLocations))completionBlock;
 
 - (void)inviteFriendsToEvent:(NSString *)eventId
                  withFriends:(NSArray *)friendIdArray

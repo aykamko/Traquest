@@ -13,22 +13,15 @@
 #import "Toast+UIView.h"
 #import "FBIdAnnotationPoint.h"
 
-static const NSInteger UpdateFrequencyInSeconds = 2.0;
-
-
 @interface ActiveEventMapViewController ()
 
 @property (nonatomic) BOOL zoomToFit;
 
 @property (strong, nonatomic) NSMutableDictionary *anonGuestLocations;
 
-@property (strong, nonatomic) NSTimer *timer;
-@property (strong, nonatomic) CLLocationManager *locationManager;
-
-@property (strong, nonatomic) NSString *eventId;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
-@property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
-@property (strong, nonatomic) NSMutableDictionary *anonAnnotationPointDict;
+@property (nonatomic, strong) NSDictionary* guestData;
+
 
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) UIView *toastSpinner;
@@ -37,35 +30,30 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
 
 @implementation ActiveEventMapViewController
 
-- (id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation
+- (id)initWithEventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation
 {
     self = [super init];
     if (self) {
 
-        _locationManager = [[CLLocationManager alloc] init];
         
-        [_locationManager setDelegate: self];
-        [_locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
-
         UITabBarItem *icon = [self tabBarItem];
         UIImage *image= [UIImage imageNamed:@"MarkerFinal.png"];
         [icon setImage:image];
         
         _venueLocation = venueLocation;
-        _eventId = eventId;
         _friendAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _anonAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _guestData = [[NSMutableDictionary alloc] init];
-        for (FBGraphObject *user in guestArray) {
-            UIImage *userPic = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:user[@"picture"][@"data"][@"url"]]]];
-            NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
-                                                         initWithDictionary:@{ @"geopoint":[NSNull null],
-                                                                               @"name":user[@"name"],
-                                                                               @"userPic":userPic }];
-
-            [[self guestData] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
-            
-        }
+//        for (FBGraphObject *user in guestArray) {
+//            UIImage *userPic = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:user[@"picture"][@"data"][@"url"]]]];
+//            NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
+//                                                         initWithDictionary:@{ @"geopoint":[NSNull null],
+//                                                                               @"name":user[@"name"],
+//                                                                               @"userPic":userPic }];
+//
+//            [[self guestData] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
+//            
+//        }
     }
     
     return self;
@@ -90,32 +78,19 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
     [self.mapView addAnnotation:venuePin];
     
     self.zoomToFit = YES;
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
-                                                  target:self
-                                                selector:@selector(updateMarkersOnMap)
-                                                userInfo:nil
-                                                 repeats:YES];
-    [self.timer fire];
-    
-    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.5, -122.7);
-    MKPointAnnotation    *annot = [[MKPointAnnotation alloc]init];
-    annot.coordinate = coord;
-    [self zoomToFitMapAnnotations];
-    
+   
 }
 
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self.timer invalidate];
-    self.timer = nil;
+//    [self.timer invalidate];
+//    self.timer = nil;
 }
 
 #pragma mark Adding Annotations and Map View
-- (void)updateMarkersOnMap
+- (void)updateMarkersOnMapWithAllowedGuests: (NSDictionary *) allowedLocations withAnonGuests: (NSDictionary *) anonLocations
 {
-    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.guestData allKeys] eventId:self.eventId completion:^(NSDictionary *allowedLocations, NSDictionary *anonLocations) {
-        
         // Allowed points
         NSMutableSet *pastAllowedLocationIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
         
@@ -209,11 +184,11 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
             [self zoomToFitMapAnnotations];
             self.zoomToFit = NO;
         }
-        
-    }];
+    
+    
     
    
-    
+
 }
 
 

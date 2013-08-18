@@ -8,26 +8,24 @@
 
 #import "ActiveEventsStatsViewController.h"
 #import "ParseDataStore.h"
+#import "UIImage+ImageCrop.h"
 
 @interface ActiveEventsStatsViewController ()
 
 @property (nonatomic,strong) NSString *eventID;
-@property (nonatomic,strong) NSArray *guestAray;
 @property CLLocationCoordinate2D venueLocation;
 @property (strong, nonatomic) NSMutableDictionary *friendDetailsDict;
 @property (strong, nonatomic) NSMutableArray *distanceArray;
-@property (strong, nonatomic) NSTimer *timer;
 
 @end
 
 @implementation ActiveEventsStatsViewController
--(id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation{
+-(id)initWithEventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation{
     
     self = [super init];
     if(self){
         _eventID = eventId;
         _venueLocation = venueLocation;
-        _guestAray = guestArray;
         _friendDetailsDict = [[NSMutableDictionary alloc] init];
         _distanceArray = [[NSMutableArray alloc]init];
         UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 1, 90)];
@@ -40,27 +38,15 @@
         [icon setImage:[UIImage imageNamed:@"listFinal.png"]];
         
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        self.tableView.layer.cornerRadius = 0.0;
-        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:
-                                                 [NSURL URLWithString:@"https://www.quiltsrjewels.com/store/images/17770862.jpg"]]];
-
-        UIImageView *backgroundView = [[UIImageView alloc]initWithImage:image];
-        self.tableView.backgroundView = backgroundView;
         
-        
-        
-        
-        for (FBGraphObject *user in guestArray) {
-            NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
-                                                         initWithDictionary:@{ @"geopoint":[NSNull null],
-                                                                               @"name":user[@"name"]}];
-            
-            [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
-            
-        }
-        [self setDict];
-        _timer = [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(reload) userInfo:Nil repeats:YES];
-        [_timer fire];
+//        for (FBGraphObject *user in guestArray) {
+//            NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
+//                                                         initWithDictionary:@{ @"geopoint":[NSNull null],
+//                                                                               @"name":user[@"name"]}];
+//            
+//            [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
+//            
+//        }
         [super viewDidLoad];
 
     }
@@ -103,7 +89,6 @@
     NSString *identifier = [NSString stringWithFormat:@"Cell %d", indexPath.row];
     
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    [self setDict];
 
     if(cell == nil){
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"statsCell"];
@@ -209,23 +194,9 @@
     return 100;
 }
 
-
-
 #pragma mark fetching GeoPoints
--(void)setDict
-{
-    [[ParseDataStore sharedStore] fetchGeopointsForIds:[self.friendDetailsDict allKeys] eventId:self.eventID completion:^(NSDictionary *allowedLocations, NSDictionary *anonLocations) {
-        
-        for (NSString *fbId in [allowedLocations allKeys])
-        {
-            if ([fbId isEqualToString:[[ParseDataStore sharedStore] myId]]) {
-                continue;
-            }
-            
-            self.friendDetailsDict[fbId][@"geopoint"] = allowedLocations[fbId];
-        }
-      
-    }];
+- (void)updateAllowedUserLocations:(NSDictionary *) allowedLocations anonLocations: (NSDictionary *) anonLocations {
+    
 }
 
 @end

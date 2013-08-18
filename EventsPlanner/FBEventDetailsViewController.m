@@ -19,6 +19,7 @@
 #import "ActiveEventsStatsViewController.h"
 #import "EventsListController.h"
 #import "Toast+UIView.h"
+#import "ActiveEventController.h"
 
 static const float kButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
@@ -30,7 +31,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate, MKMapViewDelegate, UIScrollViewDelegate>
 {
     CLLocationCoordinate2D _venueLocation;
-    UITabBarController *_tabBarController;
     UIImageView *_coverImageView;
     UILabel *_titleLabel;
     UIView *_buttonHolder;
@@ -40,17 +40,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     FBEventDetailsTableDataSource *_dataSource;
     __strong MKMapView *_mapView;
-
-       ActiveEventsStatsViewController *_statsViewController;
-    __strong FBEventStatusTableController *_statusTableController;
-    ActiveEventMapViewController *_mapViewController;
-
-    UITabBarItem *_item;
-    UIImage *_briefcase;
+    
     UITapGestureRecognizer *_singleFingerTap ;
 
 }
 
+@property (nonatomic, strong) ActiveEventController *activeEventController;
 @property (nonatomic, strong) UIScrollView *scrollView;
 
 @property (nonatomic, strong) NSArray *verticalLayoutContraints;
@@ -212,29 +207,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 {
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
 }
-
-#pragma mark Map Methods
-
-- (UITabBarController *)tabBarControllerForMapView
-{
-    _tabBarController = [[UITabBarController alloc] init];
-    
-    _statsViewController = [[ActiveEventsStatsViewController alloc] initWithGuestArray:self.eventDetails[@"attending"][@"data"]
-                                                                               eventId:self.eventDetails[@"id"]
-                                                                         venueLocation:_venueLocation];
-    _statsViewController.title = @"Stats";
-    
-    _mapViewController = [[ActiveEventMapViewController alloc] initWithGuestArray:self.eventDetails[@"attending"][@"data"]
-                                                                          eventId:self.eventDetails[@"id"]
-                                                                    venueLocation:_venueLocation];
-    _mapViewController.title = @"Map";
-    
-    self.navigationController.title = self.tabBarItem.title;
-    [_tabBarController setViewControllers:@[_mapViewController, _statsViewController]];
-    
-    return _tabBarController;
-}
-
 #pragma mark Map Zoom
 
 -(void)updateMapZoomLocation: (CLLocationCoordinate2D) location
@@ -921,19 +893,26 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)loadMapView:(id)sender
 {
-    if (self.fetchedNewData == NO) {
-        [[ParseDataStore sharedStore] fetchFriendsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIds, NSString *eventName) {
-            self.eventDetails[@"attending"][@"data"] = friendIds;
-            _tabBarController = [self tabBarControllerForMapView];
-            [[self navigationController] pushViewController:_tabBarController animated:YES];
-        }];
-        return;
-    }
+//    if (self.fetchedNewData == NO) {
+//        [[ParseDataStore sharedStore] fetchFriendsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIds, NSString *eventName) {
+//            self.eventDetails[@"attending"][@"data"] = friendIds;
+//            _tabBarController = [self tabBarControllerForMapView];
+//            [[self navigationController] pushViewController:_tabBarController animated:YES];
+//        }];
+//        return;
+//    }
     
     //TODO: so so so so bad omfg
     self.fetchedNewData = NO;
-    _tabBarController = [self tabBarControllerForMapView];
-    [[self navigationController] pushViewController:_tabBarController animated:YES];
+    self.activeEventController = [[ActiveEventController alloc] initWithEventId:self.eventDetails[@"id"]
+                                                                  venueLocation:_venueLocation];
+
+    UITabBarController *tabBarController = [self.activeEventController presentableViewController];
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self.activeEventController action:@selector(goBack)];
+    
+    [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
+    [[self navigationController] pushViewController:tabBarController animated:YES];
 }
 
 -(void)tap:(UIGestureRecognizer*)gr

@@ -13,9 +13,6 @@
 
 @interface ActiveEventsStatsViewController : UITableViewController<UITableViewDelegate>
 
-
-
-- (id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation;
-
+-(id)initWithEventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D)venueLocation;
 
 @end

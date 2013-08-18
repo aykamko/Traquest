@@ -161,8 +161,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         identity = allowed;
     } else if (buttonIndex == 1) {
         identity = anonymous;
-    } else if (buttonIndex == 2) {
-        identity = notAllowed;
+    } else {
+        return;
     }
     
     
