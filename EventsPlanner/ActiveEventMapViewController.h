@@ -12,9 +12,10 @@
 
 @interface ActiveEventMapViewController : UIViewController<CLLocationManagerDelegate, MKMapViewDelegate>
 
-@property (strong, nonatomic) NSMutableDictionary *guestData;
+@property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
+@property (strong, nonatomic) NSMutableDictionary *anonAnnotationPointDict;
 
-- (id)initWithGuestArray:(NSArray *)guestArray eventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D) venueLocation;
-
+- (id)initWithEventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D) venueLocation;
+- (void)updateMarkersOnMapWithAllowedGuests: (NSDictionary *) allowedLocations withAnonGuests: (NSDictionary *) anonLocations;
 
 @end

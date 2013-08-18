@@ -13,7 +13,6 @@
 
 @interface FBEventDetailsViewController : UIViewController <UIScrollViewDelegate,UIActionSheetDelegate>
 
-//- (UITabBarController *)tabBarControllerForMapView;
 
 - (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied;
 
