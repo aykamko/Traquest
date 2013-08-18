@@ -39,14 +39,6 @@
         
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         
-//        for (FBGraphObject *user in guestArray) {
-//            NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
-//                                                         initWithDictionary:@{ @"geopoint":[NSNull null],
-//                                                                               @"name":user[@"name"]}];
-//            
-//            [[self friendDetailsDict] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
-//            
-//        }
         [super viewDidLoad];
 
     }
