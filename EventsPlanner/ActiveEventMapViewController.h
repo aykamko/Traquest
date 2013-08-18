@@ -16,6 +16,6 @@
 @property (strong, nonatomic) NSMutableDictionary *anonAnnotationPointDict;
 
 - (id)initWithEventId:(NSString *)eventId venueLocation:(CLLocationCoordinate2D) venueLocation;
-- (void)updateMarkersOnMapWithAllowedGuests: (NSDictionary *) allowedLocations withAnonGuests: (NSDictionary *) anonLocations;
+- (void)updateMarkersOnMapWithAllowedGuests:(NSDictionary *)allowedLocations withAnonGuests:(NSDictionary *)anonLocations;
 
 @end

@@ -12,12 +12,7 @@
 
 @interface ActiveEventController : NSObject
 
-<<<<<<< HEAD
-=======
-@property NSString *eventId;
-
->>>>>>> Fetched data better
 - (id)initWithEventId:(NSString *) eventId venueLocation:(CLLocationCoordinate2D)venueLocation;
--(UITabBarController *) presentableViewController;
+- (UITabBarController *)presentableViewController;
 
 @end

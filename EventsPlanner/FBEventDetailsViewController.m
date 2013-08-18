@@ -895,16 +895,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)loadMapView:(id)sender
 {
-//    if (self.fetchedNewData == NO) {
-//        [[ParseDataStore sharedStore] fetchFriendsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIds, NSString *eventName) {
-//            self.eventDetails[@"attending"][@"data"] = friendIds;
-//            _tabBarController = [self tabBarControllerForMapView];
-//            [[self navigationController] pushViewController:_tabBarController animated:YES];
-//        }];
-//        return;
-//    }
-    
-    self.fetchedNewData = NO;
     self.activeEventController = [[ActiveEventController alloc] initWithEventId:self.eventDetails[@"id"]
                                                                   venueLocation:_venueLocation];
 
