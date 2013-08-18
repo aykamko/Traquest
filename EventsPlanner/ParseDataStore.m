@@ -236,21 +236,6 @@ NSString * const kDeclinedEventsKey = @"declined";
         
         PFQuery *allowedQuery =  [allowedRelation query];
         PFQuery *anonQuery = [anonRelation query];
-//        
-//        PFQuery *compoundQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonQuery]];
-//        
-//        [compoundQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//            NSLog(@"%@",objects);
-//            if (completionBlock) {
-//                if ([objects[0] containsObject:[PFUser currentUser]]) {
-//                    completionBlock(allowed);
-//                } else if ([objects[1] containsObject:[PFUser currentUser]]) {
-//                    completionBlock(anonymous);
-//                }else {
-//                    completionBlock(notAllowed);
-//                }
-//            }
-//        }];
         
         [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
             __block NSArray *allowedUsers = [allowedObjects copy];
@@ -271,22 +256,6 @@ NSString * const kDeclinedEventsKey = @"declined";
             }];
         }];
     }];
-//    
-//    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
-//    [trackingObj whereKey:facebookID equalTo:self.myId];
-//    
-//    [trackingObj findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//        
-//        PFObject *trackingObject = [objects firstObject];
-//        NSString *eventIdKey = [NSString stringWithFormat:@"E%@", eventId];
-//        
-//        NSString *identity = [trackingObject objectForKey:eventIdKey];
-//        
-//        if (completionBlock) {
-//            completionBlock(identity);
-//        }
-//        
-//    }];
 }
 
 - (void)setTrackingStatus:(BOOL)isTracking event:(NSString *)eventId completion:(void (^)())completion;
@@ -877,25 +846,14 @@ NSString * const kDeclinedEventsKey = @"declined";
         PFQuery *allowedQuery =  [allowedRelation query];
         PFQuery *anonQuery = [anonRelation query];
         
-//        PFQuery *compoundQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonQuery]];
-//        
-//        [compoundQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//            NSLog(@"%@", objects);
-//            
-//            if (completionBlock) {
-//               // completionBlock(objects[0], objects[1]);
-//            }
-//            
-//        }];
-        
         [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
-            __block NSArray *allowedUsers = [allowedObjects copy];
             [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {
                 if (completionBlock) {
-                    completionBlock(allowedUsers, anonObjects);
+                    completionBlock(allowedObjects, anonObjects);
                 }
             }];
         }];
+        
     }];
 }
 
