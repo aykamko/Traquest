@@ -47,6 +47,13 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
         _statsController.title = @"Stats";
         _mapController.title = @"Map";
         
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese"
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(goBack)];
+        
+        self.tabBarController.navigationItem.leftBarButtonItem = backButton;
+        
         [self setTimer:[NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
                                                                                       target:self
                                                                                     selector:@selector(updateLocationData)
@@ -76,7 +83,8 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
     }];
 }
 
-- (void)goBack {
+- (void)goBack
+{
     [self.timer invalidate];
     self.timer = nil;
     [self.tabBarController.navigationController popViewControllerAnimated:YES];
