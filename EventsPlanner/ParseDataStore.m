@@ -14,7 +14,8 @@
 #pragma mark Parse String Keys
 
 static BOOL showsPastEvents = YES;
-static BOOL kCachingEnabled = YES;
+static BOOL kCachingEnabled = NO;
+static BOOL kIgnoresNewUser = YES;
 
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
@@ -119,12 +120,12 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
         } else {
             
-            if ([[PFUser currentUser] isNew]) {
+            if ([[PFUser currentUser] isNew]||kIgnoresNewUser) {
                 
                 PFGeoPoint *geoPoint = [PFGeoPoint geoPoint];
                 [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
                 
-                FBRequest *idRequest = [FBRequest requestForGraphPath:@"me?fields=id"];
+                FBRequest *idRequest = [FBRequest requestForGraphPath:@"me?fields=id,name"];
                 [idRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                     
                     if (error) {
@@ -140,6 +141,8 @@ NSString * const kDeclinedEventsKey = @"declined";
                     } else {
                         
                         [[NSUserDefaults standardUserDefaults] setObject:result[@"id"] forKey:facebookID];
+                        
+                        [[PFUser currentUser] setObject:result[@"name"] forKey:@"name"];
                         
                         [[PFUser currentUser] setObject:result[@"id"] forKey:facebookID];
                         
