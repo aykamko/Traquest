@@ -227,21 +227,24 @@ NSString * const kDeclinedEventsKey = @"declined";
         PFRelation *allowedRelation = [event relationforKey:allowed];
         PFRelation *anonRelation = [event relationforKey:anonymous];
         
-        PFQuery *allowedQuery =  [allowedRelation query];
-        PFQuery *anonQuery = [anonRelation query];
+        PFQuery *allowedQuery = [allowedRelation query];
+        [allowedQuery whereKey:facebookID equalTo:self.myId];
         
-        [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedUsers, NSError *error) {
-            [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonUsers, NSError *error) {
-                if (completionBlock) {
-                    if ([allowedUsers containsObject:[PFUser currentUser]]) {
-                        completionBlock(allowed);
-                    } else if ([anonUsers containsObject:[PFUser currentUser]]) {
+        PFQuery *anonQuery = [anonRelation query];
+        [anonQuery whereKey:facebookID equalTo:self.myId];
+        
+        [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if ([objects count] != 0) {
+                completionBlock(allowed);
+            } else {
+                [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    if ([objects count] != 0) {
                         completionBlock(anonymous);
                     } else {
                         completionBlock(notAllowed);
                     }
-                }
-            }];
+                }];
+            }
         }];
     }];
 }
