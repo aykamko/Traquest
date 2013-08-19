@@ -129,16 +129,20 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
 
 - (void)updateLocationData {
     [[ParseDataStore sharedStore] fetchUsersForEvent:self.eventId completion:^(NSArray *allowedUsers, NSArray *anonUsers) {
-        NSMutableDictionary *allowedDictionary = [[NSMutableDictionary alloc] init];
+        
+        NSMutableDictionary *allowedUserDict = [[NSMutableDictionary alloc] init];
         for (PFUser *user in allowedUsers) {
-            [allowedDictionary setObject:user[locationKey] forKey:user[facebookID]];
+            [allowedUserDict setObject:user forKey:user[facebookID]];
         }
-        NSMutableDictionary *anonDictionary = [[NSMutableDictionary alloc] init];
+        
+        NSMutableDictionary *anonUserDict = [[NSMutableDictionary alloc] init];
         for (PFUser *user in anonUsers) {
             NSString *key = [NSString stringWithFormat:@"%d",[user[facebookID] hash]];
-            [anonDictionary setObject:user[locationKey] forKey:key];
+            [anonUserDict setObject:user forKey:key];
         }
-        [_mapController updateMarkersOnMapWithAllowedGuests:allowedDictionary withAnonGuests:anonDictionary];
+        
+        [_mapController updateMarkersOnMapForAllowedUsers:allowedUserDict anonUsers:anonUserDict];
+        
     }];
 }
 

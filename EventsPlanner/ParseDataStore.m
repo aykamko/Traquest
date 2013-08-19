@@ -574,7 +574,6 @@ NSString * const kDeclinedEventsKey = @"declined";
                     if (!self.myId) {
                         self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:facebookID];
                         [[PFUser currentUser] setObject:_myId forKey:facebookID];
-
                     }
                     completionBlock(savedEventsList[kActiveHostEventsKey],
                                     savedEventsList[kActiveGuestEventsKey],

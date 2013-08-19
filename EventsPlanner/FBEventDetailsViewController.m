@@ -961,8 +961,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                                    delegate:nil
                                                           cancelButtonTitle:@"OK"
                                                           otherButtonTitles:nil];
-                [alertView show];
-                
+                [alertView show];                
                 if (self.viewMapButton) {
                     [self.viewMapButton setTitle:@"View Map" forState:UIControlStateNormal]; } if (self.stopTrackingButton) {
                     [self.stopTrackingButton setTitle:@"Stop Tracking" forState:UIControlStateNormal];
