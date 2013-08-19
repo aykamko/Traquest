@@ -87,6 +87,7 @@
 		7CCF145517BEC3A100D72B73 /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
 		7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C418C7817A082030084330C /* Images.xcassets */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
+		7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59717C2E5DE001583FA /* guest-location@2x.png */; };
 		7CE691E317B6E34700D3D8AB /* CreateEventTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */; };
 		7CE691E917B6EE2C00D3D8AB /* GraphicsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E817B6EE2C00D3D8AB /* GraphicsConstants.m */; };
 		7CE691EE17B74F5700D3D8AB /* CreateEventPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691ED17B74F5700D3D8AB /* CreateEventPrivacyViewController.m */; };
@@ -208,6 +209,7 @@
 		7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE2DAA017A09BC500834B6F /* login-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small.png"; sourceTree = "<group>"; };
 		7CE2DAA117A09BC500834B6F /* login-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small@2x.png"; sourceTree = "<group>"; };
+		7CE4E59717C2E5DE001583FA /* guest-location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guest-location@2x.png"; sourceTree = "<group>"; };
 		7CE691E117B6E34700D3D8AB /* CreateEventTimePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventTimePickerViewController.h; sourceTree = "<group>"; };
 		7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventTimePickerViewController.m; sourceTree = "<group>"; };
 		7CE691E717B6EE2C00D3D8AB /* GraphicsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicsConstants.h; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 			isa = PBXGroup;
 			children = (
 				90235CC217C2B46700A0B99A /* greenLocation@2x.png */,
+				7CE4E59717C2E5DE001583FA /* guest-location@2x.png */,
 				90235CC017C2ADB400A0B99A /* stickynote.png */,
 				76502FEF17BE9CBB00EC839B /* hostIcon@2x.png */,
 				7CA8A09017BEB5E000FF3D8E /* Checkmark@2x.png */,
@@ -653,6 +656,7 @@
 				7CCF145317BEC3A100D72B73 /* login-button-small-pressed.png in Resources */,
 				7CCF145417BEC3A100D72B73 /* login-button-small-pressed@2x.png in Resources */,
 				7CCF145517BEC3A100D72B73 /* login-button-small.png in Resources */,
+				7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */,
 				7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */,

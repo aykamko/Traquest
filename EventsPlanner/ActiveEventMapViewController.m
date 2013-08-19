@@ -170,26 +170,26 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     
     static NSString *allowedViewIdentifier = @"AllowedMapPin";
     static NSString *anonViewIdentifier = @"AnonMapPin";
-    MKPinAnnotationView *pinView;
+    MKAnnotationView *annotationView;
     
     if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
         FBIdAnnotationPoint *fbAnnotation = (FBIdAnnotationPoint *)annotation;
         
         if (fbAnnotation.anonymous == NO) {
             
-            pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:allowedViewIdentifier];
+            annotationView = (MKAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:allowedViewIdentifier];
             
-            if (!pinView) {
-                pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:allowedViewIdentifier];
+            if (!annotationView) {
+                annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:allowedViewIdentifier];
             } else {
-                pinView.annotation = annotation;
+                annotationView.annotation = annotation;
             }
             
-            pinView.image = [UIImage imageNamed:@"greenLocation.png"];
+            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
             
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-            pinView.leftCalloutAccessoryView = spinner;
+            annotationView.leftCalloutAccessoryView = spinner;
             [spinner startAnimating];
             
             [[ParseDataStore sharedStore] fetchProfilePictureForUser:fbAnnotation.fbId completion:^(UIImage *profilePic) {
@@ -200,44 +200,44 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
                 profilePicImageView.image = profilePic;
                 [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
                 
-                pinView.leftCalloutAccessoryView = profilePicImageView;
+                annotationView.leftCalloutAccessoryView = profilePicImageView;
                 
             }];
             
         } else {
             
-            pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
+            annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
             
-            if (!pinView) {
-                pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
+            if (!annotationView) {
+                annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
             } else {
-                pinView.annotation = annotation;
+                annotationView.annotation = annotation;
             }
             
-            pinView.image = [UIImage imageNamed:@"greenLocation.png"];
-            pinView.leftCalloutAccessoryView = nil;
+            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
+            annotationView.leftCalloutAccessoryView = nil;
             
         }
         
     } else {
         
-        pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
+        annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
         
-        if (!pinView) {
-            pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
+        if (!annotationView) {
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
         } else {
-            pinView.annotation = annotation;
+            annotationView.annotation = annotation;
         }
         
-        pinView.pinColor = MKPinAnnotationColorRed;
-        pinView.leftCalloutAccessoryView = nil;
+        ((MKPinAnnotationView *)annotationView).pinColor = MKPinAnnotationColorRed;
+        ((MKPinAnnotationView *)annotationView).animatesDrop = YES;
+        annotationView.leftCalloutAccessoryView = nil;
         
     }
     
-    pinView.animatesDrop = YES;
-    pinView.canShowCallout = YES;
+    annotationView.canShowCallout = YES;
     
-    return pinView;
+    return annotationView;
 }
 
 - (void)zoomToFitMapAnnotations
