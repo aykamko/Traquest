@@ -14,12 +14,13 @@
 #pragma mark Parse String Keys
 
 static BOOL showsPastEvents = YES;
-static BOOL kCachingEnabled = NO;
+static BOOL kCachingEnabled = YES;
 
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
 NSString * const notAllowed = @"notAllowed";
 
+NSString * const kParseUserNameKey = @"name";
 NSString * const locationKey = @"location";
 NSString * const facebookID = @"fbID";
 
@@ -309,10 +310,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 }
 
 
-#pragma mark Caching data
-
-
-// All events lists
+#pragma mark All Events List Caching
 - (BOOL)saveAllEventsLists:(NSDictionary *)dictOfEventsListsByKey
 {
     BOOL allSucceeded = YES;
@@ -367,7 +365,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     return oldestCacheDate;
 }
 
-// Specific events list
+#pragma mark Individual Event List Caching
 - (NSString *)archivePathForEventsListWithKey:(NSString *)eventsListKey
 {
     NSArray *cacheDirectories = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
@@ -402,7 +400,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:cacheKey];
 }
 
-// Event Details
+#pragma mark Event Details Caching
 - (NSString *)eventDetailsArchivePathForEvent:(NSString *)eventId
 {
     NSArray *cacheDirectories = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
@@ -437,6 +435,41 @@ NSString * const kDeclinedEventsKey = @"declined";
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:[self cacheDateObjectKeyForEvent:eventId]];
 }
 
+#pragma mark Profile Pic Caching
+- (NSString *)profilePicArchivePathForUser:(NSString *)fbId
+{
+    NSArray *cacheDirectories = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *cacheDirectory = [cacheDirectories firstObject];
+    
+    return [cacheDirectory stringByAppendingString:[NSString stringWithFormat:@"%@_profilePic.archive", fbId]];
+}
+
+- (BOOL)saveProfilePic:(UIImage *)profilePic user:(NSString *)fbId
+{
+    return [NSKeyedArchiver archiveRootObject:profilePic
+                                       toFile:[self profilePicArchivePathForUser:fbId]];
+}
+
+- (UIImage *)loadProfilePicFromCacheForUser:(NSString *)fbId
+{
+    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self profilePicArchivePathForUser:fbId]];
+}
+
+- (NSString *)cacheDateObjectKeyForProfilePicOfUser:(NSString *)fbId
+{
+    return [NSString stringWithFormat:@"%@_profilePicCacheDate", fbId];
+}
+
+- (NSDate *)profilePicCacheDateForUser:(NSString *)fbId
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:[self cacheDateObjectKeyForProfilePicOfUser:fbId]];
+}
+
+- (void)setProfilePicCacheDateForUser:(NSString *)fbId
+{
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:[self cacheDateObjectKeyForProfilePicOfUser:fbId]];
+}
+
 #pragma mark Facebook Request
 - (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *activeHostEvents,
                                                    NSArray *activeGuestEvents,
@@ -457,21 +490,6 @@ NSString * const kDeclinedEventsKey = @"declined";
                     if (!self.myId) {
                         self.myId = [[NSUserDefaults standardUserDefaults] objectForKey:facebookID];
                         [[PFUser currentUser] setObject:_myId forKey:facebookID];
-                        
-//                        PFQuery *trackingObjectQuery = [PFQuery queryWithClassName:@"TrackingObject"];
-//                        [trackingObjectQuery whereKey:facebookID equalTo:self.myId];
-//                        
-//                        [trackingObjectQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//                            
-//                            PFObject *trackingObject = [objects firstObject];
-//                            if (!trackingObject) {
-//                                trackingObject = [PFObject objectWithClassName:@"TrackingObject"];
-//                            }
-//                            
-//                            [trackingObject setObject:self.myId forKey:facebookID];
-//                            [trackingObject saveInBackground];
-//                            
-//                        }];
                     }
                     completionBlock(savedEventsList[kActiveHostEventsKey],
                                     savedEventsList[kActiveGuestEventsKey],
@@ -805,8 +823,46 @@ NSString * const kDeclinedEventsKey = @"declined";
     }];
 }
 
+- (void)fetchProfilePictureForUser:(NSString *)fbId completion:(void (^)(UIImage *))completionBlock
+{
+    if (kCachingEnabled == YES) {
+        // Get cached data if not too old
+        NSDate *cacheDate = [self profilePicCacheDateForUser:fbId];
+        if (cacheDate) {
+            NSTimeInterval cacheAge = [cacheDate timeIntervalSinceNow];
+            if (cacheAge > -60 * 60 * 24) { // 24 hours
+                UIImage *savedProfilePic = [self loadProfilePicFromCacheForUser:fbId];
+                if (savedProfilePic) {
+                    completionBlock(savedProfilePic);
+                    NSLog(@"cached profile pic");
+                    return;
+                }
+            }
+        }
+    }
+    
+    NSString *graphPath = [NSString stringWithFormat: @"%@?fields=picture.width(80).height(80)", fbId];
+    [FBRequestConnection startWithGraphPath:graphPath completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        NSString *urlString = result[@"picture"][@"data"][@"url"];
+        NSURL *picURL = [NSURL URLWithString:urlString];
+        NSData *picData = [NSData dataWithContentsOfURL:picURL];
+        UIImage *profilePic = [UIImage imageWithData:picData];
+        
+        [self saveProfilePic:profilePic user:fbId];
+        [self setProfilePicCacheDateForUser:fbId];
+        
+        if (completionBlock) {
+            completionBlock(profilePic);
+        }
+        
+    }];
+
+}
+
 #pragma mark Parse Request
--(void) fetchUsersForEvent: (NSString *) eventId completion: (void(^)(NSArray *allowedUsers, NSArray *anonUsers)) completionBlock {
+- (void)fetchUsersForEvent:(NSString *)eventId completion:(void(^)(NSArray *allowedUsers, NSArray *anonUsers))completionBlock
+{
     
     PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
     [eventQuery whereKey:@"eventId" equalTo:eventId];

@@ -14,9 +14,9 @@ extern NSString * const allowed;
 extern NSString * const anonymous;
 extern NSString * const notAllowed;
 
+extern NSString * const kParseUserNameKey;
 extern NSString * const facebookID;
 extern NSString * const locationKey;
-extern NSString * const trackingObject;
 
 extern NSString * const kHostEventsKey;
 extern NSString * const kAttendingEventsKey;
@@ -54,13 +54,12 @@ extern NSString * const kDeclinedEventsKey;
                                                       NSArray *guestEvents,
                                                       NSArray *maybeAttendingEvents,
                                                       NSArray *noReplyEvents))completionBlock;
+- (void)fetchProfilePictureForUser:(NSString *)fbId completion:(void (^)(UIImage *profilePic))completionBlock;
 
 - (void)fetchPartialEventDetailsForNewEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
 
 - (void)fetchFriendsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIds, NSString *eventName))completionBlock;
--(void) fetchUsersForEvent: (NSString *) eventId completion: (void(^)(NSArray *allowedUsers, NSArray *anonUsers)) completionBlock;
-//- (void)fetchGeopointsForIds:(NSArray *)guestIds eventId:(NSString *)eventId
-//                  completion:(void (^)(NSDictionary *allowedLocations, NSDictionary *anonLocations))completionBlock;
+- (void)fetchUsersForEvent:(NSString *)eventId completion:(void (^)(NSArray *allowedUsers, NSArray *anonUsers))completionBlock;
 
 - (void)inviteFriendsToEvent:(NSString *)eventId
                  withFriends:(NSArray *)friendIdArray

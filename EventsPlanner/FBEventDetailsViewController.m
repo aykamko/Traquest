@@ -523,7 +523,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_detailsTable setDataSource:_dataSource];
     [_detailsTable setDelegate:_detailsTableDelegate];
-
     [_detailsTable setTableHeaderView:_mapView];
     
     //setting some UI aspects of tableview
@@ -864,13 +863,18 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)cancelTracking:(id)sender {
     [self.scrollView makeToastActivity];
     [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"] completion:^{
-        [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{@"eventId": _eventDetails[@"id"]} block:^(id object, NSError *error) {
+        [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{ @"eventId": self.eventDetails[@"id"] } block:^(id object, NSError *error) {
             if (error) {
-                NSLog(@"deleting in cloud failed");
-            } else {
                 [self.scrollView hideToastActivity];
-                [self.viewMapButton removeFromSuperview];
-                [self.stopTrackingButton removeFromSuperview];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error deleting event!"
+                                                                    message:error.localizedDescription
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                [alertView show];
+            } else {
+                NSLog(@"cleared event");
+                [self.scrollView hideToastActivity];
                 [self addStartTrackingButton];
             }
         }];

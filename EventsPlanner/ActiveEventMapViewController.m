@@ -13,7 +13,9 @@
 #import "Toast+UIView.h"
 #import "FBIdAnnotationPoint.h"
 
-@interface ActiveEventMapViewController ()
+CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
+
+@interface ActiveEventMapViewController () <MKMapViewDelegate>
 
 @property (nonatomic) BOOL zoomToFit;
 
@@ -34,7 +36,6 @@
 {
     self = [super init];
     if (self) {
-
         
         UITabBarItem *icon = [self tabBarItem];
         UIImage *image= [UIImage imageNamed:@"MarkerFinal.png"];
@@ -44,16 +45,7 @@
         _friendAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _anonAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _guestData = [[NSMutableDictionary alloc] init];
-//        for (FBGraphObject *user in guestArray) {
-//            UIImage *userPic = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:user[@"picture"][@"data"][@"url"]]]];
-//            NSMutableDictionary *friendDetailsSubDict = [[NSMutableDictionary alloc]
-//                                                         initWithDictionary:@{ @"geopoint":[NSNull null],
-//                                                                               @"name":user[@"name"],
-//                                                                               @"userPic":userPic }];
-//
-//            [[self guestData] addEntriesFromDictionary:@{ user[@"id"]:friendDetailsSubDict }];
-//            
-//        }
+        
     }
     
     return self;
@@ -64,12 +56,12 @@
     [super loadView];
     self.mapView = [[MKMapView alloc] initWithFrame:self.view.bounds];
     self.mapView.delegate = self;
-//    self.mapView.showsUserLocation = YES;
+    self.mapView.showsUserLocation = YES;
     [self.view addSubview:self.mapView];
     
     [self.mapView setMapType:MKMapTypeStandard];
     
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(_venueLocation, 1500, 1500);
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(_venueLocation, 2500, 2500);
     [self.mapView setRegion:region animated:YES];
     
     MKPointAnnotation *venuePin = [[MKPointAnnotation alloc] init];
@@ -81,32 +73,25 @@
    
 }
 
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-//    [self.timer invalidate];
-//    self.timer = nil;
-}
-
 #pragma mark Adding Annotations and Map View
-- (void)updateMarkersOnMapWithAllowedGuests: (NSDictionary *) allowedLocations withAnonGuests: (NSDictionary *) anonLocations
+
+- (void)updateMarkersOnMapForAllowedUsers:(NSDictionary *)allowedUsersDict anonUsers:(NSDictionary *)anonUsersDict;
 {
         // Allowed points
-        NSMutableSet *pastAllowedLocationIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
+        NSMutableSet *pastAllowedUserIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
         
-        for (NSString *fbId in [allowedLocations allKeys]) {
-            [pastAllowedLocationIds removeObject:fbId];
+        for (NSString *fbId in [allowedUsersDict allKeys]) {
+            PFUser *user = allowedUsersDict[fbId];
+            if (!user) {
+                continue;
+            }
             
-            self.guestData[fbId][@"geopoint"] = allowedLocations[fbId];
-            PFGeoPoint *currentGeopoint = self.guestData[fbId][@"geopoint"];
+            [pastAllowedUserIds removeObject:fbId];
+            
+            PFGeoPoint *currentGeopoint = [user objectForKey:locationKey];
             
             CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
                                                                                   currentGeopoint.longitude);
-            
-            NSString *currentName = self.guestData[fbId][@"name"];
-            UIImage *preImage = self.guestData[fbId][@"userPic"];
-            UIImage *postImage = [self resizeImage:preImage];
-            self.guestData[fbId][@"userPic"] = postImage;
             
             FBIdAnnotationPoint *point = self.friendAnnotationPointDict[fbId];
             
@@ -114,8 +99,8 @@
             
                 point = [[FBIdAnnotationPoint alloc] initWithFbId:fbId anonymity:NO];
                 point.coordinate = currentCoordinate;
-                point.title = currentName;
-                [_mapView addAnnotation:point];
+                point.title = [user objectForKey:kParseUserNameKey];
+                [self.mapView addAnnotation:point];
                 self.friendAnnotationPointDict[fbId] = point;
                 
             } else {
@@ -125,26 +110,23 @@
             }
         }
         
-        for (NSString *key in pastAllowedLocationIds) {
-            
-            NSMutableDictionary *properDict;
-            if (self.anonAnnotationPointDict[key]) {
-                properDict = self.anonAnnotationPointDict;
-            } else {
-                properDict = self.friendAnnotationPointDict;
-            }
-            
-            [self.mapView removeAnnotation:properDict[key]];
-            [properDict removeObjectForKey:key];
+        for (NSString *key in pastAllowedUserIds) {
+            [self.mapView removeAnnotation:self.friendAnnotationPointDict[key]];
+            [self.friendAnnotationPointDict removeObjectForKey:key];
         }
         
         // Anonymous points
         NSMutableSet *pastAnonymousLocationIds = [NSMutableSet setWithArray:[self.anonAnnotationPointDict allKeys]];
         
-        for (NSString *fbIdHash in [anonLocations allKeys]) {
+        for (NSString *fbIdHash in [anonUsersDict allKeys]) {
+            PFUser *anonUser = anonUsersDict[fbIdHash];
+            if (!anonUser) {
+                continue;
+            }
+            
             [pastAnonymousLocationIds removeObject:fbIdHash];
             
-            PFGeoPoint *geoPoint = anonLocations[fbIdHash];
+            PFGeoPoint *geoPoint = [anonUser objectForKey:locationKey];
             
             CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(geoPoint.latitude,
                                                                                   geoPoint.longitude);
@@ -168,16 +150,8 @@
         }
         
         for (NSString *key in pastAnonymousLocationIds) {
-            
-            NSMutableDictionary *properDict;
-            if (self.anonAnnotationPointDict[key]) {
-                properDict = self.anonAnnotationPointDict;
-            } else {
-                properDict = self.friendAnnotationPointDict;
-            }
-            
-            [self.mapView removeAnnotation:properDict[key]];
-            [properDict removeObjectForKey:key];
+            [self.mapView removeAnnotation:self.anonAnnotationPointDict[key]];
+            [self.anonAnnotationPointDict removeObjectForKey:key];
         }
         
         if (self.zoomToFit) {
@@ -191,26 +165,50 @@
 
 }
 
-
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-    MKPinAnnotationView *pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:@"ActiveMapPin"];
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        ((MKUserLocation *)annotation).title = nil;
+        return nil;
+    }
+    
+    static NSString *annotationViewIdentifier = @"ActiveMapPin";
+    MKPinAnnotationView *pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
     
     if (!pinView) {
         
-        FBIdAnnotationPoint *fbIdAnnotation = annotation;
-        pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"ActiveMapPin"];
+        pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier];
         
-        if ([[annotation title] isEqualToString:@"Venue Location"]){
-            pinView.pinColor = MKPinAnnotationColorRed;
-        } else {
+        if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
+            
+            FBIdAnnotationPoint *fbAnnotation = (FBIdAnnotationPoint *)annotation;
             pinView.image = [UIImage imageNamed:@"greenLocation.png"];
-
-            if (fbIdAnnotation.anonymous == NO) {
-                pinView.leftCalloutAccessoryView = [[UIImageView alloc]
-                                                    initWithImage:self.guestData[fbIdAnnotation.fbId][@"userPic"]];
-               
+            
+            if (fbAnnotation.anonymous == NO) {
+                
+                UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
+                                                    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                pinView.leftCalloutAccessoryView = spinner;
+                [spinner startAnimating];
+                
+                [[ParseDataStore sharedStore] fetchProfilePictureForUser:fbAnnotation.fbId completion:^(UIImage *profilePic) {
+                    
+                    [spinner stopAnimating];
+                    
+                    UIImageView *profilePicImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+                    profilePicImageView.image = profilePic;
+                    [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
+                    
+                    pinView.leftCalloutAccessoryView = profilePicImageView;
+                    
+                }];
+                
             }
+            
+        } else {
+            
+            pinView.pinColor = MKPinAnnotationColorRed;
+            
         }
         
       
@@ -248,30 +246,5 @@
     CGFloat navBarHeight = CGRectGetHeight(self.navigationController.navigationBar.bounds);
     [self.mapView setVisibleMapRect:zoomRect edgePadding:UIEdgeInsetsMake(50 + navBarHeight, 50, 50, 50) animated:YES];
 }
-#pragma mark resize profile Pic
-
-- (UIImage *)resizeImage:(UIImage *)oldImage
-{
-    
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(32, 32), NO, 0.0);
-    [oldImage drawInRect:CGRectMake(0, 0, 32, 32)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    CALayer *imageLayer = [CALayer layer];
-    imageLayer.frame = CGRectMake(0,0, 32, 32);
-    imageLayer.contents = (id) newImage.CGImage;
-    
-    imageLayer.masksToBounds = YES;
-    imageLayer.cornerRadius = 4.0;
-    
-    UIGraphicsBeginImageContext(newImage.size);
-    [imageLayer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return roundedImage;
-}
-
 
 @end
