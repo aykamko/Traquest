@@ -333,7 +333,11 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> rounded edges
     CLLocation *location = [locations lastObject];
     
     if (self.locationCompletionBlock) {
@@ -346,6 +350,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     self.userCurrentLocation = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
                                                   longitude:coordinate.longitude];
     
+<<<<<<< HEAD
     [[PFUser currentUser] setObject:self.userCurrentLocation forKey:@"location"];
     NSArray *locationsArray = [[PFUser currentUser] objectForKey:kLocationData];
     
@@ -359,6 +364,9 @@ NSString * const kDeclinedEventsKey = @"declined";
     }
     
     [[PFUser currentUser] setObject:locationsArray forKey:kLocationData];
+=======
+    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
+>>>>>>> rounded edges
     [[PFUser currentUser] saveInBackground];
 
 //    if (_justStartedTracking) {
@@ -382,13 +390,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 //        }];
 //    }
     
-//    PFQuery *selfQuery = [PFUser query];
-//    [selfQuery whereKey:facebookID equalTo:self.myId];
-//    [selfQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-//        PFUser *me = (PFUser *) object;
-//        [me setObject:geoPoint forKey:@"location"];
-//        [me saveInBackground];
-//    }];
+
 }
 
 
@@ -617,18 +619,10 @@ NSString * const kDeclinedEventsKey = @"declined";
             NSMutableArray *maybeEvents = [[NSMutableArray alloc] init];
             NSMutableArray *activeHostEvents = [[NSMutableArray alloc] init];
             NSMutableArray *activeGuestEvents = [[NSMutableArray alloc] init];
-            
-//            PFQuery *pastEventsQuery = [PFQuery queryWithClassName:@"PastEvents"];
-//            PFObject *pastEventsObject = [[pastEventsQuery findObjects] objectAtIndex:0];
-//            NSMutableArray *pastEvents  = pastEventsObject[@"events"];
+
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 
             for (FBGraphObject *event in eventArray) {
-                
-//                if ([pastEvents containsObject:event[@"id"]]) {
-//                    continue;
-//                }
-                
                 BOOL active = NO;
                 [event fixEventCoverPhoto];
                 
@@ -671,8 +665,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                         [thisEvent setObject:event[@"startDate"] forKey:@"startDate"];
                         [thisEvent setObject:event[@"endDate"] forKey:@"endDate"];
                     }
-//                    [thisEvent addObject:[[PFRelation alloc] init] forKey:allowed];
-//                    [thisEvent addObject:[[PFRelation alloc] init] forKey:anonymous];
+
                     [thisEvent saveInBackground];
                 }];
                                 

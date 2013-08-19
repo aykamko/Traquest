@@ -66,7 +66,7 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     
     MKPointAnnotation *venuePin = [[MKPointAnnotation alloc] init];
     venuePin.coordinate = self.venueLocation;
-    venuePin.title = @"Venue Location";
+    venuePin.title = @"Event Location";
     [self.mapView addAnnotation:venuePin];
     
     self.zoomToFit = YES;
@@ -187,20 +187,19 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
                                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
             annotationView.leftCalloutAccessoryView = spinner;
             [spinner startAnimating];
-            
-            [[ParseDataStore sharedStore] fetchProfilePictureForUser:fbAnnotation.fbId completion:^(UIImage *profilePic) {
-                
-                [spinner stopAnimating];
-                
-                UIImageView *profilePicImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-                profilePicImageView.image = profilePic;
-                profilePicImageView.layer.masksToBounds = YES;
-                [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
-                
-                annotationView.leftCalloutAccessoryView = profilePicImageView;
-                
-            }];
-            
+
+                [[ParseDataStore sharedStore] fetchProfilePictureForUser:fbAnnotation.fbId completion:^(UIImage *profilePic) {
+                    
+                    [spinner stopAnimating];
+                    
+                    UIImageView *profilePicImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+                    profilePicImageView.image = profilePic;
+                    [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
+                    profilePicImageView.clipsToBounds = YES;
+                    annotationView.leftCalloutAccessoryView = profilePicImageView;
+                    
+                }];
+        
         } else {
             
             annotationView = (GuestAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
@@ -254,7 +253,7 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     
     // Since nav bar is translucent, we have to add an extra bit of inset at the top
     CGFloat navBarHeight = CGRectGetHeight(self.navigationController.navigationBar.bounds);
-    [self.mapView setVisibleMapRect:zoomRect edgePadding:UIEdgeInsetsMake(50 + navBarHeight, 50, 50, 50) animated:YES];
+    [self.mapView setVisibleMapRect:zoomRect edgePadding:UIEdgeInsetsMake(75 + navBarHeight, 75, 75, 75) animated:YES];
 }
 
 @end
