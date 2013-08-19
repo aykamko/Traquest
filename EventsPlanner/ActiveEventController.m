@@ -17,10 +17,7 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
 
 @property (strong, nonatomic) NSTimer *timer;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
-<<<<<<< HEAD
 
-=======
->>>>>>> Fetched data better
 @property NSString *eventId;
 
 @property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
@@ -50,15 +47,12 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
         _statsController.title = @"Stats";
         _mapController.title = @"Map";
         
-<<<<<<< HEAD
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese"
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self
                                                                       action:@selector(goBack)];
         
         self.tabBarController.navigationItem.leftBarButtonItem = backButton;
-=======
->>>>>>> Fetched data better
         
         [self setTimer:[NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
                                                                                       target:self
@@ -70,9 +64,9 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
     return self;
 }
 
-- (void)updateLocationData {
+- (void)updateLocationData
+{
     [[ParseDataStore sharedStore] fetchUsersForEvent:self.eventId completion:^(NSArray *allowedUsers, NSArray *anonUsers) {
-<<<<<<< HEAD
         
         NSMutableDictionary *allowedUserDict = [[NSMutableDictionary alloc] init];
         for (PFUser *user in allowedUsers) {
@@ -92,22 +86,6 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
 
 - (void)goBack
 {
-=======
-        NSMutableDictionary *allowedDictionary = [[NSMutableDictionary alloc] init];
-        for (PFUser *user in allowedUsers) {
-            [allowedDictionary setObject:user[locationKey] forKey:user[facebookID]];
-        }
-        NSMutableDictionary *anonDictionary = [[NSMutableDictionary alloc] init];
-        for (PFUser *user in anonUsers) {
-            NSString *key = [NSString stringWithFormat:@"%d",[user[facebookID] hash]];
-            [anonDictionary setObject:user[locationKey] forKey:key];
-        }
-        [_mapController updateMarkersOnMapWithAllowedGuests:allowedDictionary withAnonGuests:anonDictionary];
-    }];
-}
-
-- (void)goBack {
->>>>>>> Fetched data better
     [self.timer invalidate];
     self.timer = nil;
     [self.tabBarController.navigationController popViewControllerAnimated:YES];

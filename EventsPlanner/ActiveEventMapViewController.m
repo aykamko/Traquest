@@ -176,11 +176,9 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
         pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier];
         
         if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
-            pinView.image = [UIImage imageNamed:@"greenLocation.png"];
 
             FBIdAnnotationPoint *fbAnnotation = (FBIdAnnotationPoint *)annotation;
             pinView.image = [UIImage imageNamed:@"greenLocation.png"];
-
             
             if (fbAnnotation.anonymous == NO) {
                 
@@ -200,6 +198,7 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
                     pinView.leftCalloutAccessoryView = profilePicImageView;
                     
                 }];
+                
             }
             
         } else {

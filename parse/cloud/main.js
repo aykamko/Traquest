@@ -45,63 +45,6 @@ Parse.Cloud.define('deleteEventData', function(request, response) {
   });
 });
 
-/*
-
-  var Event = Parse.Object.extend("Event");
-	var eventQuery = new Parse.Query(Event);
-	eventQuery.equalTo("eventId", request.params.eventId);
-	eventQuery.first({
-		success: function(fbEvent) {
-
-      var allowedRelation = fbEvent.relation("allowed");
-      allowedRelation.query().find().then(
-        function(allowedList) {
-
-          console.log(allowedList);
-          if (allowedList.length > 0) {
-            allowedRelation.remove(allowedList);
-          }
-
-          var anonRelation = fbEvent.relation("anonymous");
-          anonRelation.query().find().then(
-            function (anonList) {
-
-              console.log(anonList);
-              if (anonList.length > 0) {
-                anonRelation.remove(anonList);
-              }
-
-              fbEvent.save().then(
-                function (successfulSave) {
-                  response.success(fbEvent);
-                },
-                function (badSave) {
-                  console.log(badSave);
-                  response.error('Error trying to save removement of anonymous users!');
-                });
-
-            },
-            function (badAnonList) {
-              console.log(badAnonList);
-              response.error('Error trying to query for anonymous users!');
-            });
-
-        },
-        function (badAllowedList) {
-          console.log(badAllowedList);
-          response.error('Error trying to query for allowed users!')
-        });
-		},
-		error: function (error) {
-      console.log(error);
-      response.error('Error trying to fetch event to be deleted!');
-		}
-	});
-
-});
-*/
-
-
 Parse.Cloud.define('deleteAllowedUsers', function(request, response) {
   var Event = Parse.Object.extend("Event");
   var eventQuery = new Parse.Query(Event);
