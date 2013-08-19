@@ -224,21 +224,18 @@ NSString * const kDeclinedEventsKey = @"declined";
         [allowedRelation removeObject:[PFUser currentUser]];
         [anonRelation removeObject:[PFUser currentUser]];
         
-        PFRelation *newRelation = [event relationforKey:identity];
-        [newRelation addObject:[PFUser currentUser]];
-        
-        [event saveInBackground];
-        
         if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
+            PFRelation *newRelation = [event relationforKey:identity];
+            [newRelation addObject:[PFUser currentUser]];
+        }
+        
+        [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [self startTrackingMyLocationIfAllowed];
-        } else {
-            [self.locationManager stopUpdatingLocation];
-        }
-        
-        if (completionBlock) {
-            completionBlock();
-        }
-        
+            
+            if (completionBlock) {
+                completionBlock();
+            }
+        }];
     }];
 }
 
@@ -331,11 +328,19 @@ NSString * const kDeclinedEventsKey = @"declined";
     _currentLocation = location;
     PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
                                                   longitude:coordinate.longitude];
-    
+//    NSArray *geoPoints = @[geoPoint];
     
     [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
-    [_userPastLocations addObject:geoPoint];
+//    [[PFUser currentUser] setObject:geoPoints forKey:@"allLocations"];
     [[PFUser currentUser] saveInBackground];
+    
+//    PFQuery *selfQuery = [PFUser query];
+//    [selfQuery whereKey:facebookID equalTo:self.myId];
+//    [selfQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+//        PFUser *me = (PFUser *) object;
+//        [me setObject:geoPoint forKey:@"location"];
+//        [me saveInBackground];
+//    }];
 }
 
 
