@@ -25,18 +25,14 @@ Parse.Cloud.beforeSave('Tracking', function(request, response) {
 });
 
 Parse.Cloud.define('deleteEventData', function(request,response) {
-	var EventData = Parse.Object.extend('TrackingObject');
-	var query = new Parse.Query(EventData);
-	var eventIdKey = 'E' + request.params.eventId;
-	query.find( {
-		success: function(results) {
-			console.log();
-			if(results.length > 0) {
-				for(var i=0; i< results.length; i++) {
-					results[i].set(eventIdKey, "");
-					results[i].save();
-				}
-			}
+  var Event = Parse.Object.extend("Event");
+	var eventQuery = new Parse.Query(Event);
+	eventQuery.equalTo("eventId", request.params.eventId);
+	query.find({
+		success: function(event) {
+      event.unset("allowed");
+      event.unset("anonymous");
+      event.save();
 			response.success(results);
 		},
 		error: function(error) {
