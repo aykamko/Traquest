@@ -109,6 +109,18 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
 
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    if ([userInfo objectForKey:@"stopTracking"]) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Location Tracking Stopped"
+                                                            message:@"It worked, yo."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+        [alertView show];
+        [[ParseDataStore sharedStore] stopTrackingMyLocation];
+        return;
+    }
+    
     if (!self.eventsNeedingCertification) {
         self.eventsNeedingCertification = [[NSMutableArray alloc] init];
     }

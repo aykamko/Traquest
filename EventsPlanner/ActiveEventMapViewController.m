@@ -168,63 +168,81 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
         return nil;
     }
     
-    static NSString *annotationViewIdentifier = @"ActiveMapPin";
-    MKPinAnnotationView *pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
+    static NSString *allowedViewIdentifier = @"AllowedMapPin";
+    static NSString *anonViewIdentifier = @"AnonMapPin";
+    MKPinAnnotationView *pinView;
     
-    if (!pinView) {
+    if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
+        FBIdAnnotationPoint *fbAnnotation = (FBIdAnnotationPoint *)annotation;
         
-        pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier];
-        
-        if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
-
-            FBIdAnnotationPoint *fbAnnotation = (FBIdAnnotationPoint *)annotation;
+        if (fbAnnotation.anonymous == NO) {
+            
+            pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:allowedViewIdentifier];
+            
+            if (!pinView) {
+                pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:allowedViewIdentifier];
+            } else {
+                pinView.annotation = annotation;
+            }
+            
             pinView.image = [UIImage imageNamed:@"greenLocation.png"];
             
-            if (fbAnnotation.anonymous == NO) {
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
+                                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            pinView.leftCalloutAccessoryView = spinner;
+            [spinner startAnimating];
+            
+            [[ParseDataStore sharedStore] fetchProfilePictureForUser:fbAnnotation.fbId completion:^(UIImage *profilePic) {
                 
-                UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
-                                                    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                pinView.leftCalloutAccessoryView = spinner;
-                [spinner startAnimating];
+                [spinner stopAnimating];
                 
-                [[ParseDataStore sharedStore] fetchProfilePictureForUser:fbAnnotation.fbId completion:^(UIImage *profilePic) {
-                    
-                    [spinner stopAnimating];
-                    
-                    UIImageView *profilePicImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
-                    profilePicImageView.image = profilePic;
-                    [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
-                    
-                    pinView.leftCalloutAccessoryView = profilePicImageView;
-                    
-                }];
+                UIImageView *profilePicImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+                profilePicImageView.image = profilePic;
+                [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
                 
-            }
+                pinView.leftCalloutAccessoryView = profilePicImageView;
+                
+            }];
             
         } else {
             
-            pinView.pinColor = MKPinAnnotationColorRed;
+            pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
+            
+            if (!pinView) {
+                pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
+            } else {
+                pinView.annotation = annotation;
+            }
+            
+            pinView.image = [UIImage imageNamed:@"greenLocation.png"];
+            pinView.leftCalloutAccessoryView = nil;
             
         }
         
-      
-        
-     
-        
-        
     } else {
         
-        pinView.annotation = annotation;
+        pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
+        
+        if (!pinView) {
+            pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
+        } else {
+            pinView.annotation = annotation;
+        }
+        
+        pinView.pinColor = MKPinAnnotationColorRed;
+        pinView.leftCalloutAccessoryView = nil;
         
     }
+    
+    pinView.animatesDrop = YES;
     pinView.canShowCallout = YES;
-   // pinView.animatesDrop = YES;
+    
     return pinView;
 }
 
 - (void)zoomToFitMapAnnotations
 {
-    if ([self.mapView.annotations count] <= 1){
+    if ([self.mapView.annotations count] <= 2){
         return;
     }
     

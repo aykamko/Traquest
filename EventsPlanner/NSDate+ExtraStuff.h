@@ -11,7 +11,7 @@
 @interface NSDate (ExtraStuff)
 
 + (NSDate *)dateToNearestFifteenMinutes:(NSDate *)date;
-
 + (NSString *)prettyReadableStringFromDate:(NSDate *)date;
++ (NSDate *)dateFromISO8601String:(NSString *)dateString;
 
 @end

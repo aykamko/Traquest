@@ -39,6 +39,7 @@ extern NSString * const kDeclinedEventsKey;
 - (void)fetchLocationWithCompletion:(void (^)(CLLocation *location))completionBlock;
 
 - (void)startTrackingMyLocationIfAllowed;
+- (void)stopTrackingMyLocation;
 - (void)changePermissionForEvent:(NSString *)eventId identity:(NSString *)identity completion:(void (^)())completionBlock;
 - (void)fetchPermissionForEvent:(NSString *)eventId
                      completion:(void (^)(NSString *identity))completionBlock;
@@ -70,6 +71,7 @@ extern NSString * const kDeclinedEventsKey;
                      completion:(void (^)())completionBlock;
 
 - (void)pushNotificationsToGuestsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIdsArray))completionBlock;
+- (void)pushEventCancelledToGuestsOfEvent:(NSString *)eventId completion:(void (^)())completionBlock;
 
 - (void)createEventWithParameters:(NSDictionary *)eventParameters
                        completion:(void (^)(NSString *newEventId))completionBlock;

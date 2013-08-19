@@ -10,6 +10,7 @@
 #import "UIImage+ImageCrop.h"
 #import "FBGraphObject+FixEventCoverPhoto.h"
 #import "EventsListController.h"
+#import "NSDate+ExtraStuff.h"
 
 #pragma mark Parse String Keys
 
@@ -185,7 +186,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)startTrackingMyLocationIfAllowed
 {
-    if (!([self isLoggedIn]&&[self verifyIfTrackingAllowed])) {
+    if (!([self isLoggedIn] && [self verifyIfTrackingAllowed])) {
         return;
     }
     
@@ -209,6 +210,11 @@ NSString * const kDeclinedEventsKey = @"declined";
     return YES;
 }
 
+- (void)stopTrackingMyLocation
+{
+    [self.locationManager stopUpdatingLocation];
+}
+
 - (void)changePermissionForEvent:(NSString *)eventId identity:(NSString *)identity completion:(void (^)())completionBlock
 {
     PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
@@ -222,9 +228,19 @@ NSString * const kDeclinedEventsKey = @"declined";
         [allowedRelation removeObject:[PFUser currentUser]];
         [anonRelation removeObject:[PFUser currentUser]];
         
+        PFRelation *newRelation = [event relationforKey:identity];
+        [newRelation addObject:[PFUser currentUser]];
+        
+        [event saveInBackground];
+        
         if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
-            PFRelation *newRelation = [event relationforKey:identity];
-            [newRelation addObject:[PFUser currentUser]];
+            [self startTrackingMyLocationIfAllowed];
+        } else {
+            [self stopTrackingMyLocation];
+        }
+        
+        if (completionBlock) {
+            completionBlock();
         }
         
         [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -328,6 +344,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
+    
 //    if ([_endDate compare:[NSDate date]] == NSOrderedAscending) {
 //        [manager stopUpdatingLocation];
 //        return;
@@ -1033,6 +1050,26 @@ NSString * const kDeclinedEventsKey = @"declined";
             
         } else {
             
+            PFObject *newEvent = [PFObject objectWithClassName:@"Event"];
+            [newEvent setObject:result[@"id"] forKey:@"eventId"];
+            
+            if (eventParameters[@"start_time"]) {
+                NSDate *startTime = [NSDate dateFromISO8601String:eventParameters[@"start_time"]];
+                NSDate *endTrackingDate = [[NSDate alloc] initWithTimeInterval:(60*60) sinceDate:startTime];
+                NSDate *startTrackingDate = [[NSDate alloc] initWithTimeInterval:(-2*60*60) sinceDate:startTime];
+                [newEvent setObject:endTrackingDate forKey:@"endDate"];
+                [newEvent setObject:startTrackingDate forKey:@"startDate"];
+                if ([startTrackingDate compare:[NSDate date]] == NSOrderedAscending) {
+                    //TODO: add to active events list!
+                    NSLog(@"newly created event is active");
+                }
+            } else {
+                [newEvent setObject:[NSNull null] forKey:@"startDate"];
+                [newEvent setObject:[NSNull null] forKey:@"endDate"];
+            }
+            
+            [newEvent saveInBackground];
+            
             if (completionBlock) {
                 completionBlock((NSString *)result[@"id"]);
             }
@@ -1101,8 +1138,17 @@ NSString * const kDeclinedEventsKey = @"declined";
         
         [trackingAllowedNotification sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
+            if (error) {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Push Error!"
+                                                                    message:error.description
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                [alertView show];
+            }
+            
             if (succeeded) {
-                NSLog(@"push succeded");
+                NSLog(@"notification push succeded");
             }
             
             if (completionBlock) {
@@ -1111,6 +1157,65 @@ NSString * const kDeclinedEventsKey = @"declined";
             
         }];
     }];
+}
+
+- (void)pushEventCancelledToGuestsOfEvent:(NSString *)eventId completion:(void (^)())completionBlock
+{
+    PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
+    [eventQuery whereKey:@"eventId" equalTo:eventId];
+    
+    [eventQuery getFirstObjectInBackgroundWithBlock:^(PFObject *event, NSError *error) {
+        
+        PFRelation *allowedRelation = [event relationforKey:allowed];
+        PFRelation *anonRelation = [event relationforKey:anonymous];
+        
+        PFQuery *allowedQuery = [allowedRelation query];
+        PFQuery *anonQuery = [anonRelation query];
+        
+        PFQuery *orQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonQuery]];
+        
+        [orQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            
+            NSMutableArray *fbIdArray = [[NSMutableArray alloc] init];
+            for (PFUser *user in objects) {
+                [fbIdArray addObject:[user objectForKey:facebookID]];
+            }
+            
+            PFQuery *userQuery = [PFUser query];
+            [userQuery whereKey:facebookID containedIn:fbIdArray];
+            
+            PFQuery *installationQuery = [PFInstallation query];
+            [installationQuery whereKey:@"user" matchesQuery:userQuery];
+            
+            PFPush *stopTrackingPush = [[PFPush alloc] init];
+            [stopTrackingPush setQuery:installationQuery];
+            [stopTrackingPush setData:@{ @"stopTracking": [NSNull null] }];
+            
+            [stopTrackingPush sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (error) {
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Push Error!"
+                                                                        message:error.description
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                    [alertView show];
+                }
+                
+                if (succeeded) {
+                    NSLog(@"stop tracking push succeded");
+                }
+                
+                if (completionBlock) {
+                    completionBlock();
+                }
+                
+            }];
+            
+        }];
+        
+    }];
+    
 }
 
 @end

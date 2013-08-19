@@ -47,7 +47,7 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
         _statsController.title = @"Stats";
         _mapController.title = @"Map";
         
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese"
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self
                                                                       action:@selector(goBack)];

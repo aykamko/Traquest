@@ -80,6 +80,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)changeRsvpStatus:(id)sender;
 - (void)cancelTracking:(id)sender;
 
+- (void)backFromActiveEvent:(id)sender;
+
 @end
 
 @implementation FBEventDetailsViewController
@@ -866,7 +868,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.view hideToastActivity];
     };
     
-    [self.view makeToastActivity];
     NSInteger selectedSegmentIndex = segmentedControl.selectedSegmentIndex;
     if (selectedSegmentIndex == 0) {
         [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:allowed completion:completionBlock];
@@ -880,22 +881,94 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 #pragma mark Methods for Buttons Pressed
 
 - (void)cancelTracking:(id)sender {
-    [self.scrollView makeToastActivity];
-    [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"] completion:^{
+
+    __block UIActivityIndicatorView *viewMapSpinner;
+    if ([self.viewMapButton superview]) {
+        viewMapSpinner = [[UIActivityIndicatorView alloc]
+                          initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [viewMapSpinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self.viewMapButton setTitle:nil forState:UIControlStateNormal];
+        [self.viewMapButton addSubview:viewMapSpinner];
+        [self.viewMapButton addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapButton
+                                                                       attribute:NSLayoutAttributeCenterX
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:viewMapSpinner
+                                                                       attribute:NSLayoutAttributeCenterX
+                                                                      multiplier:1.0
+                                                                        constant:0.0]];
+        [self.viewMapButton addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapButton
+                                                                       attribute:NSLayoutAttributeCenterY
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:viewMapSpinner
+                                                                       attribute:NSLayoutAttributeCenterY
+                                                                      multiplier:1.0
+                                                                        constant:0.0]];
+        [viewMapSpinner startAnimating];
+    }
+    
+    __block UIActivityIndicatorView *stopTrackingSpinner;
+    if ([self.stopTrackingButton superview]) {
+        stopTrackingSpinner = [[UIActivityIndicatorView alloc]
+                               initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        stopTrackingSpinner.center = self.stopTrackingButton.center;
+        [stopTrackingSpinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self.stopTrackingButton setTitle:nil forState:UIControlStateNormal];
+        [self.stopTrackingButton addSubview:stopTrackingSpinner];
+        [self.stopTrackingButton addConstraint:[NSLayoutConstraint constraintWithItem:self.stopTrackingButton
+                                                                            attribute:NSLayoutAttributeCenterX
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:stopTrackingSpinner
+                                                                            attribute:NSLayoutAttributeCenterX
+                                                                           multiplier:1.0
+                                                                             constant:0.0]];
+        [self.stopTrackingButton addConstraint:[NSLayoutConstraint constraintWithItem:self.stopTrackingButton
+                                                                            attribute:NSLayoutAttributeCenterY
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:stopTrackingSpinner
+                                                                            attribute:NSLayoutAttributeCenterY
+                                                                           multiplier:1.0
+                                                                             constant:0.0]];
+        [stopTrackingSpinner startAnimating];
+    }
+    
+    [[ParseDataStore sharedStore] setTrackingStatus:NO event:self.eventDetails[@"id"] completion:nil];
+    [[ParseDataStore sharedStore] pushEventCancelledToGuestsOfEvent:self.eventDetails[@"id"] completion:^{
         [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{ @"eventId": self.eventDetails[@"id"] } block:^(id object, NSError *error) {
+            
+            if (viewMapSpinner) {
+                [viewMapSpinner stopAnimating];
+                [viewMapSpinner removeFromSuperview];
+            }
+            
+            if (stopTrackingSpinner) {
+                [stopTrackingSpinner stopAnimating];
+                [stopTrackingSpinner removeFromSuperview];
+            }
+            
             if (error) {
-                [self.scrollView hideToastActivity];
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error deleting event!"
                                                                     message:error.localizedDescription
                                                                    delegate:nil
                                                           cancelButtonTitle:@"OK"
                                                           otherButtonTitles:nil];
                 [alertView show];
+                
+                if (self.viewMapButton) {
+                    [self.viewMapButton setTitle:@"View Map" forState:UIControlStateNormal];
+                }
+                if (self.stopTrackingButton) {
+                    [self.stopTrackingButton setTitle:@"Stop Tracking" forState:UIControlStateNormal];
+                }
             } else {
-                NSLog(@"cleared event");
-                [self.scrollView hideToastActivity];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                    message:@"Successfully ended tracking for event."
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                [alertView show];
                 [self addStartTrackingButton];
             }
+            
         }];
     }];
 }
@@ -923,10 +996,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
     UITabBarController *tabBarController = [self.activeEventController presentableViewController];
     
-//    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese"
+//    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
 //                                                                   style:UIBarButtonItemStylePlain
-//                                                                  target:self.activeEventController
-//                                                                  action:@selector(goBack)];
+//                                                                  target:self
+//                                                                  action:@selector(backFromActiveEvent:)];
 //    
 //    [self.navigationItem setBackBarButtonItem:backButton];
     
@@ -935,18 +1008,18 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [[self navigationController] pushViewController:tabBarController animated:YES];
 }
 
--(void)tap:(UIGestureRecognizer*)gr
+- (void)tap:(UIGestureRecognizer*)gr
 {
     //push new popover view with full image
 }
 
--(void)startButtonTouch:(id)sender
+- (void)startButtonTouch:(id)sender
 {
     //set button to be highlighted
     [sender setBackgroundColor: [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
 }
 
--(void)inviteFriends:(id)sender {
+- (void)inviteFriends:(id)sender {
     
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
     FBFriendPickerViewController *friendPicker = [[FBFriendPickerViewController alloc] init];

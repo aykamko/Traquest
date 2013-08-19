@@ -85,9 +85,7 @@
 		7CCF145317BEC3A100D72B73 /* login-button-small-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */; };
 		7CCF145417BEC3A100D72B73 /* login-button-small-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DA9F17A09BC500834B6F /* login-button-small-pressed@2x.png */; };
 		7CCF145517BEC3A100D72B73 /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
-		7CCF145617BEC3A100D72B73 /* EventsPlanner-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C418C6E17A082030084330C /* EventsPlanner-Info.plist */; };
 		7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C418C7817A082030084330C /* Images.xcassets */; };
-		7CCF145817BEC3A100D72B73 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7C418C6F17A082030084330C /* InfoPlist.strings */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
 		7CE691E317B6E34700D3D8AB /* CreateEventTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */; };
 		7CE691E917B6EE2C00D3D8AB /* GraphicsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E817B6EE2C00D3D8AB /* GraphicsConstants.m */; };
@@ -142,7 +140,7 @@
 		7C2CFFC717B9B386003A2C8F /* CreateEventPlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventPlacePickerViewController.m; sourceTree = "<group>"; };
 		7C2CFFC917B9C8F4003A2C8F /* CreateEventModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventModel.h; sourceTree = "<group>"; };
 		7C2CFFCA17B9C8F4003A2C8F /* CreateEventModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventModel.m; sourceTree = "<group>"; };
-		7C418C6317A082030084330C /* EventsPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C418C6317A082030084330C /* Traquest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Traquest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C418C6617A082030084330C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7C418C6817A082030084330C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		7C418C6A17A082030084330C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -303,7 +301,7 @@
 		7C418C6417A082030084330C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7C418C6317A082030084330C /* EventsPlanner.app */,
+				7C418C6317A082030084330C /* Traquest.app */,
 				7C418C7E17A082030084330C /* EventsPlannerTests.xctest */,
 			);
 			name = Products;
@@ -567,7 +565,7 @@
 			);
 			name = EventsPlanner;
 			productName = EventsPlanner;
-			productReference = 7C418C6317A082030084330C /* EventsPlanner.app */;
+			productReference = 7C418C6317A082030084330C /* Traquest.app */;
 			productType = "com.apple.product-type.application";
 		};
 		7C418C7D17A082030084330C /* EventsPlannerTests */ = {
@@ -655,9 +653,7 @@
 				7CCF145317BEC3A100D72B73 /* login-button-small-pressed.png in Resources */,
 				7CCF145417BEC3A100D72B73 /* login-button-small-pressed@2x.png in Resources */,
 				7CCF145517BEC3A100D72B73 /* login-button-small.png in Resources */,
-				7CCF145617BEC3A100D72B73 /* EventsPlanner-Info.plist in Resources */,
 				7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */,
-				7CCF145817BEC3A100D72B73 /* InfoPlist.strings in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */,
 			);
@@ -802,7 +798,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 			};
@@ -837,7 +833,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
@@ -859,8 +855,8 @@
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PRODUCT_NAME = Traquest;
+				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -881,8 +877,8 @@
 				GCC_PREFIX_HEADER = "EventsPlanner/EventsPlanner-Prefix.pch";
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PRODUCT_NAME = Traquest;
+				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
