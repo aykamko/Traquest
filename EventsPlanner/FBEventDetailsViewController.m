@@ -902,10 +902,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                                   venueLocation:_venueLocation];
 
     UITabBarController *tabBarController = [self.activeEventController presentableViewController];
-    
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese" style:UIBarButtonItemStylePlain target:self.activeEventController action:@selector(goBack)];
-    
-    [self.navigationItem setBackBarButtonItem:backButton];
+//
+//    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese"
+//                                                                   style:UIBarButtonItemStylePlain
+//                                                                  target:self.activeEventController
+//                                                                  action:@selector(goBack)];
+//    
+//    [self.navigationItem setBackBarButtonItem:backButton];
     [[self navigationController] pushViewController:tabBarController animated:YES];
 }
 
