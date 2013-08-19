@@ -661,11 +661,25 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [self.dimensionsDict addEntriesFromDictionary:
           @{ @"segmentedControlHeight": self.dimensionsDict[@"viewMapButtonHeight"] }];
     
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
+                                        initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.scrollView addSubview:spinner];
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"segmentedControlSpinner": spinner }];
+    
+    [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:spinner
+                                                                attribute:NSLayoutAttributeCenterX
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:self.scrollView
+                                                                attribute:NSLayoutAttributeCenterX
+                                                               multiplier:1.0
+                                                                 constant:0.0]];
+    
     if (self.verticalLayoutContraints) {
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
     }
     
-    self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
+    self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(20)-[segmentedControlSpinner]-(20)-|";
     self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
                                                                             options:0
                                                                             metrics:self.dimensionsDict
@@ -677,10 +691,15 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                      metrics:self.dimensionsDict
                                      views:self.viewsDictionary]];
     
+    [spinner startAnimating];
+    
     [[ParseDataStore sharedStore] fetchPermissionForEvent:self.eventDetails[@"id"] completion:^(NSString *identity) {
         
         NSInteger selectedIndex = [self segmentedControlIndexForPermission:identity];
         [self.segmentedControl setSelectedSegmentIndex:selectedIndex];
+        
+        [spinner stopAnimating];
+        [spinner removeFromSuperview];
         
         [self.scrollView addSubview:self.segmentedControl];
         
@@ -903,13 +922,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                                   venueLocation:_venueLocation];
 
     UITabBarController *tabBarController = [self.activeEventController presentableViewController];
-//
+    
 //    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese"
 //                                                                   style:UIBarButtonItemStylePlain
 //                                                                  target:self.activeEventController
 //                                                                  action:@selector(goBack)];
 //    
 //    [self.navigationItem setBackBarButtonItem:backButton];
+    
     [[self navigationController] pushViewController:tabBarController animated:YES];
 }
 
