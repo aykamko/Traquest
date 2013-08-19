@@ -187,11 +187,28 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)startTrackingMyLocationIfAllowed
 {
-    if (![self isLoggedIn]) {
+    if (!([self isLoggedIn]&&[self verifyIfTrackingAllowed])) {
         return;
     }
     
     [_locationManager startUpdatingLocation];
+}
+
+- (BOOL)verifyIfTrackingAllowed {
+    PFQuery *allowedQuery = [PFQuery queryWithClassName:@"Event"];
+    PFQuery *anonymousQuery = [PFQuery queryWithClassName:@"Event"];
+    
+    [allowedQuery whereKey:allowed equalTo:[PFUser currentUser]];
+    [anonymousQuery whereKey:anonymous equalTo:[PFUser currentUser]];
+    
+    PFQuery *combinedQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonymousQuery]];
+    
+    NSArray *results = [combinedQuery findObjects];
+    if (!results || [results count]==0) {
+        [self.locationManager stopUpdatingLocation];
+        return NO;
+    }
+    return YES;
 }
 
 - (void)changePermissionForEvent:(NSString *)eventId identity:(NSString *)identity completion:(void (^)())completionBlock
@@ -211,6 +228,12 @@ NSString * const kDeclinedEventsKey = @"declined";
         [newRelation addObject:[PFUser currentUser]];
         
         [event saveInBackground];
+        
+        if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
+            [self startTrackingMyLocationIfAllowed];
+        } else {
+            [self.locationManager stopUpdatingLocation];
+        }
         
         if (completionBlock) {
             completionBlock();
