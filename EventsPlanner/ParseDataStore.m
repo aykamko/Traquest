@@ -236,40 +236,40 @@ NSString * const kDeclinedEventsKey = @"declined";
         
         PFQuery *allowedQuery =  [allowedRelation query];
         PFQuery *anonQuery = [anonRelation query];
-        
-        PFQuery *compoundQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonQuery]];
-        
-        [compoundQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            NSLog(@"%@",objects);
-            if (completionBlock) {
-                if ([objects[0] containsObject:[PFUser currentUser]]) {
-                    completionBlock(allowed);
-                } else if ([objects[1] containsObject:[PFUser currentUser]]) {
-                    completionBlock(anonymous);
-                }else {
-                    completionBlock(notAllowed);
-                }
-            }
-        }];
-        
-//        [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
-//            __block NSArray *allowedUsers = [allowedObjects copy];
-//            
-//            [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {
-//                
-//                if (completionBlock) {
-//                    
-//                    if ([allowedObjects containsObject:[PFUser currentUser]]) {
-//                        completionBlock(allowed);
-//                    } else if ([anonObjects containsObject:[PFUser currentUser]]) {
-//                        completionBlock(anonymous);
-//                    } else {
-//                        completionBlock(notAllowed);
-//                    }
-//                    
+//        
+//        PFQuery *compoundQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonQuery]];
+//        
+//        [compoundQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//            NSLog(@"%@",objects);
+//            if (completionBlock) {
+//                if ([objects[0] containsObject:[PFUser currentUser]]) {
+//                    completionBlock(allowed);
+//                } else if ([objects[1] containsObject:[PFUser currentUser]]) {
+//                    completionBlock(anonymous);
+//                }else {
+//                    completionBlock(notAllowed);
 //                }
-//            }];
+//            }
 //        }];
+        
+        [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
+            __block NSArray *allowedUsers = [allowedObjects copy];
+            
+            [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {
+                
+                if (completionBlock) {
+                    
+                    if ([allowedUsers containsObject:[PFUser currentUser]]) {
+                        completionBlock(allowed);
+                    } else if ([anonObjects containsObject:[PFUser currentUser]]) {
+                        completionBlock(anonymous);
+                    } else {
+                        completionBlock(notAllowed);
+                    }
+                    
+                }
+            }];
+        }];
     }];
 //    
 //    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
@@ -877,25 +877,25 @@ NSString * const kDeclinedEventsKey = @"declined";
         PFQuery *allowedQuery =  [allowedRelation query];
         PFQuery *anonQuery = [anonRelation query];
         
-        PFQuery *compoundQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonQuery]];
-        
-        [compoundQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            NSLog(@"%@", objects);
-            
-            if (completionBlock) {
-                completionBlock(objects[0], objects[1]);
-            }
-            
-        }];
-        
-//        [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
-//            __block NSArray *allowedUsers = [allowedObjects copy];
-//            [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {
-//                if (completionBlock) {
-//                    completionBlock(allowedUsers, anonObjects);
-//                }
-//            }];
+//        PFQuery *compoundQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonQuery]];
+//        
+//        [compoundQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//            NSLog(@"%@", objects);
+//            
+//            if (completionBlock) {
+//               // completionBlock(objects[0], objects[1]);
+//            }
+//            
 //        }];
+        
+        [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
+            __block NSArray *allowedUsers = [allowedObjects copy];
+            [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {
+                if (completionBlock) {
+                    completionBlock(allowedUsers, anonObjects);
+                }
+            }];
+        }];
     }];
 }
 

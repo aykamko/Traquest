@@ -25,6 +25,7 @@ static const float kButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
 static const float kLatitudeAdjustment = 0.0008;
 static const float kLongitudeAsjustment = 0;
+static const BOOL kAllowTrackingForNonActiveEvents = YES;
 
 static NSInteger const kActionSheetCancelButtonIndex = 3;
 
@@ -551,7 +552,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             [self addViewMapButtonAndSegmentedControlForTrackingSettings];
         }
     
-    } else if (self.isHost && [self isActive]) {
+    } else if (self.isHost && ([self isActive]||kAllowTrackingForNonActiveEvents)) {
         
         [self addStartTrackingButton];
 
@@ -902,16 +903,15 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 //        return;
 //    }
     
-    //TODO: so so so so bad omfg
     self.fetchedNewData = NO;
     self.activeEventController = [[ActiveEventController alloc] initWithEventId:self.eventDetails[@"id"]
                                                                   venueLocation:_venueLocation];
 
     UITabBarController *tabBarController = [self.activeEventController presentableViewController];
     
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self.activeEventController action:@selector(goBack)];
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cheese" style:UIBarButtonItemStylePlain target:self.activeEventController action:@selector(goBack)];
     
-    [self.tabBarController.navigationItem setBackBarButtonItem:backButton];
+    [self.navigationItem setBackBarButtonItem:backButton];
     [[self navigationController] pushViewController:tabBarController animated:YES];
 }
 
