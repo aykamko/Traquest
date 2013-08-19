@@ -96,6 +96,12 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
                                                 userInfo:nil
                                                  repeats:YES];
     [self.timer fire];
+    
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.5, -122.7);
+    MKPointAnnotation    *annot = [[MKPointAnnotation alloc]init];
+    annot.coordinate = coord;
+    [self zoomToFitMapAnnotations];
+    
 }
 
 
@@ -206,6 +212,8 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
         
     }];
     
+   
+    
 }
 
 
@@ -221,22 +229,27 @@ static const NSInteger UpdateFrequencyInSeconds = 2.0;
         if ([[annotation title] isEqualToString:@"Venue Location"]){
             pinView.pinColor = MKPinAnnotationColorRed;
         } else {
-            pinView.pinColor = MKPinAnnotationColorGreen;
+            pinView.image = [UIImage imageNamed:@"greenLocation.png"];
+
             if (fbIdAnnotation.anonymous == NO) {
                 pinView.leftCalloutAccessoryView = [[UIImageView alloc]
                                                     initWithImage:self.guestData[fbIdAnnotation.fbId][@"userPic"]];
+               
             }
         }
         
-        pinView.canShowCallout = YES;
-        pinView.animatesDrop = YES;
+      
+        
+     
+        
         
     } else {
         
         pinView.annotation = annotation;
         
     }
-    
+    pinView.canShowCallout = YES;
+   // pinView.animatesDrop = YES;
     return pinView;
 }
 

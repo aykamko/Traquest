@@ -168,39 +168,39 @@
                                                                           metrics:0
                                                                             views:viewDict]];
     
-    NSString *logoLabelText = @"Events\nPlanner";
-    UIFont *logoLabelFont = [UIFont fontWithName:@"Noteworthy-Bold" size:30];
-    CGSize sizeOfText = [logoLabelText sizeWithFont:logoLabelFont
-                                  constrainedToSize:CGSizeMake(1000.0f, 1000.0f)
-                                      lineBreakMode:NSLineBreakByWordWrapping];
+//    NSString *logoLabelText = @"Events\nPlanner";
+//    UIFont *logoLabelFont = [UIFont fontWithName:@"Noteworthy-Bold" size:30];
+//    CGSize sizeOfText = [logoLabelText sizeWithFont:logoLabelFont
+//                                  constrainedToSize:CGSizeMake(1000.0f, 1000.0f)
+//                                      lineBreakMode:NSLineBreakByWordWrapping];
+////    
+////    self.logoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, sizeOfText.width, sizeOfText.height)];
+//    [self.logoLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+//    [viewDict addEntriesFromDictionary:@{ @"logoLabel":self.logoLabel }];
+//    self.logoLabel.numberOfLines = 2;
+//    self.logoLabel.textAlignment = NSTextAlignmentCenter;
+//    self.logoLabel.text = logoLabelText;
+//    self.logoLabel.font = logoLabelFont;
+//    self.logoLabel.textColor = [UIColor blackColor];
+//    self.logoLabel.backgroundColor = [UIColor clearColor];
     
-    self.logoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, sizeOfText.width, sizeOfText.height)];
-    [self.logoLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [viewDict addEntriesFromDictionary:@{ @"logoLabel":self.logoLabel }];
-    self.logoLabel.numberOfLines = 2;
-    self.logoLabel.textAlignment = NSTextAlignmentCenter;
-    self.logoLabel.text = logoLabelText;
-    self.logoLabel.font = logoLabelFont;
-    self.logoLabel.textColor = [UIColor blackColor];
-    self.logoLabel.backgroundColor = [UIColor clearColor];
-    
-    self.logoLabel.transform = CGAffineTransformMakeRotation(-13 * M_PI/180.0);
-    [imageView addSubview:self.logoLabel];
-    [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
-                                                          attribute:NSLayoutAttributeCenterX
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.logoLabel
-                                                          attribute:NSLayoutAttributeCenterX
-                                                         multiplier:1.0
-                                                           constant:0.0]];
-    [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
-                                                          attribute:NSLayoutAttributeCenterY
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.logoLabel
-                                                          attribute:NSLayoutAttributeCenterY
-                                                         multiplier:1.0
-                                                           constant:0.0]];
-
+//    self.logoLabel.transform = CGAffineTransformMakeRotation(-13 * M_PI/180.0);
+//    [imageView addSubview:self.logoLabel];
+//    [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+//                                                          attribute:NSLayoutAttributeCenterX
+//                                                          relatedBy:NSLayoutRelationEqual
+//                                                             toItem:self.logoLabel
+//                                                          attribute:NSLayoutAttributeCenterX
+//                                                         multiplier:1.0
+//                                                           constant:0.0]];
+//    [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+//                                                          attribute:NSLayoutAttributeCenterY
+//                                                          relatedBy:NSLayoutRelationEqual
+//                                                             toItem:self.logoLabel
+//                                                          attribute:NSLayoutAttributeCenterY
+//                                                         multiplier:1.0
+//                                                           constant:0.0]];
+//
     
 }
 

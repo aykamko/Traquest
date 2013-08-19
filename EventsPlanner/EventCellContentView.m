@@ -66,7 +66,7 @@
                                                                                  relatedBy:NSLayoutRelationEqual
                                                                                     toItem:_eventDateLabel
                                                                                  attribute:NSLayoutAttributeBottom
-                                                                                multiplier:1.0
+                                                                                multiplier:0.8
                                                                                   constant:kMargins];
         NSLayoutConstraint *dateLeftConstraint = [NSLayoutConstraint constraintWithItem:_eventTitleLabel
                                                                                attribute:NSLayoutAttributeLeading

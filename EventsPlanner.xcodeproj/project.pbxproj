@@ -96,6 +96,8 @@
 		7CED113317B03A6D005B533D /* FBEventStatusViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CED113217B03A6D005B533D /* FBEventStatusViewDataSource.m */; };
 		90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EBE17A31D450038BBFB /* ActiveEventsStatsViewController.m */; };
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
+		90235CC117C2ADB400A0B99A /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 90235CC017C2ADB400A0B99A /* stickynote.png */; };
+		90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90235CC217C2B46700A0B99A /* greenLocation@2x.png */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
 
@@ -223,6 +225,8 @@
 		90130EC017A31D450038BBFB /* EventsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsListController.m; sourceTree = "<group>"; };
 		90202D0017B5BE0C00C0CA66 /* FBIdAnnotationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBIdAnnotationPoint.h; sourceTree = "<group>"; };
 		90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIdAnnotationPoint.m; sourceTree = "<group>"; };
+		90235CC017C2ADB400A0B99A /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
+		90235CC217C2B46700A0B99A /* greenLocation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greenLocation@2x.png"; sourceTree = "<group>"; };
 		90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-normal@2x.png"; sourceTree = "<group>"; };
 		90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-pressed@2x.png"; sourceTree = "<group>"; };
 		90B4DDAC17BC207D00E83799 /* silver-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "silver-button-normal.png"; sourceTree = "<group>"; };
@@ -442,6 +446,8 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				90235CC217C2B46700A0B99A /* greenLocation@2x.png */,
+				90235CC017C2ADB400A0B99A /* stickynote.png */,
 				76502FEF17BE9CBB00EC839B /* hostIcon@2x.png */,
 				7CA8A09017BEB5E000FF3D8E /* Checkmark@2x.png */,
 				7CA8A09117BEB5E000FF3D8E /* Clock@2x.png */,
@@ -634,6 +640,7 @@
 				7CCF144A17BEC3A100D72B73 /* loginBackgroundIPhonePortrait@2x.png in Resources */,
 				7CCF144B17BEC3A100D72B73 /* silver-button-normal.png in Resources */,
 				7CCF144C17BEC3A100D72B73 /* silver-button-normal@2x.png in Resources */,
+				90235CC117C2ADB400A0B99A /* stickynote.png in Resources */,
 				7CCF144D17BEC3A100D72B73 /* silver-button-pressed.png in Resources */,
 				7CCF144E17BEC3A100D72B73 /* silver-button-pressed@2x.png in Resources */,
 				7CCF144F17BEC3A100D72B73 /* eventCoverPhoto.png in Resources */,
@@ -647,6 +654,7 @@
 				7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */,
 				7CCF145817BEC3A100D72B73 /* InfoPlist.strings in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
+				90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
