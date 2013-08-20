@@ -557,7 +557,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             [self addViewMapButtonAndSegmentedControlForTrackingSettings];
         }
     
-    } else if (self.isHost && ([self isActive]||kAllowTrackingForNonActiveEvents)) {
+    } else if (self.isHost && ([self isActive] || kAllowTrackingForNonActiveEvents)) {
         
         [self addStartTrackingButton];
 
@@ -653,10 +653,11 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)addViewMapButtonAndSegmentedControlForTrackingSettings
 {
     
-    self.viewMapLabel = [self createViewMapButton];
+    UILabel *viewMapLabel = [self createViewMapButton];
    // [self.dimensionsDict addEntriesFromDictionary:@{@"viewMapLabelHeight":@30}];
                                                     
-    [self.scrollView addSubview:self.viewMapLabel];
+    [self.scrollView addSubview:viewMapLabel];
+    self.viewMapLabel = viewMapLabel;
     [self.viewsDictionary addEntriesFromDictionary:@{ @"_viewMapLabel": self.viewMapLabel }];
     
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]

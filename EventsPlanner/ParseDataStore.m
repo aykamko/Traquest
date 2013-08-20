@@ -248,7 +248,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
                 [self startTrackingMyLocationIfAllowed];
             } else {
-                [self stopTrackingMyLocation];
+                [self verifyIfTrackingAllowed];
             }
         }];
         
