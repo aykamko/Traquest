@@ -711,8 +711,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         self.segmentedControl = segmentedControl;
         
         [self.viewsDictionary addEntriesFromDictionary:@{ @"segmentedControl": self.segmentedControl }];
-        [self.dimensionsDict addEntriesFromDictionary:
-         @{ @"segmentedControlHeight": self.dimensionsDict[@"viewMapButtonHeight"] }];
+        [self.dimensionsDict addEntriesFromDictionary:@{ @"segmentedControlHeight": [NSNumber numberWithFloat:40] }];
     
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
         
@@ -1055,11 +1054,9 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)clickedOnMap:(UITapGestureRecognizer *)recognizer
 {
 
-    if ([[ParseDataStore sharedStore] isTracking])
-    {
+    if ([self isTracking]) {
         [self loadMapView:nil];
-    }
-    else{
+    } else {
         MKMapView *plainMap = [[MKMapView alloc] init];
         [plainMap setRegion:MKCoordinateRegionMakeWithDistance(_venueLocation, 400, 400) animated:NO];
         
@@ -1067,10 +1064,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         annot.coordinate = _venueLocation;
         [plainMap addAnnotation:annot];
         
-       UIViewController *mapViewController = [[UIViewController alloc]init];
-       mapViewController.view = plainMap;
+        UIViewController *mapViewController = [[UIViewController alloc]init];
+        mapViewController.view = plainMap;
+        
         [[self navigationController] pushViewController:mapViewController animated:YES];
-
     }
 }
 

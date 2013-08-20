@@ -357,7 +357,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     }
     
     [[PFUser currentUser] setObject:locationsArray forKey:kLocationData];
-    [[PFUser currentUser] saveInBackground];
+    [[PFUser currentUser] save];
 
 //    if (_justStartedTracking) {
 //        _justStartedTracking = NO;
