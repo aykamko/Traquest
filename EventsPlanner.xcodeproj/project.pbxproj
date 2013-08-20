@@ -101,6 +101,8 @@
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
 		90235CC117C2ADB400A0B99A /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 90235CC017C2ADB400A0B99A /* stickynote.png */; };
 		90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90235CC217C2B46700A0B99A /* greenLocation@2x.png */; };
+		9037C77B17C3D7A600F17C39 /* MarkerFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9037C77A17C3D7A600F17C39 /* MarkerFinal@2x.png */; };
+		9037C77F17C3D9A700F17C39 /* listFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9037C77E17C3D9A700F17C39 /* listFinal@2x.png */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
 
@@ -237,6 +239,9 @@
 		90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIdAnnotationPoint.m; sourceTree = "<group>"; };
 		90235CC017C2ADB400A0B99A /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
 		90235CC217C2B46700A0B99A /* greenLocation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greenLocation@2x.png"; sourceTree = "<group>"; };
+		9037C77A17C3D7A600F17C39 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "MarkerFinal@2x.png"; path = "EventsPlanner/MarkerFinal@2x.png"; sourceTree = "<group>"; };
+		9037C77C17C3D7AD00F17C39 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MarkerFinal@2x.png"; sourceTree = "<group>"; };
+		9037C77E17C3D9A700F17C39 /* listFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "listFinal@2x.png"; path = "Image Assets/listFinal@2x.png"; sourceTree = "<group>"; };
 		90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-normal@2x.png"; sourceTree = "<group>"; };
 		90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-pressed@2x.png"; sourceTree = "<group>"; };
 		90B4DDAC17BC207D00E83799 /* silver-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "silver-button-normal.png"; sourceTree = "<group>"; };
@@ -300,6 +305,8 @@
 		7C418C5A17A082030084330C = {
 			isa = PBXGroup;
 			children = (
+				9037C77E17C3D9A700F17C39 /* listFinal@2x.png */,
+				9037C77A17C3D7A600F17C39 /* MarkerFinal@2x.png */,
 				7C418C6C17A082030084330C /* EventsPlanner */,
 				7C418C8517A082030084330C /* EventsPlannerTests */,
 				7C418C6517A082030084330C /* Frameworks */,
@@ -460,6 +467,7 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9037C77C17C3D7AD00F17C39 /* MarkerFinal@2x.png */,
 				90235CC217C2B46700A0B99A /* greenLocation@2x.png */,
 				7CE4E59C17C30031001583FA /* MarkerFinal@2x.png */,
 				7CE4E59717C2E5DE001583FA /* guest-location@2x.png */,
@@ -610,6 +618,7 @@
 				ORGANIZATIONNAME = FBU;
 				TargetAttributes = {
 					7C418C6217A082030084330C = {
+						DevelopmentTeam = 75E82M9UVH;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -644,6 +653,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9037C77F17C3D9A700F17C39 /* listFinal@2x.png in Resources */,
 				7CCF144017BEC3A100D72B73 /* hostIcon@2x.png in Resources */,
 				7CCF144117BEC3A100D72B73 /* Checkmark@2x.png in Resources */,
 				7CCF144217BEC3A100D72B73 /* Clock@2x.png in Resources */,
@@ -671,6 +681,7 @@
 				7CE4E59D17C30031001583FA /* MarkerFinal@2x.png in Resources */,
 				7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */,
 				7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */,
+				9037C77B17C3D7A600F17C39 /* MarkerFinal@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */,
 			);
@@ -863,7 +874,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Alice Sun (SME9C9DXHM)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -874,7 +885,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Traquest;
-				PROVISIONING_PROFILE = "2F925A4B-C4AB-493E-B253-A51B1D45A49E";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -886,7 +897,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Alice Sun (SME9C9DXHM)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -896,7 +907,7 @@
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = Traquest;
-				PROVISIONING_PROFILE = "2F925A4B-C4AB-493E-B253-A51B1D45A49E";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;

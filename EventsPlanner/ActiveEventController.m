@@ -47,7 +47,6 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
                                                             venueLocation:venueLocation];
         
         [_tabBarController setViewControllers:@[mapController, statsController]];
-        
         self.mapController = mapController;
         self.statsController = statsController;
         self.statsController.title = @"Stats";

@@ -47,7 +47,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) NSMutableArray *allAttendingFriends;
 @property BOOL justStartedTracking;
-@property BOOL isTracking;
 
 @property (copy, nonatomic) void (^locationCompletionBlock)(CLLocation *location);
 
@@ -333,11 +332,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> rounded edges
     CLLocation *location = [locations lastObject];
     
     if (self.locationCompletionBlock) {
@@ -350,7 +344,6 @@ NSString * const kDeclinedEventsKey = @"declined";
     self.userCurrentLocation = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
                                                   longitude:coordinate.longitude];
     
-<<<<<<< HEAD
     [[PFUser currentUser] setObject:self.userCurrentLocation forKey:@"location"];
     NSArray *locationsArray = [[PFUser currentUser] objectForKey:kLocationData];
     
@@ -364,9 +357,6 @@ NSString * const kDeclinedEventsKey = @"declined";
     }
     
     [[PFUser currentUser] setObject:locationsArray forKey:kLocationData];
-=======
-    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
->>>>>>> rounded edges
     [[PFUser currentUser] saveInBackground];
 
 //    if (_justStartedTracking) {

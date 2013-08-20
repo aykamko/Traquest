@@ -199,6 +199,7 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
                     annotationView.leftCalloutAccessoryView = profilePicImageView;
                     
                 }];
+            
         } else {
             
             annotationView = (GuestAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];

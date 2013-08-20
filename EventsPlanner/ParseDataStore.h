@@ -29,6 +29,7 @@ extern NSString * const kDeclinedEventsKey;
 @interface ParseDataStore : NSObject
 
 @property (readonly, nonatomic) BOOL isLoggedIn;
+@property BOOL isTracking;
 @property (strong, nonatomic) NSString *myId;
 @property (readonly, nonatomic, strong) NSMutableDictionary *trackingCount;
 

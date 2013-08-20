@@ -52,6 +52,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, weak) UIButton *viewMapButton;
 @property (nonatomic, weak) UISegmentedControl *segmentedControl;
 @property (nonatomic, weak) UIActivityIndicatorView *spinner;
+@property (nonatomic, weak) UILabel *viewMapLabel;
 
 @property (nonatomic, strong) NSMutableDictionary *dimensionsDict;
 @property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
@@ -579,8 +580,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.stopTrackingButton removeFromSuperview];
     }
     
-    if ([self.viewMapButton superview]) {
-        [self.viewMapButton removeFromSuperview];
+    if ([self.viewMapLabel superview]) {
+        [self.viewMapLabel removeFromSuperview];
     }
     
     UIButton *startTrackingButton = [self createStartTrackingButton];
@@ -615,11 +616,10 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.startTrackingButton removeFromSuperview];
     }
     
-    UIButton *viewMapButton = [self createViewMapButton];
+    self.viewMapLabel = [self createViewMapButton];
     
-    [self.scrollView addSubview:viewMapButton];
-    self.viewMapButton = viewMapButton;
-    [self.viewsDictionary addEntriesFromDictionary:@{ @"viewMapButton": self.viewMapButton }];
+    [self.scrollView addSubview:self.viewMapLabel];
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"_viewMapLabel": self.viewMapLabel }];
     
     
     UIButton *stopTrackingButton = [self createStopTrackingButton];
@@ -631,33 +631,33 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
     }
     
-    NSString *layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(sideMargin)-[stopTrackingButton(stopTrackingButtonHeight)]-|";
+    NSString *layoutConstraint = @"V:[_buttonHolder]-[_viewMapLabel][_detailsTable(detailsTableContentHeight)]-(sideMargin)-[stopTrackingButton(stopTrackingButtonHeight)]-|";
     self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:layoutConstraint
                                                                             options:0
                                                                             metrics:self.dimensionsDict
                                                                               views:self.viewsDictionary];
     [self.scrollView addConstraints:self.verticalLayoutContraints];
     [self.scrollView addConstraints:[NSLayoutConstraint
-                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[viewMapButton(screenWidthWithMargin)]-(sideMargin)-|"
+                                    constraintsWithVisualFormat:@"H:|-(sideMargin)-[_viewMapLabel(screenWidthWithMargin)]-(sideMargin)-|"
                                      options:0
-                                     metrics:self.dimensionsDict
-                                     views:self.viewsDictionary]];
+                                    metrics:self.dimensionsDict
+                                    views:self.viewsDictionary]];
     [self.scrollView addConstraints:[NSLayoutConstraint
                                      constraintsWithVisualFormat:@"H:|-(sideMargin)-[stopTrackingButton(screenWidthWithMargin)]-(sideMargin)-|"
                                      options:0
                                      metrics:self.dimensionsDict
                                      views:self.viewsDictionary]];
-    
+ 
 }
 
 - (void)addViewMapButtonAndSegmentedControlForTrackingSettings
 {
     
-    UIButton *viewMapButton = [self createViewMapButton];
-    
-    [self.scrollView addSubview:viewMapButton];
-    self.viewMapButton = viewMapButton;
-    [self.viewsDictionary addEntriesFromDictionary:@{ @"viewMapButton": self.viewMapButton }];
+    self.viewMapLabel = [self createViewMapButton];
+   // [self.dimensionsDict addEntriesFromDictionary:@{@"viewMapLabelHeight":@30}];
+                                                    
+    [self.scrollView addSubview:self.viewMapLabel];
+    [self.viewsDictionary addEntriesFromDictionary:@{ @"_viewMapLabel": self.viewMapLabel }];
     
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                         initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -678,18 +678,18 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
     }
     
-    NSString *layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(20)-[segmentedControlSpinner]-(20)-|";
+    NSString *layoutConstraint = @"V:[_buttonHolder]-[_viewMapLabel][_detailsTable(detailsTableContentHeight)]-(20)-[segmentedControlSpinner]-(20)-|";
     self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:layoutConstraint
                                                                             options:0
                                                                             metrics:self.dimensionsDict
                                                                               views:self.viewsDictionary];
     [self.scrollView addConstraints:self.verticalLayoutContraints];
     [self.scrollView addConstraints:[NSLayoutConstraint
-                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[viewMapButton(screenWidthWithMargin)]-(sideMargin)-|"
+                                     constraintsWithVisualFormat:@"H:|-(sideMargin)-[_viewMapLabel(screenWidthWithMargin)]-(sideMargin)-|"
                                      options:0
-                                     metrics:self.dimensionsDict
-                                     views:self.viewsDictionary]];
-    
+                                  metrics:self.dimensionsDict
+                                    views:self.viewsDictionary]];
+  
     [spinner startAnimating];
     
     [[ParseDataStore sharedStore] fetchPermissionForEvent:self.eventDetails[@"id"] completion:^(NSString *identity) {
@@ -716,7 +716,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
         
-        NSString *layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-[segmentedControl(segmentedControlHeight)]-|";
+        NSString *layoutConstraint = @"V:[_buttonHolder]-[_viewMapLabel][_detailsTable(detailsTableContentHeight)]-[segmentedControl(segmentedControlHeight)]-|";
         self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:layoutConstraint
                                                                                 options:0
                                                                                 metrics:self.dimensionsDict
@@ -750,13 +750,16 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                       dimensionDictKey:@"stopTrackingButtonHeight"];
 }
 
-- (UIButton *)createViewMapButton
+- (UILabel *)createViewMapButton
 {
-    return [self createButtonWithTitle:@"View Map"
-                           normalImage:[UIImage imageNamed:@"silver-button-normal.png"]
-                          pressedImage:[UIImage imageNamed:@"silver-button-pressed.png"]
-                              selector:@selector(loadMapView:)
-                      dimensionDictKey:@"viewMapButtonHeight"];
+    UILabel *viewMap = [[UILabel alloc] init];
+    [viewMap setTranslatesAutoresizingMaskIntoConstraints:NO];
+    viewMap.text = @"Event is active. Press map to view.";
+    [viewMap setFont:[UIFont systemFontOfSize:12]];
+    viewMap.textColor = [UIColor colorWithRed:0 green:128/255.0f blue:0 alpha:1];
+    viewMap.textAlignment = NSTextAlignmentCenter;
+    return viewMap;
+
 }
 
 - (UIButton *)createButtonWithTitle:(NSString *)title
@@ -893,20 +896,20 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)cancelTracking:(id)sender {
 
     __block UIActivityIndicatorView *viewMapSpinner;
-    if ([self.viewMapButton superview]) {
+    if ([self.viewMapLabel superview]) {
         viewMapSpinner = [[UIActivityIndicatorView alloc]
                           initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [viewMapSpinner setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [self.viewMapButton setTitle:nil forState:UIControlStateNormal];
-        [self.viewMapButton addSubview:viewMapSpinner];
-        [self.viewMapButton addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapButton
+        [self.viewMapLabel setText:nil];
+        [self.viewMapLabel addSubview:viewMapSpinner];
+        [self.viewMapLabel addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapLabel
                                                                        attribute:NSLayoutAttributeCenterX
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:viewMapSpinner
                                                                        attribute:NSLayoutAttributeCenterX
                                                                       multiplier:1.0
                                                                         constant:0.0]];
-        [self.viewMapButton addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapButton
+        [self.viewMapLabel addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapLabel
                                                                        attribute:NSLayoutAttributeCenterY
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:viewMapSpinner
@@ -961,9 +964,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                                    delegate:nil
                                                           cancelButtonTitle:@"OK"
                                                           otherButtonTitles:nil];
-                [alertView show];                
-                if (self.viewMapButton) {
-                    [self.viewMapButton setTitle:@"View Map" forState:UIControlStateNormal]; } if (self.stopTrackingButton) {
+                [alertView show];
+                
+                if (self.viewMapLabel) {
+                    [self.viewMapLabel setText:@"View Map"];
+                }
+                if (self.stopTrackingButton) {
                     [self.stopTrackingButton setTitle:@"Stop Tracking" forState:UIControlStateNormal];
                 }
             } else {
@@ -978,6 +984,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             
         }];
     }];
+    self.tracking = NO;
+    //self.active = NO;
 }
 
 - (void)startTracking:(id)sender
@@ -1046,20 +1054,21 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)clickedOnMap:(UITapGestureRecognizer *)recognizer
 {
-    MKMapView *plainMap = [[MKMapView alloc] init];
-    [plainMap setRegion:MKCoordinateRegionMakeWithDistance(_venueLocation, 200, 200) animated:NO];
-    
-    MKPointAnnotation *annot = [[MKPointAnnotation alloc] init];
-    annot.coordinate = _venueLocation;
-    [plainMap addAnnotation:annot];
-    
-    UIViewController *mapViewController = [[UIViewController alloc]init];
-    mapViewController.view = plainMap;
-    if ([self isTracking])
+
+    if ([[ParseDataStore sharedStore] isTracking])
     {
-        //[[self navigationController]pushViewController:_activeTabBarController animated:YES];
+        [self loadMapView:nil];
     }
     else{
+        MKMapView *plainMap = [[MKMapView alloc] init];
+        [plainMap setRegion:MKCoordinateRegionMakeWithDistance(_venueLocation, 400, 400) animated:NO];
+        
+        MKPointAnnotation *annot = [[MKPointAnnotation alloc] init];
+        annot.coordinate = _venueLocation;
+        [plainMap addAnnotation:annot];
+        
+       UIViewController *mapViewController = [[UIViewController alloc]init];
+       mapViewController.view = plainMap;
         [[self navigationController] pushViewController:mapViewController animated:YES];
 
     }
