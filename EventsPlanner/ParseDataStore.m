@@ -737,10 +737,11 @@ NSString * const kDeclinedEventsKey = @"declined";
         
     }];
 }
-- (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
+- (void)fetchEventDetailsForEvent:(NSString *)eventId useCache:(BOOL)usesCache completion:(void (^)(NSDictionary *eventDetails))completionBlock
 {
     // Get cached data is not too old
-    if (kCachingEnabled == YES) {
+
+    if ((usesCache == YES) && (kCachingEnabled == YES)) {
         NSDate *eventDetailsCacheDate = [self eventDetailsCacheDateForEvent:eventId];
         if (eventDetailsCacheDate) {
             NSTimeInterval cacheAge = [eventDetailsCacheDate timeIntervalSinceNow];
@@ -782,7 +783,6 @@ NSString * const kDeclinedEventsKey = @"declined";
         }
         
     }];
-    
 }
 
 - (void)fetchPartialEventDetailsForNewEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock
@@ -968,6 +968,66 @@ NSString * const kDeclinedEventsKey = @"declined";
             
         }
     }];
+}
+
+
+- (void)editEventWithParameters:(NSDictionary *)eventParameters eventId:(NSString *)eventId
+                     completion:(void (^)())completionBlock
+
+{
+    NSString *graphPath = [NSString stringWithFormat:@"%@", eventId];
+    FBRequest *newEventRequest = [FBRequest requestWithGraphPath:graphPath
+                                                      parameters:eventParameters
+                                                      HTTPMethod:@"POST"];
+    
+    [newEventRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        if (error) {
+            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]])
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]];
+            }
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error editing!"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            
+        } else {
+                if (completionBlock)
+                    completionBlock();
+        }
+    }];
+}
+
+- (void)deleteEvent:(NSString *)eventId completion:(void (^)())completionBlock
+
+{
+    [FBRequestConnection startWithGraphPath:eventId
+                                 parameters:nil
+                                 HTTPMethod:@"DELETE"
+                          completionHandler:
+     ^(FBRequestConnection *connection, id result, NSError *error) {
+         if (error) {
+             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]])
+             {
+                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]];
+             }
+             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error deleting!"
+                                                                 message:error.localizedDescription
+                                                                delegate:nil
+                                                       cancelButtonTitle:@"OK"
+                                                       otherButtonTitles:nil];
+             [alertView show];
+         } else {
+             NSLog(@"Deleted!");
+             if (completionBlock)
+             {
+                 completionBlock();
+             }
+         }
+     }];
 }
 
 #pragma mark Fetch Friends

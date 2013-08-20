@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EventsTableViewDataSource.h"
+
 @class FBEventDetailsViewController;
 
 typedef enum eventType {
@@ -16,6 +18,12 @@ typedef enum eventType {
 }eventType;
 
 @interface EventsListController : NSObject<UITableViewDelegate>
+
+@property (nonatomic, strong) EventsTableViewDataSource *tableActiveViewDataSource;
+@property (nonatomic, strong) EventsTableViewDataSource *hostTableViewDataSource;
+@property (nonatomic, strong) EventsTableViewDataSource *attendingTableViewDataSource;
+@property (nonatomic, strong) EventsTableViewDataSource *maybeTableViewDataSource;
+@property (nonatomic, strong) EventsTableViewDataSource *notRepliedTableViewDataSource;
 
 + (EventsListController *)sharedListController;
 
@@ -36,6 +44,8 @@ typedef enum eventType {
 - (void)refreshTableViewForEventsListKey:(NSString *)eventsListKey
                            newEventsList:(NSArray *)eventsList
              endRefreshForRefreshControl:(UIRefreshControl *)refreshControl;
+
+
 
 
 @end

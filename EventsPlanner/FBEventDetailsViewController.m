@@ -19,6 +19,8 @@
 #import "ActiveEventsStatsViewController.h"
 #import "EventsListController.h"
 #import "Toast+UIView.h"
+#import "CreateEventController.h"
+#import "CreateEventModel.h"
 
 static const float kButtonFontSize = 20.0;
 static const float TableViewSideMargin = 12.0;
@@ -69,6 +71,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, strong) NSMutableDictionary *eventDetails;
 
 @property (nonatomic, strong) UIButton *rsvpStatusButton;
+@property (nonatomic, strong) UIButton *editEvent;
 
 @property (nonatomic, strong) NSMutableDictionary *dimensionsDict;
 @property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
@@ -114,7 +117,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         
         self.tracking = isTracking;
         
-        [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] completion:^(NSDictionary *eventDetails) {
+        [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_eventDetails[@"id"] useCache:YES completion:^(NSDictionary *eventDetails) {
             
             [[self eventDetails] addEntriesFromDictionary:eventDetails];
             [self setViewCompleteEventDetails];
@@ -150,46 +153,138 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == kActionSheetCancelButtonIndex) {
-        return;
+    
+    if (actionSheet.tag == 0)
+    {
+        if (buttonIndex == kActionSheetCancelButtonIndex) {
+            return;
+        }
+        
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
+                                            initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+        
+        [self.rsvpStatusButton setTitle:nil forState:UIControlStateNormal];
+        [self.rsvpStatusButton addSubview:spinner];
+        [self.rsvpStatusButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
+                                                                          attribute:NSLayoutAttributeCenterX
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self.rsvpStatusButton
+                                                                          attribute:NSLayoutAttributeCenterX
+                                                                         multiplier:1.0
+                                                                           constant:0.0]];
+        [self.rsvpStatusButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
+                                                                          attribute:NSLayoutAttributeCenterY
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self.rsvpStatusButton
+                                                                          attribute:NSLayoutAttributeCenterY
+                                                                         multiplier:1.0
+                                                                           constant:0.0]];
+        [spinner startAnimating];
+        
+        NSString *actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
+        [[ParseDataStore sharedStore] changeRSVPStatusToEvent:self.eventDetails[@"id"]
+                                                    oldStatus:self.eventDetails[@"rsvp_status"]
+                                                    newStatus:[self eventParameterStringFromStatusString:actionTitle]
+                                                   completion:^{
+                                                       
+                                                       self.eventDetails[@"rsvp_status"] = [self eventParameterStringFromStatusString:actionTitle];
+                                                       [spinner stopAnimating];
+                                                       [spinner removeFromSuperview];
+                                                       [self.rsvpStatusButton setTitle:actionTitle forState:UIControlStateNormal];
+                                                       
+                                                   }];
     }
-    
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
-                                        initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    [self.rsvpStatusButton setTitle:nil forState:UIControlStateNormal];
-    [self.rsvpStatusButton addSubview:spinner];
-    [self.rsvpStatusButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
-                                                                      attribute:NSLayoutAttributeCenterX
-                                                                      relatedBy:NSLayoutRelationEqual
-                                                                         toItem:self.rsvpStatusButton
-                                                                      attribute:NSLayoutAttributeCenterX
-                                                                     multiplier:1.0
-                                                                       constant:0.0]];
-    [self.rsvpStatusButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
-                                                                      attribute:NSLayoutAttributeCenterY
-                                                                      relatedBy:NSLayoutRelationEqual
-                                                                         toItem:self.rsvpStatusButton
-                                                                      attribute:NSLayoutAttributeCenterY
-                                                                     multiplier:1.0
-                                                                       constant:0.0]];
-    [spinner startAnimating];
-    
-    NSString *actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-    
-    [[ParseDataStore sharedStore] changeRSVPStatusToEvent:self.eventDetails[@"id"]
-                                                oldStatus:self.eventDetails[@"rsvp_status"]
-                                                newStatus:[self eventParameterStringFromStatusString:actionTitle]
-                                               completion:^{
+    else
+    {
+        if (buttonIndex == kActionSheetCancelButtonIndex) {
+            return;
+        }
         
-        self.eventDetails[@"rsvp_status"] = [self eventParameterStringFromStatusString:actionTitle];
-        [spinner stopAnimating];
-        [spinner removeFromSuperview];
-        [self.rsvpStatusButton setTitle:actionTitle forState:UIControlStateNormal];
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
+                                            initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        //[spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
         
-    }];
-    
+        [self.editEvent setTitle:@"Edit" forState:UIControlStateNormal];
+        [self.editEvent addSubview:spinner];
+
+        [spinner startAnimating];
+        
+        NSString *actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
+        if ([actionTitle isEqualToString:@"Edit"])
+        {
+            CreateEventController *createEventController =[[CreateEventController alloc] initWithDetailViewController:self eventDetails:_eventDetails eventId:_eventDetails[@"id"] isNewEvent:NO];
+            
+            if (_eventDetails[@"name"])
+            {
+                [createEventController.createEventModel setName:_eventDetails[@"name"]];
+            }
+            if (_eventDetails[@"description"])
+            {
+                [createEventController.createEventModel setDescription:_eventDetails[@"description"]];
+            }
+            if (_eventDetails[@"start_time"])
+            {
+                [createEventController.createEventModel setStartTime:_eventDetails[@"start_time"]];
+            }
+            if (_eventDetails[@"end_time"])
+            {
+                [createEventController.createEventModel setEndTime:_eventDetails[@"end_time"]];
+            }
+            if (_eventDetails[@"location"])
+            {
+                [createEventController.createEventModel setLocation:_eventDetails[@"location"]];
+            }
+            if (_eventDetails[@"venue"][@"id"])
+            {
+                [createEventController.createEventModel setLocationId:_eventDetails[@"venue"][@"id"]];
+            }
+            if (_eventDetails[@"privacy"])
+            {
+                [createEventController.createEventModel setPrivacyType:_eventDetails[@"privacy"]];
+            }
+            
+            [spinner removeFromSuperview];
+            
+            [self.navigationController
+             pushViewController:createEventController.presentableViewController
+             animated:YES];
+        }
+        
+        else if ([actionTitle isEqualToString:@"Delete"])
+        {
+            [[ParseDataStore sharedStore] deleteEvent:_eventDetails[@"id"] completion:^{
+                
+                UITabBarController *tabBarController = [[EventsListController sharedListController] presentableViewController];
+                
+                NSInteger selectedInd = [tabBarController selectedIndex];
+                NSString *listKey;
+        
+                if (selectedInd == 0){
+                    listKey = kHostEventsKey;
+                } else if (selectedInd == 1) {
+                    listKey = kHostEventsKey;
+                } else if (selectedInd == 2) {
+                    listKey = kAttendingEventsKey;
+                } else if (selectedInd == 3) {
+                    listKey = kMaybeEventsKey;
+                }
+                
+                [[ParseDataStore sharedStore] fetchEventListDataForListKey:listKey completion:^(NSArray *eventsList) {
+                    [spinner removeFromSuperview];
+                    [[EventsListController sharedListController] refreshTableViewForEventsListKey:listKey newEventsList:eventsList endRefreshForRefreshControl:nil];
+                    [self.navigationController popToViewController:[[EventsListController sharedListController] presentableViewController] animated:YES];
+                }];
+            }];
+        }
+    }
+}
+
+-(void)refreshDetailsView:(NSDictionary *)eventDetails
+{
+    _eventDetails = [eventDetails mutableCopy];
 }
 
 - (void)changeRsvpStatus:(id)sender
@@ -198,12 +293,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     if (![self isHost]) {
         
-        UIActionSheet *statusSheet = [[UIActionSheet alloc] initWithTitle:nil
+        UIActionSheet *rsvpStatusSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                                  delegate:self
                                                         cancelButtonTitle:@"Cancel"
                                                    destructiveButtonTitle:nil
                                                         otherButtonTitles:@"Going",@"Maybe",@"Not Going", nil];
-        [statusSheet showInView:[self view]];
+        [rsvpStatusSheet setTag:0];
+        
+        [rsvpStatusSheet showInView:[self view]];
         
     }
 }
@@ -371,9 +468,31 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         
         if ([self isHost])
         {
+            _editEvent = [[UIButton alloc] init];
+            [_editEvent setTranslatesAutoresizingMaskIntoConstraints:NO];
+            _editEvent.showsTouchWhenHighlighted = YES;
+            [_editEvent setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+            [_editEvent setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [_editEvent addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+            [_editEvent addTarget:self action:@selector(editCurrentEvent:) forControlEvents:UIControlEventTouchUpInside];
+            [_editEvent addTarget:self action:@selector(resetButtonBackGroundColor:)
+                   forControlEvents:UIControlEventTouchUpOutside];
+            [_editEvent setTitle:@"Edit" forState:UIControlStateNormal];
+            [_buttonHolder addSubview:_editEvent];
+            [_viewsDictionary addEntriesFromDictionary:@{ @"editEvent":_editEvent}];
             
             [_buttonHolder addConstraints:[NSLayoutConstraint
-                                           constraintsWithVisualFormat:@"H:|[inviteButton]|"
+                                           constraintsWithVisualFormat:@"V:|[editEvent]|"
+                                           options:0
+                                           metrics:0
+                                           views:_viewsDictionary]];
+            [_buttonHolder addConstraints:[NSLayoutConstraint
+                                           constraintsWithVisualFormat:@"H:|[inviteButton][editEvent]|"
+                                           options:0
+                                           metrics:0
+                                           views:_viewsDictionary]];
+            [_buttonHolder addConstraints:[NSLayoutConstraint
+                                           constraintsWithVisualFormat:@"[inviteButton(==editEvent)]"
                                            options:0
                                            metrics:0
                                            views:_viewsDictionary]];
@@ -469,6 +588,25 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
     
 }
+
+#pragma mark  Create New Event
+- (IBAction)editCurrentEvent:(id)sender
+{
+    [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+    
+
+    UIActionSheet *editStatusSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"Cancel"
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"Edit",@"Delete", nil];
+    [editStatusSheet setTag:1];
+    [editStatusSheet showInView:[self view]];
+    [_spinner stopAnimating];
+    [_spinner removeFromSuperview];
+}
+
+
 
 - (void)setViewCompleteEventDetails
 {

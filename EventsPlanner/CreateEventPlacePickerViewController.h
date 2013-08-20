@@ -11,6 +11,8 @@
 
 @interface CreateEventPlacePickerViewController : FBPlacePickerViewController
 
+
+
 - (id)initWithEventModel:(CreateEventModel *)createEventModel;
 
 @end

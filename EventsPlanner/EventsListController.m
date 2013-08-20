@@ -25,13 +25,6 @@
 
 @property (nonatomic, strong) UITableViewController *selectedTableViewController;
 
-@property (nonatomic, strong) EventsTableViewDataSource *tableActiveViewDataSource;
-
-@property (nonatomic, strong) EventsTableViewDataSource *hostTableViewDataSource;
-@property (nonatomic, strong) EventsTableViewDataSource *attendingTableViewDataSource;
-@property (nonatomic, strong) EventsTableViewDataSource *maybeTableViewDataSource;
-@property (nonatomic, strong) EventsTableViewDataSource *notRepliedTableViewDataSource;
-
 @property (nonatomic, strong) UITabBarController *tabBarController;
 
 
@@ -291,6 +284,7 @@
 - (IBAction)makeNewEvent:(id)sender
 {
     self.createEventController = [[CreateEventController alloc] initWithListController:self];
+    [self.createEventController setIsNewEvent:YES];
     
     [self.tabBarController.navigationController
              pushViewController:self.createEventController.presentableViewController
@@ -374,6 +368,7 @@
         [refreshControl endRefreshing];
     }
 }
+
 
 - (void)refreshTableViewUsingRefreshControl:(id)sender
 {
