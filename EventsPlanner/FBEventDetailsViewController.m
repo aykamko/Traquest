@@ -978,23 +978,20 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [self.scrollView makeToastActivity];
     [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"] completion:^{
         [[ParseDataStore sharedStore] pushNotificationsToGuestsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIdsArray) {
-            self.fetchedNewData = YES;
-            self.eventDetails[@"attending"][@"data"] = friendIdsArray;
             [self.scrollView hideToastActivity];
             [self loadMapView:nil];
             [self addStopTrackingButtonAndViewMapButton];
         }];
-
     }];
-    
 }
 
 - (void)loadMapView:(id)sender
 {
-    self.activeEventController = [[ActiveEventController alloc] initWithEventId:self.eventDetails[@"id"]
-                                                                  venueLocation:_venueLocation];
-
-    UITabBarController *tabBarController = [self.activeEventController presentableViewController];
+    if (!self.activeEventController) {
+        self.activeEventController = [[ActiveEventController alloc] initWithEventId:self.eventDetails[@"id"]
+                                                                      venueLocation:_venueLocation];
+        self.navigationController.delegate = self.activeEventController;
+    }
     
 //    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
 //                                                                   style:UIBarButtonItemStylePlain
@@ -1003,9 +1000,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 //    
 //    [self.navigationItem setBackBarButtonItem:backButton];
     
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self.activeEventController action:@selector(goBack)];
-    
-    [[self navigationController] pushViewController:tabBarController animated:YES];
+    [self.navigationController pushViewController:[self.activeEventController presentableViewController] animated:YES];
 }
 
 - (void)tap:(UIGestureRecognizer*)gr

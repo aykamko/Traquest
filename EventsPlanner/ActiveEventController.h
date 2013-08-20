@@ -10,7 +10,7 @@
 #import "ActiveEventMapViewController.h"
 #import "ActiveEventsStatsViewController.h"
 
-@interface ActiveEventController : NSObject
+@interface ActiveEventController : NSObject <UINavigationControllerDelegate>
 
 - (id)initWithEventId:(NSString *) eventId venueLocation:(CLLocationCoordinate2D)venueLocation;
 - (UITabBarController *)presentableViewController;

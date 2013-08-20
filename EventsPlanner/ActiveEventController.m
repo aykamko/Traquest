@@ -13,7 +13,7 @@
 
 static const NSInteger UpdateFrequencyInSeconds = 4.0;
 
-@interface ActiveEventController ()
+@interface ActiveEventController () 
 
 @property (strong, nonatomic) NSTimer *timer;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
@@ -53,7 +53,17 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
                                                                       action:@selector(goBack)];
         
         self.tabBarController.navigationItem.leftBarButtonItem = backButton;
+        self.tabBarController.navigationController.delegate = self;
         
+    }
+    return self;
+}
+
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated
+{
+    if ([viewController isEqual:self.tabBarController]) {
         [self setTimer:[NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
                                                                                       target:self
                                                                                     selector:@selector(updateLocationData)
@@ -61,7 +71,6 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
                                                                                      repeats:YES]];
         [[self timer] fire];
     }
-    return self;
 }
 
 - (void)updateLocationData
