@@ -12,6 +12,6 @@
 
 @property (nonatomic, strong) NSArray *eventArray;
 
-- (id)initWithEventArray:(NSArray *)eventArray;
+- (id)initWithEventArray:(NSMutableArray *)eventArray;
 
 @end

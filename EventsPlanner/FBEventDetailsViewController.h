@@ -13,7 +13,7 @@
 
 @interface FBEventDetailsViewController : UIViewController <UIScrollViewDelegate,UIActionSheetDelegate>
 
-
 - (id)initWithPartialDetails:(NSDictionary *)partialDetails isActive:(BOOL)active isHost:(BOOL)isHost hasReplied:(BOOL)hasReplied;
+- (void)refreshDetailsView:(NSDictionary *)eventDetails;
 
 @end

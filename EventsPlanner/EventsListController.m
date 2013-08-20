@@ -299,6 +299,7 @@
 - (IBAction)makeNewEvent:(id)sender
 {
     self.createEventController = [[CreateEventController alloc] initWithListController:self];
+    [self.createEventController setIsNewEvent:YES];
     
     [self.tabBarController.navigationController
              pushViewController:self.createEventController.presentableViewController
@@ -382,6 +383,7 @@
         [refreshControl endRefreshing];
     }
 }
+
 
 - (void)refreshTableViewUsingRefreshControl:(id)sender
 {

@@ -50,7 +50,8 @@ extern NSString * const kDeclinedEventsKey;
 - (void)fetchTrackingStatusForEvent:(NSString *)eventId completion:(void (^)(BOOL isTracking))completionBlock;
 
 - (void)fetchEventListDataForListKey:(NSString *)listKey completion:(void (^)(NSArray *eventsList))completionBlock;
-- (void)fetchEventDetailsForEvent:(NSString *)eventId completion:(void (^)(NSDictionary *eventDetails))completionBlock;
+- (void)fetchEventDetailsForEvent:(NSString *)eventId useCache:(BOOL)usesCache completion:(void (^)(NSDictionary *eventDetails))completionBlock;
+
 - (void)fetchAllEventListDataWithCompletion:(void (^)(NSArray *activeHostEvents,
                                                       NSArray *activeGuestEvents,
                                                       NSArray *hostEvents,
@@ -77,5 +78,11 @@ extern NSString * const kDeclinedEventsKey;
 
 - (void)createEventWithParameters:(NSDictionary *)eventParameters
                        completion:(void (^)(NSString *newEventId))completionBlock;
+
+- (void)editEventWithParameters:(NSDictionary *)eventParameters eventId:(NSString *)eventId
+                     completion:(void (^)())completionBlock;
+
+- (void)deleteEvent:(NSString *)eventId completion:(void (^)())completionBlock;
+;
 
 @end

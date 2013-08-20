@@ -36,10 +36,14 @@ extern NSString * const kInvitedFriendIdsEventParameterKey;
 @property (nonatomic, strong) NSString *locationId;
 @property (nonatomic, strong) NSString *privacyType;
 
+@property (nonatomic) BOOL isNewEvent;
+
+
 @property (nonatomic, strong) NSArray *invitedFriendIds;
 
 @property (nonatomic, strong) id<CreateEventModelDelegate> delegate;
 
 - (NSDictionary *)validEvent;
+- (id)initWithIsNew:(BOOL)isNewEvent;
 
 @end

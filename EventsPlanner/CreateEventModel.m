@@ -27,6 +27,16 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
 
 @implementation CreateEventModel
 
+- (id)initWithIsNew:(BOOL)isNewEvent
+{
+    self = [super init];
+    if (self)
+    {
+        _isNewEvent = isNewEvent;
+    }
+    return self;
+}
+
 - (void)setName:(NSString *)name
 {
     _name = name;
@@ -85,6 +95,7 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
     
     [self.delegate reloadTableView];
 }
+
 #pragma Valid Event
 - (NSDictionary *)validEvent
 {
@@ -101,12 +112,18 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
     
     if (self.startTime) {
         NSString *startTimeISO8601String = [dateFormatter stringFromDate:self.startTime];
-        [resultDict addEntriesFromDictionary:@{ kStartTimeEventParameterKey: startTimeISO8601String }];
+        if (startTimeISO8601String)
+        {
+            [resultDict addEntriesFromDictionary:@{ kStartTimeEventParameterKey: startTimeISO8601String }];
+        }
     }
     
     if (self.endTime) {
         NSString *endTimeISO8601String = [dateFormatter stringFromDate:self.startTime];
-        [resultDict addEntriesFromDictionary:@{ kEndTimeEventParameterKey: endTimeISO8601String }];
+        if (endTimeISO8601String)
+        {
+            [resultDict addEntriesFromDictionary:@{ kEndTimeEventParameterKey: endTimeISO8601String }];
+        }
     }
     
     if (self.location) {
