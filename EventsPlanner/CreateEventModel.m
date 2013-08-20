@@ -225,7 +225,7 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
         [differenceDict addEntriesFromDictionary:@{ kPrivacyTypeEventParameterKey: self.privacyType }];
     }
     
-    if ([differenceDict allKeys] > 0) {
+    if ([[differenceDict allKeys] count] > 0) {
         return differenceDict;
     } else {
         return nil;

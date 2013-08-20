@@ -748,9 +748,9 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
     }
     
     UILabel *viewMapLabel = [self createViewMapButton];
-    
     [self.scrollView addSubview:viewMapLabel];
     self.viewMapLabel = viewMapLabel;
+    
     [self.viewsDictionary addEntriesFromDictionary:@{ @"_viewMapLabel": self.viewMapLabel }];
     
     
