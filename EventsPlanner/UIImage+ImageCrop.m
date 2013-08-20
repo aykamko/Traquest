@@ -92,7 +92,8 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     return image;
 }
 
-+ (UIImage *)overlayImage:(UIImage *)image1 overImage:(UIImage *)image2 {
++ (UIImage *)overlayImage:(UIImage *)image1 overImage:(UIImage *)image2
+{
     UIGraphicsBeginImageContext(image2.size);
     [image2 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
     [image1 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];

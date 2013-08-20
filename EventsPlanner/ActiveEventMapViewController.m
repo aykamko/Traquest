@@ -198,6 +198,7 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
                 
                 UIImageView *profilePicImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
                 profilePicImageView.image = profilePic;
+                profilePicImageView.layer.masksToBounds = YES;
                 [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
                 
                 annotationView.leftCalloutAccessoryView = profilePicImageView;
