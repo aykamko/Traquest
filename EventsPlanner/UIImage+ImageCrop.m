@@ -81,12 +81,13 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     CGFloat gradientComponents[8];
     [color1 getRed:&gradientComponents[0] green:&gradientComponents[1] blue:&gradientComponents[2] alpha:&gradientComponents[3]];
     [color2 getRed:&gradientComponents[4] green:&gradientComponents[5] blue:&gradientComponents[6] alpha:&gradientComponents[7]];
-    CGGradientRef gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations);
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations);
     
     CGPoint end = vertical ? CGPointMake(0, imageSize.height) : CGPointMake(imageSize.width, 0);
     CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), end, 0);
     
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    CGGradientRelease(gradient);
     UIGraphicsEndImageContext();
     return image;
 }
