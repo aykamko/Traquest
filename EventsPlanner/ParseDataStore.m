@@ -251,24 +251,6 @@ NSString * const kDeclinedEventsKey = @"declined";
             }
         }];
     }];
-//    
-//    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
-//    [trackingObj whereKey:facebookID equalTo:self.myId];
-//    
-//    [trackingObj findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//        
-//        PFObject *trackingObject = [objects firstObject];
-//        NSString *eventIdKey = [NSString stringWithFormat:@"E%@", eventId];
-//        
-//        [trackingObject setObject:identity forKey:eventIdKey];
-//        [self startTrackingMyLocationIfAllowed];
-//        [trackingObject saveInBackground];
-//        
-//        if (completionBlock) {
-//            completionBlock();
-//        }
-//        
-//    }];
 }
 
 - (void)fetchPermissionForEvent:(NSString *)eventId
@@ -587,7 +569,6 @@ NSString * const kDeclinedEventsKey = @"declined";
         } else {
             
             if (!self.myId) {
-                
                 // Store myId locally and in parse, if it's not there already
                 self.myId = result[@"id"];
                 [[NSUserDefaults standardUserDefaults] setObject:self.myId forKey:facebookID];
@@ -613,6 +594,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 //                if ([pastEvents containsObject:event[@"id"]]) {
 //                    continue;
 //                }
+                
                 BOOL active = NO;
                 [event fixEventCoverPhoto];
                 
@@ -940,7 +922,10 @@ NSString * const kDeclinedEventsKey = @"declined";
         PFRelation *anonRelation = [event relationforKey:anonymous];
         
         PFQuery *allowedQuery =  [allowedRelation query];
+        [allowedQuery whereKey:facebookID notEqualTo:self.myId];
+        
         PFQuery *anonQuery = [anonRelation query];
+        [anonQuery whereKey:facebookID notEqualTo:self.myId];
         
         [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
             [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {

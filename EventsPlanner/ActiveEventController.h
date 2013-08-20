@@ -15,4 +15,6 @@
 - (id)initWithEventId:(NSString *) eventId venueLocation:(CLLocationCoordinate2D)venueLocation;
 - (UITabBarController *)presentableViewController;
 
+- (void)startTimerForUpdates:(NSNotification *)notification;
+
 @end

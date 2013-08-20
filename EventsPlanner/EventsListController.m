@@ -16,17 +16,15 @@
 @interface EventsListController() <UITableViewDelegate, UITabBarControllerDelegate>
 
 
-@property (nonatomic, strong) UITableViewController *tableActiveViewController;
+@property (nonatomic, weak) UITableViewController *tableActiveViewController;
+@property (nonatomic, weak) UITableViewController *hostTableViewController;
+@property (nonatomic, weak) UITableViewController *attendingTableViewController;
+@property (nonatomic, weak) UITableViewController *maybeTableViewController;
+@property (nonatomic, weak) UITableViewController *notRepliedTableViewController;
 
-@property (nonatomic, strong) UITableViewController *hostTableViewController;
-@property (nonatomic, strong) UITableViewController *attendingTableViewController;
-@property (nonatomic, strong) UITableViewController *maybeTableViewController;
-@property (nonatomic, strong) UITableViewController *notRepliedTableViewController;
-
-@property (nonatomic, strong) UITableViewController *selectedTableViewController;
+@property (nonatomic, weak) UITableViewController *selectedTableViewController;
 
 @property (nonatomic, strong) EventsTableViewDataSource *tableActiveViewDataSource;
-
 @property (nonatomic, strong) EventsTableViewDataSource *hostTableViewDataSource;
 @property (nonatomic, strong) EventsTableViewDataSource *attendingTableViewDataSource;
 @property (nonatomic, strong) EventsTableViewDataSource *maybeTableViewDataSource;
@@ -34,11 +32,10 @@
 
 @property (nonatomic, strong) UITabBarController *tabBarController;
 
-
-@property (nonatomic, strong) UIRefreshControl *hostRefreshControl;
-@property (nonatomic, strong) UIRefreshControl *attendingRefreshControl;
-@property (nonatomic, strong) UIRefreshControl *maybeRefreshControl;
-@property (nonatomic, strong) UIRefreshControl *notRepliedRefreshControl;
+@property (nonatomic, weak) UIRefreshControl *hostRefreshControl;
+@property (nonatomic, weak) UIRefreshControl *attendingRefreshControl;
+@property (nonatomic, weak) UIRefreshControl *maybeRefreshControl;
+@property (nonatomic, weak) UIRefreshControl *notRepliedRefreshControl;
 
 @property (nonatomic, strong) NSArray *activeGuestEvents;
 @property (nonatomic, strong) NSArray *activeHostEvents;
@@ -91,29 +88,11 @@
         _allActiveEvents = [NSArray arrayWithArray:tempActiveEvents];
         
         _hostEvents = hostEvents;
-
         _attendingEvents = attendingEvents;
         _notReplyEvents = noReplyEvents;
         _maybeAttending = maybeAttending;
     
-        [self initializeViewControllers];
-        
-        _tabBarController = [[UITabBarController alloc] init];
-        
-        float statusBarSize = 20.0f;
-        
-        CGRect newFrame = _tabBarController.view.frame;
-        newFrame.size.height += statusBarSize;
-        _tabBarController.view.frame = newFrame;
-        
-        _tabBarController.delegate = self;
-        
-        [_tabBarController setViewControllers:@[_tableActiveViewController,
-                                                _hostTableViewController,
-                                                _attendingTableViewController,
-                                                _maybeTableViewController,
-                                                _notRepliedTableViewController]];
-        
+        self.tabBarController = [self tabBarControllerWithInitializedTableViewControllers];
         
         self.selectedTableViewController = self.tableActiveViewController;
         
@@ -126,9 +105,12 @@
         self.tabBarController.navigationItem.leftBarButtonItem = logoutButton;
   
 
-        UIBarButtonItem *newEventButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target: self action:@selector(makeNewEvent:)];
-        [logoutButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0], UITextAttributeFont,nil] forState:UIControlStateNormal];
-        //[[UIBarButtonItem appearance] setBackgroundImage:[[UIImage alloc] init] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        UIBarButtonItem *newEventButton = [[UIBarButtonItem alloc]
+                                           initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                           target:self
+                                           action:@selector(makeNewEvent:)];
+        [logoutButton setTitleTextAttributes:@{ UITextAttributeFont: [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] }
+                                    forState:UIControlStateNormal];
 
         self.tabBarController.navigationItem.rightBarButtonItem = newEventButton;
         self.tabBarController.navigationItem.hidesBackButton = YES;
@@ -210,80 +192,106 @@
 }
 
 
--(void)initializeViewControllers{
+- (UITabBarController *)tabBarControllerWithInitializedTableViewControllers
+{
     
-    _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_allActiveEvents];
+    self.tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_allActiveEvents];
     
-    _hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
-    _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
-    _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeAttending];
-    _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_notReplyEvents];
+    self.hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
+    self.attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
+    self.maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeAttending];
+    self.notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_notReplyEvents];
     
-    _tableActiveViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_tableActiveViewController tableView] setDelegate:self];
-    [[_tableActiveViewController tableView] setDataSource:_tableActiveViewDataSource];
-    [_tableActiveViewController setTitle:@"Active"];
+    UITableViewController *tableActiveViewController = [[UITableViewController alloc]
+                                                        initWithStyle:UITableViewStyleGrouped];
+    [[tableActiveViewController tableView] setDelegate:self];
+    [[tableActiveViewController tableView] setDataSource:_tableActiveViewDataSource];
+    [tableActiveViewController setTitle:@"Active"];
     UIImage *clockIcon = [UIImage imageNamed:@"Clock.png"];
-    [[_tableActiveViewController tabBarItem] setImage: clockIcon];
+    [[tableActiveViewController tabBarItem] setImage: clockIcon];
     
-    
-    _hostTableViewController = [[UITableViewController alloc]initWithStyle:UITableViewStyleGrouped];
-    [[_hostTableViewController tableView] setDelegate:self];
-    [[_hostTableViewController tableView] setDataSource:_hostTableViewDataSource];
-    [_hostTableViewController setTitle:@"Host"];
+    UITableViewController *hostTableViewController = [[UITableViewController alloc]
+                                                      initWithStyle:UITableViewStyleGrouped];
+    [[hostTableViewController tableView] setDelegate:self];
+    [[hostTableViewController tableView] setDataSource:_hostTableViewDataSource];
+    [hostTableViewController setTitle:@"Host"];
     UIImage *friendIcon = [UIImage imageNamed:@"hostIcon.png"];
-    [[_hostTableViewController tabBarItem] setImage:friendIcon];
+    [[hostTableViewController tabBarItem] setImage:friendIcon];
     
-    self.hostRefreshControl = [[UIRefreshControl alloc] init];
-    [self.hostRefreshControl addTarget:self
-                                action:@selector(refreshTableViewUsingRefreshControl:)
-                      forControlEvents:UIControlEventValueChanged];
-    [self.hostTableViewController setRefreshControl:self.hostRefreshControl];
+    UIRefreshControl *hostRefreshControl = [[UIRefreshControl alloc] init];
+    [hostRefreshControl addTarget:self
+                           action:@selector(refreshTableViewUsingRefreshControl:)
+                 forControlEvents:UIControlEventValueChanged];
+    [hostTableViewController setRefreshControl:hostRefreshControl];
+    self.hostRefreshControl = hostRefreshControl;
     
-    _attendingTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_attendingTableViewController tableView] setDelegate:self];
-    [[_attendingTableViewController tableView] setDataSource:_attendingTableViewDataSource];
-    [_attendingTableViewController setTitle:@"Attending"];
+    UITableViewController *attendingTableViewController = [[UITableViewController alloc]
+                                                           initWithStyle:UITableViewStyleGrouped];
+    [[attendingTableViewController tableView] setDelegate:self];
+    [[attendingTableViewController tableView] setDataSource:_attendingTableViewDataSource];
+    [attendingTableViewController setTitle:@"Attending"];
     UIImage *checkIcon = [UIImage imageNamed:@"Checkmark.png"];
-    [[_attendingTableViewController tabBarItem] setImage:checkIcon];
+    [[attendingTableViewController tabBarItem] setImage:checkIcon];
     
-    self.attendingRefreshControl= [[UIRefreshControl alloc] init];
-    [self.attendingRefreshControl addTarget:self
+    UIRefreshControl *attendingRefreshControl= [[UIRefreshControl alloc] init];
+    [attendingRefreshControl addTarget:self
                                      action:@selector(refreshTableViewUsingRefreshControl:)
                            forControlEvents:UIControlEventValueChanged];
-    [self.attendingTableViewController setRefreshControl:self.attendingRefreshControl];
-    
-    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0,0,1,90)];
-    footer.backgroundColor = [UIColor clearColor];
+    [attendingTableViewController setRefreshControl:attendingRefreshControl];
+    self.attendingRefreshControl = attendingRefreshControl;
     
     
-    _maybeTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_maybeTableViewController tableView] setDelegate:self];
-    [[_maybeTableViewController tableView] setDataSource:_maybeTableViewDataSource];
-    [_maybeTableViewController setTitle:@"Maybe"];
+    UITableViewController *maybeTableViewController = [[UITableViewController alloc]
+                                                       initWithStyle:UITableViewStyleGrouped];
+    [[maybeTableViewController tableView] setDelegate:self];
+    [[maybeTableViewController tableView] setDataSource:_maybeTableViewDataSource];
+    [maybeTableViewController setTitle:@"Maybe"];
     UIImage *questionIcon = [UIImage imageNamed:@"questionmark.png"];
-    [[_maybeTableViewController tabBarItem] setImage:questionIcon];
+    [[maybeTableViewController tabBarItem] setImage:questionIcon];
     
-    self.maybeRefreshControl = [[UIRefreshControl alloc] init];
-    [self.maybeRefreshControl addTarget:self
+    UIRefreshControl *maybeRefreshControl = [[UIRefreshControl alloc] init];
+    [maybeRefreshControl addTarget:self
                                  action:@selector(refreshTableViewUsingRefreshControl:)
                        forControlEvents:UIControlEventValueChanged];
-    [self.maybeTableViewController setRefreshControl:self.maybeRefreshControl];
+    [maybeTableViewController setRefreshControl:maybeRefreshControl];
+    self.maybeRefreshControl = maybeRefreshControl;
     
-    _notRepliedTableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [[_notRepliedTableViewController tableView] setDelegate:self];
-    [[_notRepliedTableViewController tableView] setDataSource:_notRepliedTableViewDataSource];
-    [_notRepliedTableViewController setTitle:@"No Reply"];
+    UITableViewController *notRepliedTableViewController = [[UITableViewController alloc]
+                                                            initWithStyle:UITableViewStyleGrouped];
+    [[notRepliedTableViewController tableView] setDelegate:self];
+    [[notRepliedTableViewController tableView] setDataSource:_notRepliedTableViewDataSource];
+    [notRepliedTableViewController setTitle:@"No Reply"];
     UIImage *ellipsisIcon = [UIImage imageNamed:@"noReply.png"];
-    [[_notRepliedTableViewController tabBarItem] setImage:ellipsisIcon];
+    [[notRepliedTableViewController tabBarItem] setImage:ellipsisIcon];
     
-    self.notRepliedRefreshControl = [[UIRefreshControl alloc] init];
-    [self.notRepliedRefreshControl addTarget:self
+    UIRefreshControl *notRepliedRefreshControl = [[UIRefreshControl alloc] init];
+    [notRepliedRefreshControl addTarget:self
                                       action:@selector(refreshTableViewUsingRefreshControl:)
                             forControlEvents:UIControlEventValueChanged];
-    [self.notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
+    [notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
+    self.notRepliedRefreshControl = notRepliedRefreshControl;
     
+    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    float statusBarSize = 20.0f;
     
+    CGRect newFrame = tabBarController.view.frame;
+    newFrame.size.height += statusBarSize;
+    tabBarController.view.frame = newFrame;
+    
+    tabBarController.delegate = self;
+    [tabBarController setViewControllers:@[tableActiveViewController,
+                                                hostTableViewController,
+                                                attendingTableViewController,
+                                                maybeTableViewController,
+                                                notRepliedTableViewController]];
+    
+    self.tableActiveViewController = tableActiveViewController;
+    self.hostTableViewController = hostTableViewController;
+    self.attendingTableViewController = attendingTableViewController;
+    self.maybeTableViewController = maybeTableViewController;
+    self.notRepliedTableViewController = notRepliedTableViewController;
+    
+    return tabBarController;
 }
 
 

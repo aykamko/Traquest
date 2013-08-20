@@ -39,7 +39,7 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     if (self) {
         
         UITabBarItem *icon = [self tabBarItem];
-        UIImage *image= [UIImage imageNamed:@"MarkerFinal.png"];
+        UIImage *image = [UIImage imageNamed:@"MarkerFinal.png"];
         [icon setImage:image];
         
         _venueLocation = venueLocation;
@@ -78,88 +78,88 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
 
 - (void)updateMarkersOnMapForAllowedUsers:(NSDictionary *)allowedUsersDict anonUsers:(NSDictionary *)anonUsersDict;
 {
-        // Allowed points
-        NSMutableSet *pastAllowedUserIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
-        
-        for (NSString *fbId in [allowedUsersDict allKeys]) {
-            PFUser *user = allowedUsersDict[fbId];
-            if (!user) {
-                continue;
-            }
-            
-            [pastAllowedUserIds removeObject:fbId];
-            
-            PFGeoPoint *currentGeopoint = [user objectForKey:locationKey];
-            
-            CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
-                                                                                  currentGeopoint.longitude);
-            
-            FBIdAnnotationPoint *point = self.friendAnnotationPointDict[fbId];
-            
-            if (!point) {
-            
-                point = [[FBIdAnnotationPoint alloc] initWithFbId:fbId anonymity:NO];
-                point.coordinate = currentCoordinate;
-                point.title = [user objectForKey:kParseUserNameKey];
-                [self.mapView addAnnotation:point];
-                self.friendAnnotationPointDict[fbId] = point;
-                
-            } else {
-                
-                point.coordinate = currentCoordinate;
-                
-            }
+    // Allowed points
+    NSMutableSet *pastAllowedUserIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
+    
+    for (NSString *fbId in [allowedUsersDict allKeys]) {
+        PFUser *user = allowedUsersDict[fbId];
+        if (!user) {
+            continue;
         }
         
-        for (NSString *key in pastAllowedUserIds) {
-            [self.mapView removeAnnotation:self.friendAnnotationPointDict[key]];
-            [self.friendAnnotationPointDict removeObjectForKey:key];
-        }
+        [pastAllowedUserIds removeObject:fbId];
         
-        // Anonymous points
-        NSMutableSet *pastAnonymousLocationIds = [NSMutableSet setWithArray:[self.anonAnnotationPointDict allKeys]];
+        PFGeoPoint *currentGeopoint = [user objectForKey:locationKey];
         
-        for (NSString *fbIdHash in [anonUsersDict allKeys]) {
-            PFUser *anonUser = anonUsersDict[fbIdHash];
-            if (!anonUser) {
-                continue;
-            }
+        CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
+                                                                              currentGeopoint.longitude);
+        
+        FBIdAnnotationPoint *point = self.friendAnnotationPointDict[fbId];
+        
+        if (!point) {
             
-            [pastAnonymousLocationIds removeObject:fbIdHash];
+            point = [[FBIdAnnotationPoint alloc] initWithFbId:fbId anonymity:NO];
+            point.coordinate = currentCoordinate;
+            point.title = [user objectForKey:kParseUserNameKey];
+            [self.mapView addAnnotation:point];
+            self.friendAnnotationPointDict[fbId] = point;
             
-            PFGeoPoint *geoPoint = [anonUser objectForKey:locationKey];
+        } else {
             
-            CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(geoPoint.latitude,
-                                                                                  geoPoint.longitude);
-            
-            FBIdAnnotationPoint *point = self.anonAnnotationPointDict[fbIdHash];
-            
-            if (!point) {
-                
-                point = [[FBIdAnnotationPoint alloc] initWithFbId:fbIdHash anonymity:YES];
-                point.coordinate = currentCoordinate;
-                point.title = @"Anonymous";
-                [self.mapView addAnnotation:point];
-                self.anonAnnotationPointDict[fbIdHash] = point;
-                
-            } else {
-                
-                point.coordinate = currentCoordinate;
-                
-            }
+            point.coordinate = currentCoordinate;
             
         }
-        
-        for (NSString *key in pastAnonymousLocationIds) {
-            [self.mapView removeAnnotation:self.anonAnnotationPointDict[key]];
-            [self.anonAnnotationPointDict removeObjectForKey:key];
+    }
+    
+    for (NSString *key in pastAllowedUserIds) {
+        [self.mapView removeAnnotation:self.friendAnnotationPointDict[key]];
+        [self.friendAnnotationPointDict removeObjectForKey:key];
+    }
+    
+    // Anonymous points
+    NSMutableSet *pastAnonymousLocationIds = [NSMutableSet setWithArray:[self.anonAnnotationPointDict allKeys]];
+    
+    for (NSString *fbIdHash in [anonUsersDict allKeys]) {
+        PFUser *anonUser = anonUsersDict[fbIdHash];
+        if (!anonUser) {
+            continue;
         }
         
-        if (self.zoomToFit) {
-            [self zoomToFitMapAnnotations];
-            self.zoomToFit = NO;
+        [pastAnonymousLocationIds removeObject:fbIdHash];
+        
+        PFGeoPoint *geoPoint = [anonUser objectForKey:locationKey];
+        
+        CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(geoPoint.latitude,
+                                                                              geoPoint.longitude);
+        
+        FBIdAnnotationPoint *point = self.anonAnnotationPointDict[fbIdHash];
+        
+        if (!point) {
+            
+            point = [[FBIdAnnotationPoint alloc] initWithFbId:fbIdHash anonymity:YES];
+            point.coordinate = currentCoordinate;
+            point.title = @"Anonymous";
+            [self.mapView addAnnotation:point];
+            self.anonAnnotationPointDict[fbIdHash] = point;
+            
+        } else {
+            
+            point.coordinate = currentCoordinate;
+            
         }
-
+        
+    }
+    
+    for (NSString *key in pastAnonymousLocationIds) {
+        [self.mapView removeAnnotation:self.anonAnnotationPointDict[key]];
+        [self.anonAnnotationPointDict removeObjectForKey:key];
+    }
+    
+    if (self.zoomToFit) {
+        [self zoomToFitMapAnnotations];
+        self.zoomToFit = NO;
+    }
+    
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
@@ -186,8 +186,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
             } else {
                 annotationView.annotation = annotation;
             }
-            
-//            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
             
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -216,7 +214,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
                 annotationView.annotation = annotation;
             }
             
-//            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
             annotationView.leftCalloutAccessoryView = nil;
             
         }

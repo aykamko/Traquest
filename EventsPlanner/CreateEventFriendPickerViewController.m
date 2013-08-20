@@ -143,6 +143,7 @@ NSString * const kFBGraphUserIdKey = @"id";
     }
     return YES;
 }
+
 - (void)facebookViewControllerDoneWasPressed:(id)sender
 {
     NSMutableArray *invitedFriends = [[NSMutableArray alloc] init];

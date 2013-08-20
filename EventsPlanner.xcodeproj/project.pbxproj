@@ -89,6 +89,8 @@
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
 		7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59717C2E5DE001583FA /* guest-location@2x.png */; };
 		7CE4E59B17C2E699001583FA /* GuestAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE4E59A17C2E699001583FA /* GuestAnnotationView.m */; };
+		7CE4E59D17C30031001583FA /* MarkerFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59C17C30031001583FA /* MarkerFinal@2x.png */; };
+		7CE4E59F17C3003E001583FA /* listFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59E17C3003E001583FA /* listFinal@2x.png */; };
 		7CE691E317B6E34700D3D8AB /* CreateEventTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */; };
 		7CE691E917B6EE2C00D3D8AB /* GraphicsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E817B6EE2C00D3D8AB /* GraphicsConstants.m */; };
 		7CE691EE17B74F5700D3D8AB /* CreateEventPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691ED17B74F5700D3D8AB /* CreateEventPrivacyViewController.m */; };
@@ -213,6 +215,8 @@
 		7CE4E59717C2E5DE001583FA /* guest-location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guest-location@2x.png"; sourceTree = "<group>"; };
 		7CE4E59917C2E699001583FA /* GuestAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestAnnotationView.h; sourceTree = "<group>"; };
 		7CE4E59A17C2E699001583FA /* GuestAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestAnnotationView.m; sourceTree = "<group>"; };
+		7CE4E59C17C30031001583FA /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MarkerFinal@2x.png"; sourceTree = "<group>"; };
+		7CE4E59E17C3003E001583FA /* listFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "listFinal@2x.png"; sourceTree = "<group>"; };
 		7CE691E117B6E34700D3D8AB /* CreateEventTimePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventTimePickerViewController.h; sourceTree = "<group>"; };
 		7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventTimePickerViewController.m; sourceTree = "<group>"; };
 		7CE691E717B6EE2C00D3D8AB /* GraphicsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicsConstants.h; sourceTree = "<group>"; };
@@ -457,8 +461,10 @@
 			isa = PBXGroup;
 			children = (
 				90235CC217C2B46700A0B99A /* greenLocation@2x.png */,
+				7CE4E59C17C30031001583FA /* MarkerFinal@2x.png */,
 				7CE4E59717C2E5DE001583FA /* guest-location@2x.png */,
 				90235CC017C2ADB400A0B99A /* stickynote.png */,
+				7CE4E59E17C3003E001583FA /* listFinal@2x.png */,
 				76502FEF17BE9CBB00EC839B /* hostIcon@2x.png */,
 				7CA8A09017BEB5E000FF3D8E /* Checkmark@2x.png */,
 				7CA8A09117BEB5E000FF3D8E /* Clock@2x.png */,
@@ -649,6 +655,7 @@
 				7CCF144817BEC3A100D72B73 /* tracking-button-normal@2x.png in Resources */,
 				7CCF144917BEC3A100D72B73 /* loginBackgroundIPhonePortrait.png in Resources */,
 				7CCF144A17BEC3A100D72B73 /* loginBackgroundIPhonePortrait@2x.png in Resources */,
+				7CE4E59F17C3003E001583FA /* listFinal@2x.png in Resources */,
 				7CCF144B17BEC3A100D72B73 /* silver-button-normal.png in Resources */,
 				7CCF144C17BEC3A100D72B73 /* silver-button-normal@2x.png in Resources */,
 				90235CC117C2ADB400A0B99A /* stickynote.png in Resources */,
@@ -661,6 +668,7 @@
 				7CCF145317BEC3A100D72B73 /* login-button-small-pressed.png in Resources */,
 				7CCF145417BEC3A100D72B73 /* login-button-small-pressed@2x.png in Resources */,
 				7CCF145517BEC3A100D72B73 /* login-button-small.png in Resources */,
+				7CE4E59D17C30031001583FA /* MarkerFinal@2x.png in Resources */,
 				7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */,
 				7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
@@ -808,7 +816,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 			};
@@ -843,7 +851,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
@@ -866,7 +874,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Traquest;
-				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -888,7 +896,7 @@
 				INFOPLIST_FILE = "EventsPlanner/EventsPlanner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = Traquest;
-				PROVISIONING_PROFILE = "47247A74-312F-4D05-A2A4-C64DED94EAE2";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;

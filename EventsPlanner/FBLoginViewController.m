@@ -46,6 +46,7 @@
     [self.navigationController.navigationBar setTranslucent:NO];
     [super viewWillDisappear:animated];
 }
+
 #pragma mark login method
 /* Login to facebook method */
 - (IBAction)loginButtonTouchHandler:(id)sender  {
@@ -128,6 +129,7 @@
                                                                  ofType:@"png"]];
     UIImage *pressedStateImg = [basePressedStateImg resizableImageWithCapInsets:UIEdgeInsetsMake(0, 100, 0, 10)];
     [self.loginButton setBackgroundImage:pressedStateImg forState:UIControlStateSelected];
+    [self.loginButton setBackgroundImage:pressedStateImg forState:UIControlStateHighlighted];
     
     [self.loginButton addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton
                                                                  attribute:NSLayoutAttributeHeight

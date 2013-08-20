@@ -70,7 +70,8 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     return newImage;
 }
 
-+ (UIImage *) imageWithGradient: (CGSize) imageSize withColor1: (UIColor*) color1 withColor2: (UIColor*) color2 vertical:(BOOL) vertical{
++ (UIImage *)imageWithGradient:(CGSize)imageSize withColor1:(UIColor*)color1 withColor2:(UIColor*)color2 vertical:(BOOL)vertical
+{
     UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
@@ -82,7 +83,7 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     [color2 getRed:&gradientComponents[4] green:&gradientComponents[5] blue:&gradientComponents[6] alpha:&gradientComponents[7]];
     CGGradientRef gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations);
     
-    CGPoint end = vertical? CGPointMake(0, imageSize.height):CGPointMake(imageSize.width, 0);//{0, imageSize.height}:{imageSize.width, 0} ;
+    CGPoint end = vertical ? CGPointMake(0, imageSize.height) : CGPointMake(imageSize.width, 0);
     CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), end, 0);
     
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -90,16 +91,16 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     return image;
 }
 
-+(UIImage *) overlayImage: (UIImage *) image1 overImage: (UIImage *) image2 {
++ (UIImage *)overlayImage:(UIImage *)image1 overImage:(UIImage *)image2 {
     UIGraphicsBeginImageContext(image2.size);
     [image2 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
     [image1 drawInRect:CGRectMake(0, 0, image2.size.width, image2.size.height)];
     UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return  result;
+    return result;
 }
 
-+(UIImage *) imageWithBackground:(UIColor *) color size: (CGSize) size {
++ (UIImage *)imageWithBackground:(UIColor *)color size:(CGSize)size {
     UIGraphicsBeginImageContext(size);
     CGRect bounds = {{0,0},size};
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -107,6 +108,6 @@ CGRect CGRectTransformToRect(CGRect fromRect, CGRect toRect) {
     CGContextFillRect(context, bounds);
     UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return  result;
+    return result;
 }
 @end

@@ -30,57 +30,46 @@ static const BOOL kAllowTrackingForNonActiveEvents = YES;
 static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 @interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate, MKMapViewDelegate, UIScrollViewDelegate>
-{
-    CLLocationCoordinate2D _venueLocation;
-    UIImageView *_coverImageView;
-    UILabel *_titleLabel;
-    UIView *_buttonHolder;
-    UITableView *_detailsTable;
-    
-    BOOL alreadyTracking;
-    
-    FBEventDetailsTableDataSource *_dataSource;
-    __strong MKMapView *_mapView;
-    
-    UITapGestureRecognizer *_singleFingerTap ;
 
-}
+@property (nonatomic, strong) NSMutableDictionary *eventDetails;
+@property (nonatomic) CLLocationCoordinate2D venueLocation;
 
-@property (nonatomic, strong) ActiveEventController *activeEventController;
-@property (nonatomic, strong) UIScrollView *scrollView;
 
-@property (nonatomic, strong) NSArray *verticalLayoutContraints;
-
-@property (nonatomic, strong) NSString *layoutConstraint;
+@property (nonatomic, weak) UIScrollView *scrollView;
+@property (nonatomic, weak) UIImageView *coverImageView;
+@property (nonatomic, weak) UILabel *titleLabel;
+@property (nonatomic, weak) UIView *buttonHolder;
+@property (nonatomic, weak) UIButton *rsvpStatusButton;
+@property (nonatomic, weak) MKMapView *mapView;
 
 @property (nonatomic, strong) NSString *status;
+
+@property (nonatomic, weak) UITableView *detailsTable;
+@property (nonatomic, strong) FBEventDetailsTableDataSource *dataSource;
+@property (nonatomic, strong) FBEventDetailsTableDelegate *detailsTableDelegate;
+
+@property (nonatomic, weak) UIButton *startTrackingButton;
+@property (nonatomic, weak) UIButton *stopTrackingButton;
+@property (nonatomic, weak) UIButton *viewMapButton;
+@property (nonatomic, weak) UISegmentedControl *segmentedControl;
+@property (nonatomic, weak) UIActivityIndicatorView *spinner;
+
+@property (nonatomic, strong) NSMutableDictionary *dimensionsDict;
+@property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
+@property (nonatomic, strong) NSArray *verticalLayoutContraints;
+
+@property (nonatomic, strong) UITapGestureRecognizer *singleFingerTap;
 
 @property (nonatomic, getter = isTracking) BOOL tracking;
 @property (nonatomic, getter = isActive) BOOL active;
 @property (nonatomic, getter = isHost) BOOL host;
 @property (nonatomic, getter = hasReplied) BOOL replied;
 
-@property (nonatomic) BOOL fetchedNewData;
-
-@property (nonatomic, strong) NSMutableDictionary *eventDetails;
-
-@property (nonatomic, strong) UIButton *rsvpStatusButton;
-
-@property (nonatomic, strong) NSMutableDictionary *dimensionsDict;
-@property (nonatomic, strong) NSMutableDictionary *viewsDictionary;
-@property (nonatomic, strong) UIButton *startTrackingButton;
-@property (nonatomic, strong) UIButton *stopTrackingButton;
-@property (nonatomic, strong) UIButton *viewMapButton;
-@property (nonatomic, strong) UISegmentedControl *segmentedControl;
-@property (nonatomic, strong) UIActivityIndicatorView *spinner;
-
-@property (nonatomic, strong) FBEventDetailsTableDelegate *detailsTableDelegate;
+@property (nonatomic, strong) ActiveEventController *activeEventController;
 
 - (void)loadMapView:(id)sender;
 - (void)changeRsvpStatus:(id)sender;
 - (void)cancelTracking:(id)sender;
-
-- (void)backFromActiveEvent:(id)sender;
 
 @end
 
@@ -213,9 +202,9 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 
 #pragma mark Map Zoom
 
-- (void)updateMapZoomLocation:(CLLocationCoordinate2D)location
+- (void)mapView:(MKMapView *)mapView updateMapZoomLocation:(CLLocationCoordinate2D)location
 {
-    [_mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 400, 400) animated:NO];
+    [mapView setRegion:MKCoordinateRegionMakeWithDistance(location, 400, 400) animated:NO];
 }
 
 #pragma mark Contraint Methods
@@ -229,12 +218,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     _viewsDictionary = [[NSMutableDictionary alloc] init];
     
     // Creating new scroll view
-    _scrollView = [[UIScrollView alloc] init];
-    [_scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_scrollView setBackgroundColor:[UIColor whiteColor]];
-    [_scrollView setDelegate:self];
+    UIScrollView *scrollView = [[UIScrollView alloc] init];
+    [scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [scrollView setBackgroundColor:[UIColor whiteColor]];
+    [scrollView setDelegate:self];
     
-    [self.view addSubview:_scrollView];
+    [self.view addSubview:scrollView];
+    self.scrollView = scrollView;
     [_viewsDictionary addEntriesFromDictionary:@{ @"_scrollView":_scrollView }];
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|"
@@ -246,10 +236,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                                       metrics:0
                                                                         views:_viewsDictionary]];
     // Initializing eventImageView and setting its UIImage
-    _coverImageView = [[UIImageView alloc] init];
-    [_coverImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    UIImageView *coverImageView = [[UIImageView alloc] init];
+    [coverImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    [_scrollView addSubview:_coverImageView];
+    [_scrollView addSubview:coverImageView];
+    self.coverImageView = coverImageView;
+    
     [_viewsDictionary addEntriesFromDictionary:@{ @"_coverImageView":_coverImageView }];
     [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_coverImageView]|"
                                                                         options:0
@@ -270,21 +262,26 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     //creating event title label and features
     NSString *eventTitle = [_eventDetails objectForKey:@"name"];
-    _titleLabel = [[UILabel alloc] init];
-    [_titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_titleLabel setBackgroundColor:[UIColor clearColor]];
-    [_titleLabel setText:eventTitle];
-    [_titleLabel setUserInteractionEnabled:NO];
-    if([eventTitle length] != 0){
-    CGFloat fontSize = MIN(24,625/[eventTitle length]);
-    UIFont *textFont = [UIFont fontWithName:@"Helvetica Neue" size:fontSize];
+    UILabel *titleLabel = [[UILabel alloc] init];
+    [titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [titleLabel setBackgroundColor:[UIColor clearColor]];
+    [titleLabel setText:eventTitle];
+    [titleLabel setUserInteractionEnabled:NO];
     
-    [_titleLabel setTextColor:[UIColor whiteColor]];
-    [_titleLabel setFont:textFont];
+    UIFont *textFont;
+    if ([eventTitle length] != 0) {
+        CGFloat fontSize = MIN(24,625/[eventTitle length]);
+        textFont = [UIFont fontWithName:@"Helvetica Neue" size:fontSize];
     }
-    [_titleLabel setTextAlignment:NSTextAlignmentLeft];
     
-    [_coverImageView addSubview:_titleLabel];
+    [titleLabel setTextColor:[UIColor whiteColor]];
+    if (textFont) {
+        [titleLabel setFont:textFont];
+    }
+    [titleLabel setTextAlignment:NSTextAlignmentLeft];
+    
+    [_coverImageView addSubview:titleLabel];
+    self.titleLabel = titleLabel;
     [_viewsDictionary addEntriesFromDictionary:@{ @"_titleLabel":_titleLabel }];
     [_coverImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_titleLabel]-|"
                                                                             options:0
@@ -301,11 +298,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [_coverImageView setUserInteractionEnabled:YES];
     
     
-    _buttonHolder = [[UIView alloc] init];
-    [_buttonHolder setBackgroundColor:[UIColor whiteColor]];
-    [_buttonHolder setTranslatesAutoresizingMaskIntoConstraints:NO];
+    UIView *buttonHolder = [[UIView alloc] init];
+    [buttonHolder setBackgroundColor:[UIColor whiteColor]];
+    [buttonHolder setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    [_scrollView addSubview:_buttonHolder];
+    [_scrollView addSubview:buttonHolder];
+    self.buttonHolder = buttonHolder;
     [_viewsDictionary addEntriesFromDictionary:@{ @"_buttonHolder":_buttonHolder }];
     [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_buttonHolder]|"
                                                                         options:0
@@ -356,22 +354,23 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
             
         } else if (![self isHost]) {
             
-            _rsvpStatusButton = [[UIButton alloc] init];
-            [_rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-            _rsvpStatusButton.showsTouchWhenHighlighted = YES;
-            [_rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-            [_rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-            [_rsvpStatusButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-            [_rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchUpInside];
-            [_rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:)
+            UIButton *rsvpStatusButton = [[UIButton alloc] init];
+            [rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+            rsvpStatusButton.showsTouchWhenHighlighted = YES;
+            [rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+            [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
+            [rsvpStatusButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+            [rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchUpInside];
+            [rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:)
                         forControlEvents:UIControlEventTouchUpOutside];
             
-            [_rsvpStatusButton setTitle:[self statusStringFromEventParameterString:self.eventDetails[@"rsvp_status"]]
+            [rsvpStatusButton setTitle:[self statusStringFromEventParameterString:self.eventDetails[@"rsvp_status"]]
                                forState:UIControlStateNormal];
             
-            [_rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
+            [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
             
-            [_buttonHolder addSubview:_rsvpStatusButton];
+            [_buttonHolder addSubview:rsvpStatusButton];
+            self.rsvpStatusButton = rsvpStatusButton;
             [_viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":_rsvpStatusButton }];
             
             [_buttonHolder addConstraints:[NSLayoutConstraint
@@ -394,22 +393,23 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     else
     {
-        _rsvpStatusButton = [[UIButton alloc] init];
-        [_rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-        _rsvpStatusButton.showsTouchWhenHighlighted = YES;
-        [_rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-        [_rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
-        [_rsvpStatusButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-        [_rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchUpInside];
-        [_rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:)
+        UIButton *rsvpStatusButton = [[UIButton alloc] init];
+        [rsvpStatusButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        rsvpStatusButton.showsTouchWhenHighlighted = YES;
+        [rsvpStatusButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+        [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
+        [rsvpStatusButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+        [rsvpStatusButton addTarget:self action:@selector(changeRsvpStatus:) forControlEvents:UIControlEventTouchUpInside];
+        [rsvpStatusButton addTarget:self action:@selector(resetButtonBackGroundColor:)
                     forControlEvents:UIControlEventTouchUpOutside];
         
-        [_rsvpStatusButton setTitle:[self statusStringFromEventParameterString:self.eventDetails[@"rsvp_status"]]
+        [rsvpStatusButton setTitle:[self statusStringFromEventParameterString:self.eventDetails[@"rsvp_status"]]
                            forState:UIControlStateNormal];
         
-        [_rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
+        [rsvpStatusButton setTitleColor: [UIColor blackColor] forState:UIControlStateNormal];
         
-        [_buttonHolder addSubview:_rsvpStatusButton];
+        [_buttonHolder addSubview:rsvpStatusButton];
+        self.rsvpStatusButton = rsvpStatusButton;
         [_viewsDictionary addEntriesFromDictionary:@{ @"rsvpStatusButton":_rsvpStatusButton }];
         
         [_buttonHolder addConstraints:[NSLayoutConstraint
@@ -424,10 +424,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                        views:_viewsDictionary]];
     }
     
-    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    [_spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
+                                        initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    [_scrollView addSubview:_spinner];
+    [_scrollView addSubview:spinner];
+    self.spinner = spinner;
     [_viewsDictionary addEntriesFromDictionary:@{ @"_spinner":_spinner }];
     [_scrollView addConstraints:[NSLayoutConstraint
                                  constraintsWithVisualFormat:@"V:[_buttonHolder]-20-[_spinner]"
@@ -461,22 +463,19 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                  @"sideMargin":[NSNumber numberWithFloat:TableViewSideMargin] }];
     
     //initializing mapView and setting coordinates of location
-    _mapView = [[MKMapView alloc]
-               initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
-    [_mapView setMapType:MKMapTypeStandard];
-    [_mapView setScrollEnabled:NO];
-    [_mapView setZoomEnabled:NO];
-    [_mapView setUserInteractionEnabled:YES];
+    MKMapView *mapView = [[MKMapView alloc]
+                          initWithFrame:CGRectMake(0, 0, [_dimensionsDict[@"screenWidthWithMargin"] floatValue], 100)];
+    [mapView setMapType:MKMapTypeStandard];
+    [mapView setScrollEnabled:NO];
+    [mapView setZoomEnabled:NO];
+    [mapView setUserInteractionEnabled:YES];
     
     _singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                action:@selector(clickedOnMap:)];
     
     [_singleFingerTap setNumberOfTouchesRequired:1];
     
-    [_mapView addGestureRecognizer:_singleFingerTap];
-    
-
-
+    [mapView addGestureRecognizer:_singleFingerTap];
 
     NSDictionary *venueDict = _eventDetails[@"venue"];
     NSString *locationName = _eventDetails[@"location"];
@@ -487,13 +486,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         double latitude = [latString doubleValue];
         double longitude = [lngString doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
-        _venueLocation = coordinate;
+        self.venueLocation = coordinate;
         
-        [self updateMapZoomLocation:_venueLocation];
+        [self mapView:mapView updateMapZoomLocation:self.venueLocation];
         
         MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
         annot.coordinate = _venueLocation;
-        [_mapView addAnnotation:annot];
+        [mapView addAnnotation:annot];
         
         
     } else {
@@ -503,13 +502,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [geocoder fetchGeocodeAddress:locationName completion:^(NSDictionary *geocode, NSError *error) {
             if (geocode) {
                 CLLocationCoordinate2D coordinate = [((CLLocation *)geocode[@"location"]) coordinate];
-                _venueLocation = coordinate;
-                [self updateMapZoomLocation:_venueLocation];
+                self.venueLocation = coordinate;
+                [self mapView:mapView updateMapZoomLocation:self.venueLocation];
                 
                 MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
                 annot.coordinate = _venueLocation;
                 
-                [_mapView addAnnotation:annot];
+                [mapView addAnnotation:annot];
             }
         }];
         
@@ -520,22 +519,26 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     _detailsTableDelegate = [[FBEventDetailsTableDelegate alloc] init];
     
     //creating table view with event details and setting data source
-    _detailsTable = [[UITableView alloc] init];
-    [_detailsTable setBackgroundColor:[UIColor whiteColor]];
-    [_detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_detailsTable setDataSource:_dataSource];
-    [_detailsTable setDelegate:_detailsTableDelegate];
-    [_detailsTable setTableHeaderView:_mapView];
+    UITableView *detailsTable = [[UITableView alloc] init];
+    [detailsTable setBackgroundColor:[UIColor whiteColor]];
+    [detailsTable setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [detailsTable setDataSource:_dataSource];
+    [detailsTable setDelegate:_detailsTableDelegate];
     
     //setting some UI aspects of tableview
-    [_detailsTable setTableHeaderView:_mapView];
-    [_detailsTable.layer setCornerRadius:3];
-    [_detailsTable.layer setBorderWidth:0.5];
-    [_detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3] CGColor]];
-    [_detailsTable setUserInteractionEnabled:YES];
-    [_detailsTable setScrollEnabled:NO];
+    [detailsTable setTableHeaderView:_mapView];
+    [detailsTable.layer setCornerRadius:3];
+    [detailsTable.layer setBorderWidth:0.5];
+    [detailsTable.layer setBorderColor: [[UIColor colorWithWhite:0 alpha:0.3] CGColor]];
+    [detailsTable setUserInteractionEnabled:YES];
+    [detailsTable setScrollEnabled:NO];
     
-    [_scrollView addSubview:_detailsTable];
+    [_scrollView addSubview:detailsTable];
+    self.detailsTable = detailsTable;
+    
+    [detailsTable setTableHeaderView:mapView];
+    self.mapView = mapView;
+    
     [_viewsDictionary addEntriesFromDictionary:@{ @"_detailsTable":_detailsTable }];
     
     [_dimensionsDict addEntriesFromDictionary:@{ @"detailsTableContentHeight":[NSNumber numberWithFloat:[_detailsTable contentSize].height] }];
@@ -581,18 +584,19 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.viewMapButton removeFromSuperview];
     }
     
-    self.startTrackingButton = [self createStartTrackingButton];
+    UIButton *startTrackingButton = [self createStartTrackingButton];
     
-    [self.scrollView addSubview:self.startTrackingButton];
+    [self.scrollView addSubview:startTrackingButton];
+    self.startTrackingButton = startTrackingButton;
     [self.viewsDictionary addEntriesFromDictionary:@{ @"startTrackingButton": self.startTrackingButton }];
     
     if (self.verticalLayoutContraints) {
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
     }
     
-    self.layoutConstraint =  @"V:[_buttonHolder]-[startTrackingButton(startTrackingButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
+    NSString *layoutConstraint = @"V:[_buttonHolder]-[startTrackingButton(startTrackingButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-|";
     self.verticalLayoutContraints = [NSLayoutConstraint
-                                     constraintsWithVisualFormat:self.layoutConstraint
+                                     constraintsWithVisualFormat:layoutConstraint
                                      options:0
                                      metrics:self.dimensionsDict
                                      views:self.viewsDictionary];
@@ -612,22 +616,24 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.startTrackingButton removeFromSuperview];
     }
     
-    self.viewMapButton = [self createViewMapButton];
+    UIButton *viewMapButton = [self createViewMapButton];
     
-    [self.scrollView addSubview:self.viewMapButton];
+    [self.scrollView addSubview:viewMapButton];
+    self.viewMapButton = viewMapButton;
     [self.viewsDictionary addEntriesFromDictionary:@{ @"viewMapButton": self.viewMapButton }];
     
     
-    self.stopTrackingButton = [self createStopTrackingButton];
-    [self.scrollView addSubview:self.stopTrackingButton];
+    UIButton *stopTrackingButton = [self createStopTrackingButton];
+    [self.scrollView addSubview:stopTrackingButton];
+    self.stopTrackingButton = stopTrackingButton;
     [self.viewsDictionary addEntriesFromDictionary:@{ @"stopTrackingButton": self.stopTrackingButton }];
     
     if (self.verticalLayoutContraints) {
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
     }
     
-    self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(sideMargin)-[stopTrackingButton(stopTrackingButtonHeight)]-|";
-    self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
+    NSString *layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(sideMargin)-[stopTrackingButton(stopTrackingButtonHeight)]-|";
+    self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:layoutConstraint
                                                                             options:0
                                                                             metrics:self.dimensionsDict
                                                                               views:self.viewsDictionary];
@@ -648,25 +654,17 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 - (void)addViewMapButtonAndSegmentedControlForTrackingSettings
 {
     
-    self.viewMapButton = [self createViewMapButton];
+    UIButton *viewMapButton = [self createViewMapButton];
     
-    [self.scrollView addSubview:self.viewMapButton];
+    [self.scrollView addSubview:viewMapButton];
+    self.viewMapButton = viewMapButton;
     [self.viewsDictionary addEntriesFromDictionary:@{ @"viewMapButton": self.viewMapButton }];
-    
-    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"Allow", @"Anon", @"Disallow"]];
-    [self.segmentedControl setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.segmentedControl addTarget:self
-                               action:@selector(handleSegmentedControl:)
-                     forControlEvents:UIControlEventValueChanged];
-    
-    [self.viewsDictionary addEntriesFromDictionary:@{ @"segmentedControl": self.segmentedControl }];
-    [self.dimensionsDict addEntriesFromDictionary:
-          @{ @"segmentedControlHeight": self.dimensionsDict[@"viewMapButtonHeight"] }];
     
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                         initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.scrollView addSubview:spinner];
+    
     [self.viewsDictionary addEntriesFromDictionary:@{ @"segmentedControlSpinner": spinner }];
     
     [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:spinner
@@ -681,8 +679,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
     }
     
-    self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(20)-[segmentedControlSpinner]-(20)-|";
-    self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
+    NSString *layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-(20)-[segmentedControlSpinner]-(20)-|";
+    self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:layoutConstraint
                                                                             options:0
                                                                             metrics:self.dimensionsDict
                                                                               views:self.viewsDictionary];
@@ -697,18 +695,30 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     [[ParseDataStore sharedStore] fetchPermissionForEvent:self.eventDetails[@"id"] completion:^(NSString *identity) {
         
+        UISegmentedControl *segmentedControl = [[UISegmentedControl alloc]
+                                                        initWithItems:@[@"Allow", @"Anon", @"Disallow"]];
+        [segmentedControl setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [segmentedControl addTarget:self
+                             action:@selector(handleSegmentedControl:)
+                   forControlEvents:UIControlEventValueChanged];
+        
         NSInteger selectedIndex = [self segmentedControlIndexForPermission:identity];
-        [self.segmentedControl setSelectedSegmentIndex:selectedIndex];
+        [segmentedControl setSelectedSegmentIndex:selectedIndex];
         
         [spinner stopAnimating];
         [spinner removeFromSuperview];
         
-        [self.scrollView addSubview:self.segmentedControl];
+        [self.scrollView addSubview:segmentedControl];
+        self.segmentedControl = segmentedControl;
         
+        [self.viewsDictionary addEntriesFromDictionary:@{ @"segmentedControl": self.segmentedControl }];
+        [self.dimensionsDict addEntriesFromDictionary:
+         @{ @"segmentedControlHeight": self.dimensionsDict[@"viewMapButtonHeight"] }];
+    
         [self.scrollView removeConstraints:self.verticalLayoutContraints];
         
-        self.layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-[segmentedControl(segmentedControlHeight)]-|";
-        self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:_layoutConstraint
+        NSString *layoutConstraint = @"V:[_buttonHolder]-[viewMapButton(viewMapButtonHeight)]-[_detailsTable(detailsTableContentHeight)]-[segmentedControl(segmentedControlHeight)]-|";
+        self.verticalLayoutContraints = [NSLayoutConstraint constraintsWithVisualFormat:layoutConstraint
                                                                                 options:0
                                                                                 metrics:self.dimensionsDict
                                                                                   views:self.viewsDictionary];
@@ -868,6 +878,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         [self.view hideToastActivity];
     };
     
+    [self.view makeToastActivity];
     NSInteger selectedSegmentIndex = segmentedControl.selectedSegmentIndex;
     if (selectedSegmentIndex == 0) {
         [[ParseDataStore sharedStore] changePermissionForEvent:self.eventDetails[@"id"] identity:allowed completion:completionBlock];
@@ -954,9 +965,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                 [alertView show];
                 
                 if (self.viewMapButton) {
-                    [self.viewMapButton setTitle:@"View Map" forState:UIControlStateNormal];
-                }
-                if (self.stopTrackingButton) {
+                    [self.viewMapButton setTitle:@"View Map" forState:UIControlStateNormal]; } if (self.stopTrackingButton) {
                     [self.stopTrackingButton setTitle:@"Stop Tracking" forState:UIControlStateNormal];
                 }
             } else {
@@ -990,15 +999,18 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     if (!self.activeEventController) {
         self.activeEventController = [[ActiveEventController alloc] initWithEventId:self.eventDetails[@"id"]
                                                                       venueLocation:_venueLocation];
-        self.navigationController.delegate = self.activeEventController;
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self.activeEventController
+                                             selector:@selector(startTimerForUpdates:)
+                                                 name:@"UINavigationControllerWillShowViewControllerNotification"
+                                               object:self.navigationController];
     
-//    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
-//                                                                   style:UIBarButtonItemStylePlain
-//                                                                  target:self
-//                                                                  action:@selector(backFromActiveEvent:)];
-//    
-//    [self.navigationItem setBackBarButtonItem:backButton];
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:nil
+                                                                  action:nil];
+    
+    [self.navigationItem setBackBarButtonItem:backButton];
     
     [self.navigationController pushViewController:[self.activeEventController presentableViewController] animated:YES];
 }

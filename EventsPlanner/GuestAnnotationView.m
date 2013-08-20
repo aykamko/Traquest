@@ -13,8 +13,6 @@
 @property (nonatomic, strong) UIImage *guestAnnotationImage;
 @property (nonatomic) CGRect savedFrame;
 
-@property (nonatomic) BOOL zeroFrame;
-
 @end
 
 @implementation GuestAnnotationView
@@ -46,28 +44,24 @@
         [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.frame = self.savedFrame;
         } completion:nil];
+    } else {
+        self.frame = self.savedFrame;
     }
-//        [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-//            NSLog(@"%@", NSStringFromCGRect(self.frame));
-//            self.frame = CGRectMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame), 0, 0);
-//            self.zeroFrame = YES;
-//        } completion:nil];
-//    }
     
     [super didMoveToSuperview];
 }
 
-//- (void)removeFromSuperview
-//{
-//    if (self.superview) {
-//        [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-//            self.bounds = CGRectMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame), 0, 0);
-//        } completion:^(BOOL finished) {
-//            [super removeFromSuperview];
-//        }];
-//    } else {
-//        [super removeFromSuperview];
-//    }
-//}
+- (void)removeFromSuperview
+{
+    if (self.superview) {
+        [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.bounds = CGRectMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame), 0, 0);
+        } completion:^(BOOL finished) {
+            [super removeFromSuperview];
+        }];
+    } else {
+        [super removeFromSuperview];
+    }
+}
 
 @end

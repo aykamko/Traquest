@@ -18,14 +18,14 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
 @property (strong, nonatomic) NSTimer *timer;
 @property (nonatomic) CLLocationCoordinate2D venueLocation;
 
-@property NSString *eventId;
+@property (strong, nonatomic) NSString *eventId;
 
 @property (strong, nonatomic) NSMutableDictionary *friendAnnotationPointDict;
 @property (strong, nonatomic) NSMutableDictionary *anonAnnotationPointDict;
 
-@property ActiveEventMapViewController *mapController;
-@property ActiveEventsStatsViewController *statsController;
-@property UITabBarController *tabBarController;
+@property (weak, nonatomic) ActiveEventMapViewController *mapController;
+@property (weak, nonatomic) ActiveEventsStatsViewController *statsController;
+@property (strong, nonatomic) UITabBarController *tabBarController;
 
 @end
 
@@ -40,36 +40,37 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
         _venueLocation = venueLocation;
         
         _tabBarController = [[UITabBarController alloc] init];
-        _mapController = [[ActiveEventMapViewController alloc] initWithEventId:eventId venueLocation:venueLocation];
-        _statsController = [[ActiveEventsStatsViewController alloc] initWithEventId:eventId venueLocation:venueLocation];
+        ActiveEventMapViewController *mapController = [[ActiveEventMapViewController alloc]
+                                                       initWithEventId:eventId venueLocation:venueLocation];
+        ActiveEventsStatsViewController *statsController = [[ActiveEventsStatsViewController alloc]
+                                                            initWithEventId:eventId
+                                                            venueLocation:venueLocation];
         
-        [_tabBarController setViewControllers:@[_mapController, _statsController]];
-        _statsController.title = @"Stats";
-        _mapController.title = @"Map";
+        [_tabBarController setViewControllers:@[mapController, statsController]];
         
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Details"
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(goBack)];
-        
-        self.tabBarController.navigationItem.leftBarButtonItem = backButton;
-        self.tabBarController.navigationController.delegate = self;
-        
+        self.mapController = mapController;
+        self.statsController = statsController;
+        self.statsController.title = @"Stats";
+        self.mapController.title = @"Map";
     }
     return self;
 }
 
-- (void)navigationController:(UINavigationController *)navigationController
-      willShowViewController:(UIViewController *)viewController
-                    animated:(BOOL)animated
+- (void)startTimerForUpdates:(NSNotification *)notification
 {
-    if ([viewController isEqual:self.tabBarController]) {
+    NSDictionary *userInfo = [notification userInfo];
+    UIViewController *nextController = [userInfo objectForKey:@"UINavigationControllerNextVisibleViewController"];
+    if (nextController == self.tabBarController) {
         [self setTimer:[NSTimer scheduledTimerWithTimeInterval:UpdateFrequencyInSeconds
                                                                                       target:self
                                                                                     selector:@selector(updateLocationData)
                                                                                     userInfo:nil
                                                                                      repeats:YES]];
         [[self timer] fire];
+    } else {
+        [self.timer invalidate];
+        self.timer = nil;
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
 }
 
@@ -88,20 +89,13 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
             [anonUserDict setObject:user forKey:key];
         }
         
-        [_mapController updateMarkersOnMapForAllowedUsers:allowedUserDict anonUsers:anonUserDict];
+        [self.mapController updateMarkersOnMapForAllowedUsers:allowedUserDict anonUsers:anonUserDict];
         
     }];
 }
 
-- (void)goBack
-{
-    [self.timer invalidate];
-    self.timer = nil;
-    [self.tabBarController.navigationController popViewControllerAnimated:YES];
-}
-
--(UITabBarController *) presentableViewController {
-    return _tabBarController;
+- (UITabBarController *) presentableViewController {
+    return self.tabBarController;
 }
 
 @end
