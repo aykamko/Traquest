@@ -685,7 +685,6 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
         } else {
             [self addViewMapButtonAndSegmentedControlForTrackingSettings];
         }
-    
     } else if (self.isHost && ([self isActive] || kAllowTrackingForNonActiveEvents)) {
         
         [self addStartTrackingButton];
@@ -749,7 +748,6 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
     
     [self.scrollView addSubview:viewMapLabel];
     self.viewMapLabel = viewMapLabel;
-    
     [self.viewsDictionary addEntriesFromDictionary:@{ @"_viewMapLabel": self.viewMapLabel }];
     
     

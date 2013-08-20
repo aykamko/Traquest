@@ -241,15 +241,13 @@ NSString * const kDeclinedEventsKey = @"declined";
         [allowedRelation removeObject:[PFUser currentUser]];
         [anonRelation removeObject:[PFUser currentUser]];
         
-        PFRelation *newRelation = [event relationforKey:identity];
-        [newRelation addObject:[PFUser currentUser]];
+        if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
+            PFRelation *newRelation = [event relationforKey:identity];
+            [newRelation addObject:[PFUser currentUser]];
+        }
         
         [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
-                [self startTrackingMyLocationIfAllowed];
-            } else {
-                [self verifyIfTrackingAllowed];
-            }
+            [self startTrackingMyLocationIfAllowed];
         }];
         
         
