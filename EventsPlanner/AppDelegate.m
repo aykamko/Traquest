@@ -53,6 +53,11 @@ static const BOOL debugTracking = YES;
     // Initializing Data Store
     (void) [[ParseDataStore alloc] init];
     
+//    [PFCloud callFunctionInBackground:@"disallowOldEvents" withParameters:@{@"date": [NSDate date], facebookID: [[NSUserDefaults standardUserDefaults] objectForKey:facebookID]} block:^(id object, NSError *error) {
+//        NSLog(@"%@", object);
+//        NSLog(@"Hello");
+//    }];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor brownColor];
     

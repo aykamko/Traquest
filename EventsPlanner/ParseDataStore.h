@@ -18,6 +18,7 @@ extern NSString * const kParseUserNameKey;
 extern NSString * const facebookID;
 extern NSString * const locationKey;
 
+extern NSString * const kTimeKey;
 extern NSString * const kHostEventsKey;
 extern NSString * const kAttendingEventsKey;
 extern NSString * const kMaybeEventsKey;

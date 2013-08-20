@@ -46,10 +46,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
         _friendAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _anonAnnotationPointDict = [[NSMutableDictionary alloc] init];
         _guestData = [[NSMutableDictionary alloc] init];
-<<<<<<< HEAD
-=======
-        
->>>>>>> Lazily fetching name and profile picture of user
     }
     
     return self;
@@ -80,7 +76,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
 
 - (void)updateMarkersOnMapForAllowedUsers:(NSDictionary *)allowedUsersDict anonUsers:(NSDictionary *)anonUsersDict;
 {
-<<<<<<< HEAD
     // Allowed points
     NSMutableSet *pastAllowedUserIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
     
@@ -108,42 +103,8 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
             self.friendAnnotationPointDict[fbId] = point;
             
         } else {
-=======
-        // Allowed points
-        NSMutableSet *pastAllowedUserIds = [NSMutableSet setWithArray:[self.friendAnnotationPointDict allKeys]];
-        
-        for (NSString *fbId in [allowedUsersDict allKeys]) {
-            PFUser *user = allowedUsersDict[fbId];
-            if (!user) {
-                continue;
-            }
-            
-            [pastAllowedUserIds removeObject:fbId];
-            
-            PFGeoPoint *currentGeopoint = [user objectForKey:locationKey];
-            
-            CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(currentGeopoint.latitude,
-                                                                                  currentGeopoint.longitude);
-            
-            FBIdAnnotationPoint *point = self.friendAnnotationPointDict[fbId];
->>>>>>> Lazily fetching name and profile picture of user
             
             point.coordinate = currentCoordinate;
-            
-<<<<<<< HEAD
-=======
-                point = [[FBIdAnnotationPoint alloc] initWithFbId:fbId anonymity:NO];
-                point.coordinate = currentCoordinate;
-                point.title = [user objectForKey:kParseUserNameKey];
-                [self.mapView addAnnotation:point];
-                self.friendAnnotationPointDict[fbId] = point;
-                
-            } else {
-                
-                point.coordinate = currentCoordinate;
-                
-            }
->>>>>>> Lazily fetching name and profile picture of user
         }
     }
     
@@ -168,7 +129,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
         CLLocationCoordinate2D currentCoordinate = CLLocationCoordinate2DMake(geoPoint.latitude,
                                                                               geoPoint.longitude);
         
-<<<<<<< HEAD
         FBIdAnnotationPoint *point = self.anonAnnotationPointDict[fbIdHash];
         
         if (!point) {
@@ -182,12 +142,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
         } else {
             
             point.coordinate = currentCoordinate;
-            
-=======
-        for (NSString *key in pastAllowedUserIds) {
-            [self.mapView removeAnnotation:self.friendAnnotationPointDict[key]];
-            [self.friendAnnotationPointDict removeObjectForKey:key];
->>>>>>> Lazily fetching name and profile picture of user
         }
         
     }
@@ -219,21 +173,9 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
         FBIdAnnotationPoint *fbAnnotation = (FBIdAnnotationPoint *)annotation;
         
-<<<<<<< HEAD
         if (fbAnnotation.anonymous == NO) {
             
             annotationView = (GuestAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:allowedViewIdentifier];
-=======
-        for (NSString *fbIdHash in [anonUsersDict allKeys]) {
-            PFUser *anonUser = anonUsersDict[fbIdHash];
-            if (!anonUser) {
-                continue;
-            }
-            
-            [pastAnonymousLocationIds removeObject:fbIdHash];
-            
-            PFGeoPoint *geoPoint = [anonUser objectForKey:locationKey];
->>>>>>> Lazily fetching name and profile picture of user
             
             if (!annotationView) {
                 annotationView = [[GuestAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:allowedViewIdentifier];
@@ -259,7 +201,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
                 
             }];
             
-<<<<<<< HEAD
         } else {
             
             annotationView = (GuestAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
@@ -282,65 +223,6 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
             annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:locationPinIdentifier];
         } else {
             annotationView.annotation = annotation;
-=======
-        }
-        
-        for (NSString *key in pastAnonymousLocationIds) {
-            [self.mapView removeAnnotation:self.anonAnnotationPointDict[key]];
-            [self.anonAnnotationPointDict removeObjectForKey:key];
-        }
-        
-        if (self.zoomToFit) {
-            [self zoomToFitMapAnnotations];
-            self.zoomToFit = NO;
-        }
-}
-
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
-{
-    if ([annotation isKindOfClass:[MKUserLocation class]]) {
-        ((MKUserLocation *)annotation).title = nil;
-        return nil;
-    }
-    
-    static NSString *annotationViewIdentifier = @"ActiveMapPin";
-    MKPinAnnotationView *pinView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
-    
-    if (!pinView) {
-        
-        pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier];
-        
-        if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
-            
-            FBIdAnnotationPoint *fbAnnotation = (FBIdAnnotationPoint *)annotation;
-            pinView.pinColor = MKPinAnnotationColorGreen;
-            
-            if (fbAnnotation.anonymous == NO) {
-                
-                UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
-                                                    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                pinView.leftCalloutAccessoryView = spinner;
-                [spinner startAnimating];
-                
-                [[ParseDataStore sharedStore] fetchProfilePictureForUser:fbAnnotation.fbId completion:^(UIImage *profilePic) {
-                    
-                    [spinner stopAnimating];
-                    
-                    UIImageView *profilePicImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-                    profilePicImageView.image = profilePic;
-                    [profilePicImageView.layer setCornerRadius:kCalloutViewProfilePicCornerRadius];
-                    
-                    pinView.leftCalloutAccessoryView = profilePicImageView;
-                    
-                }];
-                
-            }
-            
-        } else {
-            
-            pinView.pinColor = MKPinAnnotationColorRed;
-            
->>>>>>> Lazily fetching name and profile picture of user
         }
         
         ((MKPinAnnotationView *)annotationView).pinColor = MKPinAnnotationColorRed;

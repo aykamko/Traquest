@@ -24,6 +24,42 @@ Parse.Cloud.beforeSave('Tracking', function(request, response) {
   });
 });
 
+Parse.Cloud.define('calculateStatistics', function(request, response){
+	var stats;
+	var users = new Array();
+	Parse.Cloud.run('getUsers', {eventId: request.params.eventId, permission:'allowed'}, {
+		success: function (allowed) {
+      users.concat(allowed);
+      Parse.Cloud.run('getUsers', {eventId: request.params.eventId, permission:'anonymous'}, {
+        success: function (anonymous) {
+          users.concat(anonymous);
+          stats.totalNumberOfUsers = users.length;
+          response.success(stats);
+        },    
+        error: function (error) {
+          console.log(error);
+          response.error('Error trying to find Anonymous Users');
+        }
+      });
+    },
+    error: function (error) {
+      console.log(error);
+      response.error('Error trying to find Allowed Users');
+    }
+	});
+	
+	/*var R = 6371; // km
+	var dLat = (lat2-lat1).toRad();
+	var dLon = (lon2-lon1).toRad();
+	var lat1 = lat1.toRad();
+	var lat2 = lat2.toRad();
+
+	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+	var d = R * c;*/
+});
+
 Parse.Cloud.define('deleteEventData', function(request, response) {
   Parse.Cloud.run('deleteAllowedUsers', { eventId: request.params.eventId }, {
     success: function (result) {
@@ -43,6 +79,27 @@ Parse.Cloud.define('deleteEventData', function(request, response) {
       response.error('Error trying to run "deleteAllowedUsers" function');
     }
   });
+});
+
+Parse.Cloud.define('getUsers', function(request,response){
+	var Event = Parse.Object.extend("Event");
+	var eventQuery = new Parse.Query(Event);
+	eventQuery.equalTo("eventId", request.params.eventId);
+	eventQuery.first({
+	    success: function(fbEvent) {
+	      var relation = fbEvent.relation(request.params.permission);
+	      relation.query().find().then(
+			function (resultList) {
+			response.success(resultList);
+			},
+			function (badResult) {
+			      response.error("Error retreiving objects in allowed relation!");
+			});
+		},
+		error: function(error) {
+			response.error('Error querying for event');
+		}
+    }); 
 });
 
 Parse.Cloud.define('deleteAllowedUsers', function(request, response) {
@@ -115,6 +172,21 @@ Parse.Cloud.define('deleteAnonymousUsers', function(request, response) {
       response.error('Error querying for event!');
     }
   });
+});
+
+Parse.Cloud.define('disallowOldEvents', function(request, response) {
+	var eventDate = request.params.date;
+	var UserObject = Parse.User;
+	var userQuery = new Parse.Query(UserObject);
+	userQuery.equalTo('fbID', request.params.fbID);
+	userQuery.first({
+		success: function(user) {
+			user.set('dateTracked',eventDate);
+			user.save();
+			console.log(user.toJSON());
+			response.success(user);
+		}
+	});
 });
 
 Parse.Cloud.define('getLocationAverage', function(request, response) {

@@ -26,6 +26,8 @@ NSString * const kParseUserNameKey = @"name";
 NSString * const locationKey = @"location";
 NSString * const facebookID = @"fbID";
 
+NSString * const kTimeKey = @"time";
+NSString * const kLocationData = @"locationData";
 NSString * const kActiveGuestEventsKey = @"activeGuest";
 NSString * const kActiveHostEventsKey = @"activeHost";
 NSString * const kHostEventsKey = @"host";
@@ -38,11 +40,14 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 @interface ParseDataStore () <CLLocationManagerDelegate>
 
+@property (strong, nonatomic) PFGeoPoint *userCurrentLocation;
 @property (strong, nonatomic) NSDate *endDate;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) NSMutableArray *allAttendingFriends;
+@property BOOL justStartedTracking;
+@property BOOL isTracking;
 
 @property (copy, nonatomic) void (^locationCompletionBlock)(CLLocation *location);
 
@@ -64,6 +69,8 @@ NSString * const kDeclinedEventsKey = @"declined";
         [_locationManager setDistanceFilter:distance];
         [_locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
         _trackingCount = [[NSMutableDictionary alloc]init];
+        _justStartedTracking = NO;
+        _isTracking = NO;
         
     }
     
@@ -190,7 +197,10 @@ NSString * const kDeclinedEventsKey = @"declined";
     if (!([self isLoggedIn] && [self verifyIfTrackingAllowed])) {
         return;
     }
-    
+    if (!self.isTracking) {
+        self.justStartedTracking = YES;
+    }
+    self.isTracking = YES;
     [_locationManager startUpdatingLocation];
 }
 
@@ -205,7 +215,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     
     NSArray *results = [combinedQuery findObjects];
     if (!results || [results count]==0) {
-        [self.locationManager stopUpdatingLocation];
+        [self stopTrackingMyLocation];
         return NO;
     }
     return YES;
@@ -213,6 +223,9 @@ NSString * const kDeclinedEventsKey = @"declined";
 
 - (void)stopTrackingMyLocation
 {
+    self.isTracking = NO;
+    [[PFUser currentUser] setObject:[NSArray array] forKey:kLocationData];
+    [[PFUser currentUser] saveInBackground];
     [self.locationManager stopUpdatingLocation];
 }
 
@@ -232,44 +245,20 @@ NSString * const kDeclinedEventsKey = @"declined";
         PFRelation *newRelation = [event relationforKey:identity];
         [newRelation addObject:[PFUser currentUser]];
         
-        [event saveInBackground];
+        [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
+                [self startTrackingMyLocationIfAllowed];
+            } else {
+                [self stopTrackingMyLocation];
+            }
+        }];
         
-        if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
-            [self startTrackingMyLocationIfAllowed];
-        } else {
-            [self stopTrackingMyLocation];
-        }
+        
         
         if (completionBlock) {
             completionBlock();
         }
-        
-        [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            [self startTrackingMyLocationIfAllowed];
-            
-            if (completionBlock) {
-                completionBlock();
-            }
-        }];
     }];
-//    
-//    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
-//    [trackingObj whereKey:facebookID equalTo:self.myId];
-//    
-//    [trackingObj findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//        
-//        PFObject *trackingObject = [objects firstObject];
-//        NSString *eventIdKey = [NSString stringWithFormat:@"E%@", eventId];
-//        
-//        [trackingObject setObject:identity forKey:eventIdKey];
-//        [self startTrackingMyLocationIfAllowed];
-//        [trackingObject saveInBackground];
-//        
-//        if (completionBlock) {
-//            completionBlock();
-//        }
-//        
-//    }];
 }
 
 - (void)fetchPermissionForEvent:(NSString *)eventId
@@ -302,24 +291,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                 }];
             }
         }];
-    }];
-//    
-//    PFQuery *trackingObj = [PFQuery queryWithClassName:@"TrackingObject"];
-//    [trackingObj whereKey:facebookID equalTo:self.myId];
-//    
-//    [trackingObj findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//        
-//        PFObject *trackingObject = [objects firstObject];
-//        NSString *eventIdKey = [NSString stringWithFormat:@"E%@", eventId];
-//        
-//        NSString *identity = [trackingObject objectForKey:eventIdKey];
-//        
-//        if (completionBlock) {
-//            completionBlock(identity);
-//        }
-//        
-//    }];
-}
+    }];}
 
 - (void)setTrackingStatus:(BOOL)isTracking event:(NSString *)eventId completion:(void (^)())completion;
 {
@@ -362,11 +334,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 - (void)locationManager:(CLLocationManager*)manager didUpdateLocations:(NSArray *)locations
 {
     
-//    if ([_endDate compare:[NSDate date]] == NSOrderedAscending) {
-//        [manager stopUpdatingLocation];
-//        return;
-//    }
-    
     CLLocation *location = [locations lastObject];
     
     if (self.locationCompletionBlock) {
@@ -376,13 +343,44 @@ NSString * const kDeclinedEventsKey = @"declined";
     
     CLLocationCoordinate2D coordinate = [location coordinate];
     _currentLocation = location;
-    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
+    self.userCurrentLocation = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
                                                   longitude:coordinate.longitude];
-//    NSArray *geoPoints = @[geoPoint];
     
-    [[PFUser currentUser] setObject:geoPoint forKey:@"location"];
-//    [[PFUser currentUser] setObject:geoPoints forKey:@"allLocations"];
+    [[PFUser currentUser] setObject:self.userCurrentLocation forKey:@"location"];
+    NSArray *locationsArray = [[PFUser currentUser] objectForKey:kLocationData];
+    
+    NSNumber *time = [NSNumber numberWithDouble: [[NSDate date] timeIntervalSinceReferenceDate]];
+    NSDictionary *locationObject = @{locationKey: self.userCurrentLocation,kTimeKey:time};
+    
+    if (!locationsArray || [locationsArray count]==0) {
+        locationsArray = @[locationObject, locationObject];
+    } else {
+        locationsArray = @[[locationsArray firstObject], locationObject];
+    }
+    
+    [[PFUser currentUser] setObject:locationsArray forKey:kLocationData];
     [[PFUser currentUser] saveInBackground];
+
+//    if (_justStartedTracking) {
+//        _justStartedTracking = NO;
+//        PFQuery *selfQuery = [PFUser query];
+//        [selfQuery whereKey:facebookID equalTo:self.myId];
+//        [selfQuery findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
+//            PFUser *me = [users firstObject];\
+//        }];
+//    } else {
+//        PFQuery *selfQuery = [PFUser query];
+//        [selfQuery whereKey:facebookID equalTo:self.myId];
+//        [selfQuery findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
+//            PFUser *me = [users firstObject];
+//            NSNumber *time = [NSNumber numberWithDouble: [[NSDate date] timeIntervalSince1970]];
+//            NSDictionary *locationObject = @{locationKey: self.userCurrentLocation,kTimeKey:time};
+//            NSArray *previousLocationArray = [me objectForKey:kLocationData];
+//            NSArray *locationsArray = @[[previousLocationArray firstObject], locationObject];
+//            [me setObject:locationsArray forKey:kLocationData];
+//            [me saveInBackground];
+//        }];
+//    }
     
 //    PFQuery *selfQuery = [PFUser query];
 //    [selfQuery whereKey:facebookID equalTo:self.myId];
