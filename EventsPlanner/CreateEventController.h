@@ -14,13 +14,9 @@
 
 @interface CreateEventController : NSObject <UITextFieldDelegate>
 
-@property (nonatomic, strong) CreateEventModel *createEventModel;
-@property (nonatomic, strong) NSString *existingEventId;
-@property (nonatomic) BOOL isNewEvent;
-
 - (id)initWithListController:(EventsListController *)eventsListController;
 - (id)initWithDetailViewController:(FBEventDetailsViewController *)detailViewController
-    eventDetails: (NSDictionary *)eventDetails eventId:(NSString *)eventId isNewEvent:(BOOL)isNewEvent;
+                      eventDetails:(NSDictionary *)eventDetails;
 
 - (UIViewController *)presentableViewController;
 

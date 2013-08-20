@@ -36,8 +36,21 @@ NSString * const kInviteOnlyPrivacyString = @"Invite Only";
         
         self.createEventModel = createEventModel;
         
-        _privacyType = kFriendsOfGuestPrivacyString;
-        self.createEventModel.privacyType = self.privacyType;
+        if (!self.createEventModel.privacyType) {
+            _privacyType = kFriendsOfGuestPrivacyString;
+            self.createEventModel.privacyType = self.privacyType;
+        } else {
+            NSString *privacyType = self.createEventModel.privacyType;
+            if ([privacyType isEqualToString:@"OPEN"]) {
+                _privacyType = kPublicPrivacyString;
+            } else if ([privacyType isEqualToString:@"FRIENDS"]) {
+                _privacyType = kFriendsOfGuestPrivacyString;
+            } else if ([privacyType isEqualToString:@"SECRET"]) {
+                _privacyType = kInviteOnlyPrivacyString;
+            } else {
+                _privacyType = kFriendsOfGuestPrivacyString;
+            }
+        }
         
         self.privacyTypesArray = @[kPublicPrivacyString, kFriendsOfGuestPrivacyString, kInviteOnlyPrivacyString];
         

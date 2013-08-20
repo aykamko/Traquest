@@ -1141,21 +1141,29 @@ NSString * const kDeclinedEventsKey = @"declined";
     [newEventRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         
         if (error) {
-            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]])
-            {
+            
+            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]]) {
+                
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]];
+                
+            } else {
+                
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error editing!"
+                                                                    message:error.localizedDescription
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                [alertView show];
             }
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error editing!"
-                                                                message:error.localizedDescription
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
             
         } else {
-                if (completionBlock)
-                    completionBlock();
+            
+            if (completionBlock) {
+                completionBlock();
+            }
+            
         }
+        
     }];
 }
 

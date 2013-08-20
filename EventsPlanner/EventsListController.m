@@ -195,12 +195,11 @@
 - (UITabBarController *)tabBarControllerWithInitializedTableViewControllers
 {
     
-    self.tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_allActiveEvents];
-    
-    self.hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
-    self.attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
-    self.maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeAttending];
-    self.notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_notReplyEvents];
+    _tableActiveViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_allActiveEvents];
+    _hostTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_hostEvents];
+    _attendingTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_attendingEvents];
+    _maybeTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_maybeAttending];
+    _notRepliedTableViewDataSource = [[EventsTableViewDataSource alloc] initWithEventArray:_notReplyEvents];
     
     UITableViewController *tableActiveViewController = [[UITableViewController alloc]
                                                         initWithStyle:UITableViewStyleGrouped];
@@ -299,7 +298,6 @@
 - (IBAction)makeNewEvent:(id)sender
 {
     self.createEventController = [[CreateEventController alloc] initWithListController:self];
-    [self.createEventController setIsNewEvent:YES];
     
     [self.tabBarController.navigationController
              pushViewController:self.createEventController.presentableViewController

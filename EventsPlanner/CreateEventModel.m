@@ -8,6 +8,7 @@
 
 #import "CreateEventModel.h"
 #import "CreateEventPrivacyViewController.h"
+#import "NSDate+ExtraStuff.h"
 
 NSString * const kNameEventParameterKey = @"name";
 NSString * const kStartTimeEventParameterKey = @"start_time";
@@ -27,14 +28,18 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
 
 @implementation CreateEventModel
 
-- (id)initWithIsNew:(BOOL)isNewEvent
+- (CreateEventModel *)copyOfModel
 {
-    self = [super init];
-    if (self)
-    {
-        _isNewEvent = isNewEvent;
-    }
-    return self;
+    CreateEventModel *newModel = [[CreateEventModel alloc] init];
+    newModel.name = [self.name copy];
+    newModel.startTime = [self.startTime copy];
+    newModel.endTime = [self.endTime copy];
+    newModel.description = [self.description copy];
+    newModel.location = [self.location copy];
+    newModel.locationId = [self.locationId copy];
+    newModel.privacyType = [self.privacyType copy];
+    
+    return newModel;
 }
 
 - (void)setName:(NSString *)name
@@ -64,6 +69,8 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
     if (self.name && self.description) {
         self.validEvent = YES;
         [self.delegate didSetNameAndDescription];
+    } else {
+        [self.delegate eventIsAtInvalidState];
     }
 }
 
@@ -96,7 +103,7 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
     [self.delegate reloadTableView];
 }
 
-#pragma Valid Event
+#pragma mark Return Methods
 - (NSDictionary *)validEvent
 {
     if (!self.isValidEvent) {
@@ -154,6 +161,76 @@ NSString * const kInvitedFriendIdsEventParameterKey = @"invited_friends";
     }
     
     return resultDict;
+}
+
+- (NSDictionary *)onlyParametersChangedFromStoredModel:(CreateEventModel *)storedModel
+{
+    if (!storedModel) {
+        return nil;
+    }
+    
+    NSMutableDictionary *differenceDict = [[NSMutableDictionary alloc] init];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+    
+    if (![self.name isEqualToString:storedModel.name]) {
+        [differenceDict addEntriesFromDictionary:@{ kNameEventParameterKey: self.name }];
+    }
+    
+    if (![self.description isEqualToString:storedModel.description]) {
+        [differenceDict addEntriesFromDictionary:@{ kDescriptionEventParameterKey: self.description }];
+    }
+    
+    if (self.startTime && ![self.startTime isEqualToDate:storedModel.startTime]) {
+        NSString *startTimeISO8601String = [dateFormatter stringFromDate:self.startTime];
+        if (startTimeISO8601String)
+        {
+            [differenceDict addEntriesFromDictionary:@{ kStartTimeEventParameterKey: startTimeISO8601String }];
+        }
+    }
+    
+    if (self.endTime && ![self.endTime isEqualToDate:storedModel.endTime]) {
+        NSString *endTimeISO8601String = [dateFormatter stringFromDate:self.endTime];
+        if (endTimeISO8601String)
+        {
+            [differenceDict addEntriesFromDictionary:@{ kEndTimeEventParameterKey: endTimeISO8601String }];
+        }
+    }
+    
+    if (self.location && ![self.location isEqualToString:storedModel.location]) {
+        [differenceDict addEntriesFromDictionary:@{ kLocationEventParameterKey: self.location }];
+    }
+    
+    if (self.locationId && ![self.locationId isEqualToString:storedModel.locationId]) {
+        [differenceDict addEntriesFromDictionary:@{ kLocationIdEventParameterKey: self.locationId }];
+    }
+    
+    if (self.privacyType && ![self.privacyType isEqualToString:storedModel.privacyType]) {
+        
+        if ([self.privacyType isEqualToString:kPublicPrivacyString]) {
+            
+            self.privacyType = @"OPEN";
+            
+        } else if ([self.privacyType isEqualToString:kFriendsOfGuestPrivacyString]) {
+            
+            self.privacyType = @"FRIENDS";
+            
+        } else if ([self.privacyType isEqualToString:kInviteOnlyPrivacyString]) {
+            
+            self.privacyType = @"SECRET";
+            
+        }
+        
+        [differenceDict addEntriesFromDictionary:@{ kPrivacyTypeEventParameterKey: self.privacyType }];
+    }
+    
+    if ([differenceDict allKeys] > 0) {
+        return differenceDict;
+    } else {
+        return nil;
+    }
+    
 }
 
 @end

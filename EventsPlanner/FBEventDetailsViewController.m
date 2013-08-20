@@ -28,7 +28,8 @@ static const float kLatitudeAdjustment = 0.0008;
 static const float kLongitudeAsjustment = 0;
 static const BOOL kAllowTrackingForNonActiveEvents = YES;
 
-static NSInteger const kActionSheetCancelButtonIndex = 3;
+static NSInteger const kChangeStatusCancelButtonIndex = 3;
+static NSInteger const kEditEventCancelButtonIndex = 2;
 
 @interface FBEventDetailsViewController () <UITextFieldDelegate, UIAlertViewDelegate, MKMapViewDelegate, UIScrollViewDelegate>
 
@@ -40,6 +41,7 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, weak) UILabel *titleLabel;
 @property (nonatomic, weak) UIView *buttonHolder;
 @property (nonatomic, weak) UIButton *rsvpStatusButton;
+@property (nonatomic, weak) UIButton *editEventButton;
 @property (nonatomic, weak) MKMapView *mapView;
 
 @property (nonatomic, strong) NSString *status;
@@ -67,7 +69,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
 @property (nonatomic, getter = hasReplied) BOOL replied;
 
 @property (nonatomic, strong) ActiveEventController *activeEventController;
-@property (nonatomic, strong) UIButton *editEvent;
 
 - (void)loadMapView:(id)sender;
 - (void)changeRsvpStatus:(id)sender;
@@ -135,14 +136,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [super viewWillAppear:animated];
 }
 
-#pragma mark invite and change RSVP
+#pragma mark Invite and Change RSVP
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     
     if (actionSheet.tag == 0)
     {
-        if (buttonIndex == kActionSheetCancelButtonIndex) {
+        if (buttonIndex == kChangeStatusCancelButtonIndex) {
             return;
         }
         
@@ -181,66 +182,53 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                        [self.rsvpStatusButton setTitle:actionTitle forState:UIControlStateNormal];
                                                        
                                                    }];
-    }
-    else
-    {
-        if (buttonIndex == kActionSheetCancelButtonIndex) {
+        
+    } else {
+        
+        if (buttonIndex == kEditEventCancelButtonIndex) {
             return;
         }
         
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                             initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        //[spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
         
-        [self.editEvent setTitle:@"Edit" forState:UIControlStateNormal];
-        [self.editEvent addSubview:spinner];
-
+        [self.editEventButton setTitle:nil forState:UIControlStateNormal];
+        [self.editEventButton addSubview:spinner];
+        
+        [self.editEventButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.editEventButton
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1.0
+                                                                          constant:0.0]];
+        [self.editEventButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.editEventButton
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                        multiplier:1.0
+                                                                          constant:0.0]];
+        
         [spinner startAnimating];
         
         NSString *actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-        
-        if ([actionTitle isEqualToString:@"Edit"])
-        {
-            CreateEventController *createEventController =[[CreateEventController alloc] initWithDetailViewController:self eventDetails:_eventDetails eventId:_eventDetails[@"id"] isNewEvent:NO];
+        if ([actionTitle isEqualToString:@"Edit"]) {
             
-            if (_eventDetails[@"name"])
-            {
-                [createEventController.createEventModel setName:_eventDetails[@"name"]];
-            }
-            if (_eventDetails[@"description"])
-            {
-                [createEventController.createEventModel setDescription:_eventDetails[@"description"]];
-            }
-            if (_eventDetails[@"start_time"])
-            {
-                [createEventController.createEventModel setStartTime:_eventDetails[@"start_time"]];
-            }
-            if (_eventDetails[@"end_time"])
-            {
-                [createEventController.createEventModel setEndTime:_eventDetails[@"end_time"]];
-            }
-            if (_eventDetails[@"location"])
-            {
-                [createEventController.createEventModel setLocation:_eventDetails[@"location"]];
-            }
-            if (_eventDetails[@"venue"][@"id"])
-            {
-                [createEventController.createEventModel setLocationId:_eventDetails[@"venue"][@"id"]];
-            }
-            if (_eventDetails[@"privacy"])
-            {
-                [createEventController.createEventModel setPrivacyType:_eventDetails[@"privacy"]];
-            }
+            CreateEventController *createEventController = [[CreateEventController alloc]
+                                                            initWithDetailViewController:self
+                                                            eventDetails:_eventDetails];
+            
             
             [spinner removeFromSuperview];
             
             [self.navigationController
              pushViewController:createEventController.presentableViewController
              animated:YES];
-        }
-        
-        else if ([actionTitle isEqualToString:@"Delete"])
-        {
+            
+        } else if ([actionTitle isEqualToString:@"Delete"]) {
+            
             [[ParseDataStore sharedStore] deleteEvent:_eventDetails[@"id"] completion:^{
                 
                 UITabBarController *tabBarController = [[EventsListController sharedListController] presentableViewController];
@@ -268,9 +256,12 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     }
 }
 
--(void)refreshDetailsView:(NSDictionary *)eventDetails
+- (void)refreshDetailsViewWithCompleteDetails:(NSDictionary *)completeEventDetails
 {
-    _eventDetails = [eventDetails mutableCopy];
+    self.eventDetails = [[NSMutableDictionary alloc] initWithDictionary:completeEventDetails];
+    [self setViewPartialEventDetails];
+    [self setViewCompleteEventDetails];
+    [_detailsTable setNeedsDisplay];
 }
 
 - (void)changeRsvpStatus:(id)sender
@@ -441,31 +432,33 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
         
         if ([self isHost])
         {
-            _editEvent = [[UIButton alloc] init];
-            [_editEvent setTranslatesAutoresizingMaskIntoConstraints:NO];
-            _editEvent.showsTouchWhenHighlighted = YES;
-            [_editEvent setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-            [_editEvent setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [_editEvent addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
-            [_editEvent addTarget:self action:@selector(editCurrentEvent:) forControlEvents:UIControlEventTouchUpInside];
-            [_editEvent addTarget:self action:@selector(resetButtonBackGroundColor:)
+            UIButton *editEventButton = [[UIButton alloc] init];
+            [editEventButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+            editEventButton.showsTouchWhenHighlighted = YES;
+            [editEventButton setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
+            [editEventButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [editEventButton addTarget:self action:@selector(startButtonTouch:) forControlEvents:UIControlEventTouchDown];
+            [editEventButton addTarget:self action:@selector(editCurrentEvent:) forControlEvents:UIControlEventTouchUpInside];
+            [editEventButton addTarget:self action:@selector(resetButtonBackGroundColor:)
                    forControlEvents:UIControlEventTouchUpOutside];
-            [_editEvent setTitle:@"Edit" forState:UIControlStateNormal];
-            [_buttonHolder addSubview:_editEvent];
-            [_viewsDictionary addEntriesFromDictionary:@{ @"editEvent":_editEvent}];
+            [editEventButton setTitle:@"Edit" forState:UIControlStateNormal];
+            [_buttonHolder addSubview:editEventButton];
+            self.editEventButton = editEventButton;
+            
+            [_viewsDictionary addEntriesFromDictionary:@{ @"editEventButton":_editEventButton}];
             
             [_buttonHolder addConstraints:[NSLayoutConstraint
-                                           constraintsWithVisualFormat:@"V:|[editEvent]|"
+                                           constraintsWithVisualFormat:@"V:|[editEventButton]|"
                                            options:0
                                            metrics:0
                                            views:_viewsDictionary]];
             [_buttonHolder addConstraints:[NSLayoutConstraint
-                                           constraintsWithVisualFormat:@"H:|[inviteButton][editEvent]|"
+                                           constraintsWithVisualFormat:@"H:|[inviteButton][editEventButton]|"
                                            options:0
                                            metrics:0
                                            views:_viewsDictionary]];
             [_buttonHolder addConstraints:[NSLayoutConstraint
-                                           constraintsWithVisualFormat:@"[inviteButton(==editEvent)]"
+                                           constraintsWithVisualFormat:@"[inviteButton(==editEventButton)]"
                                            options:0
                                            metrics:0
                                            views:_viewsDictionary]];
@@ -547,7 +540,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     [_scrollView addSubview:spinner];
-    self.spinner = spinner;
     [_viewsDictionary addEntriesFromDictionary:@{ @"_spinner":_spinner }];
     [_scrollView addConstraints:[NSLayoutConstraint
                                  constraintsWithVisualFormat:@"V:[_buttonHolder]-20-[_spinner]"
@@ -562,7 +554,6 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                          multiplier:1.0
                                                            constant:0.0]];
     [_spinner startAnimating];
-
     
 }
 
@@ -578,9 +569,13 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
                                                    destructiveButtonTitle:nil
                                                         otherButtonTitles:@"Edit",@"Delete", nil];
     [editStatusSheet setTag:1];
+    
+    if (self.spinner) {
+        [self.spinner stopAnimating];
+        [self.spinner startAnimating];
+    }
+    
     [editStatusSheet showInView:[self view]];
-    [_spinner stopAnimating];
-    [_spinner removeFromSuperview];
 }
 
 

@@ -20,6 +20,11 @@
 
 @interface CreateEventController () <UITableViewDelegate, CreateEventModelDelegate>
 
+@property (nonatomic, strong) CreateEventModel *createEventModel;
+@property (nonatomic, strong) CreateEventModel *storedEventModel;
+
+@property (nonatomic, strong) NSString *existingEventId;
+
 @property (nonatomic, strong) EventsListController *eventsListController;
 @property (nonatomic, strong) FBEventDetailsViewController *detailViewController;
 
@@ -49,10 +54,12 @@
         self.createEventModel = [[CreateEventModel alloc] init];
         self.createEventModel.delegate = self;
         
-        self.dataSource = [[CreateEventTableViewDataSource alloc] initWithEventModel:self.createEventModel];
+        self.dataSource = [[CreateEventTableViewDataSource alloc] initWithEventModel:self.createEventModel
+                                                                       existingEvent:NO];
         
         self.tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [self.tableViewController.tableView setScrollEnabled:NO];
+        [self.tableViewController setTitle:@"Create Event"];
         [self.tableViewController.tableView setDataSource:self.dataSource];
         [self.tableViewController.tableView setDelegate:self];
         
@@ -79,23 +86,45 @@
 }
 
 - (id)initWithDetailViewController:(FBEventDetailsViewController *)detailViewController
-                      eventDetails: (NSDictionary *)eventDetails eventId:(NSString *)eventId isNewEvent:(BOOL)isNewEvent;
+                      eventDetails:(NSDictionary *)eventDetails
 {
     self = [super init];
     if (self) {
         
         self.detailViewController = detailViewController;
-        _existingEventId = eventId;
-        _isNewEvent = isNewEvent;
+        _existingEventId = eventDetails[@"id"];
         
-        self.createEventModel = [[CreateEventModel alloc] initWithIsNew:isNewEvent];
+        self.createEventModel = [[CreateEventModel alloc] init];
         self.createEventModel.delegate = self;
         
-        self.dataSource = [[CreateEventTableViewDataSource alloc] initWithEventModel:self.createEventModel];
+        // Setting existing fields of event
+        self.createEventModel.name = eventDetails[kNameEventParameterKey];
+        self.createEventModel.description = eventDetails[kDescriptionEventParameterKey];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+        
+        if (eventDetails[kStartTimeEventParameterKey]) {
+            self.createEventModel.startTime = [dateFormatter dateFromString:eventDetails[kStartTimeEventParameterKey]];
+        }
+        
+        if (eventDetails[kEndTimeEventParameterKey]) {
+            self.createEventModel.endTime = [dateFormatter dateFromString:eventDetails[kEndTimeEventParameterKey]];
+        }
+        
+        self.createEventModel.location = eventDetails[kLocationEventParameterKey];
+        self.createEventModel.locationId = eventDetails[@"venue"][@"id"];
+        self.createEventModel.privacyType = eventDetails[@"privacy"];
+        
+        // For checking differences at the end
+        self.storedEventModel = [self.createEventModel copyOfModel];
+        
+        self.dataSource = [[CreateEventTableViewDataSource alloc] initWithEventModel:self.createEventModel
+                                                                       existingEvent:YES];
         
         self.tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [self.tableViewController.tableView setScrollEnabled:NO];
-        [self.tableViewController setTitle:@"Create Event"];
+        [self.tableViewController setTitle:@"Edit Event"];
         [self.tableViewController.tableView setDataSource:self.dataSource];
         [self.tableViewController.tableView setDelegate:self];
         
@@ -105,17 +134,14 @@
                                                                         action:@selector(cancel:)];
         self.tableViewController.navigationItem.leftBarButtonItem = cancelButton;
         
-        
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
                                                                        style:UIBarButtonItemStyleBordered
                                                                       target:self
                                                                       action:@selector(createEvent:)];
         self.tableViewController.navigationItem.rightBarButtonItem = doneButton;
-        self.tableViewController.navigationItem.rightBarButtonItem.enabled = NO;
         
         self.tableViewController.navigationItem.hidesBackButton = YES;
         self.tableViewController.navigationController.navigationBar.translucent = NO;
-
         
     }
     return self;
@@ -134,13 +160,15 @@
     [self.tableViewController.tableView reloadData];
 }
 
+- (void)eventIsAtInvalidState
+{
+    if (self.tableViewController.navigationItem.rightBarButtonItem.enabled == YES) {
+        self.tableViewController.navigationItem.rightBarButtonItem.enabled = NO;
+    }
+}
+
 - (UIViewController *)presentableViewController
 {
-    if ([self isNewEvent]) {
-        [self.tableViewController setTitle:@"Create Event"];
-    } else {
-        [self.tableViewController setTitle:@"Edit Event"];
-    }
     return self.tableViewController;
 }
 
@@ -203,6 +231,7 @@
     }
     return kTableCellMargin;
 }
+
 #pragma mark cancel method
 - (void)cancel:(id)sender
 {
@@ -220,31 +249,44 @@
     self.tableViewController.navigationItem.rightBarButtonItem = spinnerButtonItem;
     [spinner startAnimating];
     
-    if (![self isNewEvent])
+    if (self.existingEventId)
     {
-        [[ParseDataStore sharedStore] editEventWithParameters:self.createEventModel.validEvent eventId:_existingEventId completion:^{
-            if (self.createEventModel.invitedFriendIds) {
-                [[ParseDataStore sharedStore] inviteFriendsToEvent:_existingEventId
-                                                       withFriends:self.createEventModel.invitedFriendIds
-                                                        completion:nil];
-            }
-            
-            [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:^(NSArray *eventsList) {
-                [self.eventsListController refreshTableViewForEventsListKey:kHostEventsKey
-                                                              newEventsList:eventsList
-                                                endRefreshForRefreshControl:nil];
-                [_detailViewController refreshDetailsView:self.createEventModel.validEvent];
-            }];
-            
-            [[ParseDataStore sharedStore] fetchEventDetailsForEvent:_existingEventId useCache:NO completion:^(NSDictionary *eventDetails) {
-                [spinner stopAnimating];
-                [spinner removeFromSuperview];
-                eventDetails = self.createEventModel.validEvent;
+        NSDictionary *changedEventParameters = [self.createEventModel
+                                                onlyParametersChangedFromStoredModel:self.storedEventModel];
+        if (changedEventParameters) {
+            [[ParseDataStore sharedStore] editEventWithParameters:changedEventParameters eventId:self.existingEventId completion:^{
                 
-                [self.tableViewController.navigationController popToViewController:_detailViewController animated:YES];
+                __block NSMutableDictionary *completeNewEventDetails = [[NSMutableDictionary alloc] init];;
+                [[ParseDataStore sharedStore] fetchEventListDataForListKey:kHostEventsKey completion:^(NSArray *eventsList) {
+                    [[EventsListController sharedListController] refreshTableViewForEventsListKey:kHostEventsKey
+                                                                                    newEventsList:eventsList
+                                                                      endRefreshForRefreshControl:nil];
+                    for (NSDictionary *event in eventsList) {
+                        if ([event[@"id"] isEqualToString:self.existingEventId]) {
+                            [completeNewEventDetails addEntriesFromDictionary:event];
+                        }
+                    }
+                    
+                    [[ParseDataStore sharedStore] fetchEventDetailsForEvent:self.existingEventId useCache:NO completion:^(NSDictionary *eventDetails) {
+                        [spinner stopAnimating];
+                        [spinner removeFromSuperview];
+                        [completeNewEventDetails addEntriesFromDictionary:eventDetails];
+                        [self.detailViewController refreshDetailsViewWithCompleteDetails:completeNewEventDetails];
+                        
+                        [self.tableViewController.navigationController popViewControllerAnimated:YES];
+                    }];
+                    
+                }];
             }];
             
-        }];
+        } else {
+            
+            [spinner stopAnimating];
+            [spinner removeFromSuperview];
+            [self.tableViewController.navigationController popViewControllerAnimated:YES];
+            
+        }
+        
     }
     else
     {

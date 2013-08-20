@@ -19,17 +19,19 @@
 @property (strong, nonatomic) UITextField *nameTextField;
 @property (strong, nonatomic) UITextField *descriptionTextField;
 
+@property (nonatomic, getter = isExistingEvent) BOOL existingEvent;
 
 @end
 
 @implementation CreateEventTableViewDataSource
 
-- (id)initWithEventModel:(CreateEventModel *)createEventModel
+- (id)initWithEventModel:(CreateEventModel *)createEventModel existingEvent:(BOOL)existingEvent
 {
     self = [super init];
     if (self) {
        
         self.createEventModel = createEventModel;
+        self.existingEvent = existingEvent;
         _timePickerViewController = [[CreateEventTimePickerViewController alloc]
                                      initWithEventModel:createEventModel];
         _privacyViewController = [[CreateEventPrivacyViewController alloc]
@@ -51,7 +53,11 @@
             return 2;
             break;
         case 1:
-            return 3;
+            if (self.isExistingEvent) {
+                return 2;
+            } else {
+                return 3;
+            }
             break;
         case 2:
             return 1;

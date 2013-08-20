@@ -23,6 +23,7 @@ extern NSString * const kInvitedFriendIdsEventParameterKey;
 
 - (void)didSetNameAndDescription;
 - (void)reloadTableView;
+- (void)eventIsAtInvalidState;
 
 @end
 
@@ -36,14 +37,13 @@ extern NSString * const kInvitedFriendIdsEventParameterKey;
 @property (nonatomic, strong) NSString *locationId;
 @property (nonatomic, strong) NSString *privacyType;
 
-@property (nonatomic) BOOL isNewEvent;
-
-
 @property (nonatomic, strong) NSArray *invitedFriendIds;
 
 @property (nonatomic, strong) id<CreateEventModelDelegate> delegate;
 
+- (CreateEventModel *)copyOfModel;
+
 - (NSDictionary *)validEvent;
-- (id)initWithIsNew:(BOOL)isNewEvent;
+- (NSDictionary *)onlyParametersChangedFromStoredModel:(CreateEventModel *)storedModel;
 
 @end

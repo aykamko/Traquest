@@ -47,10 +47,22 @@ NSString * const kAllDayCellLabelText = @"All Day";
     if (self) {
         
         self.createEventModel = createEventModel;
-        self.mutableEventTimeDict = [[NSMutableDictionary alloc]
-                              initWithDictionary:@{ kStartTimeEventParameterKey:
-                                                        [NSDate dateToNearestFifteenMinutes:[NSDate date]] }];
-        self.createEventModel.startTime = self.mutableEventTimeDict[kStartTimeEventParameterKey];
+        
+        self.mutableEventTimeDict = [[NSMutableDictionary alloc] init];
+        
+        if (!self.createEventModel.startTime) {
+            [self.mutableEventTimeDict addEntriesFromDictionary:@{ kStartTimeEventParameterKey:
+                                                                       [NSDate dateToNearestFifteenMinutes:[NSDate date]] }];
+            self.createEventModel.startTime = self.mutableEventTimeDict[kStartTimeEventParameterKey];
+        } else {
+            [self.mutableEventTimeDict addEntriesFromDictionary:@{ kStartTimeEventParameterKey:
+                                                                       self.createEventModel.startTime }];
+        }
+        
+        if (self.createEventModel.endTime) {
+            [self.mutableEventTimeDict addEntriesFromDictionary:@{ kEndTimeEventParameterKey:
+                                                                       self.createEventModel.startTime }];
+        }
         
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
                                                                          style:UIBarButtonItemStyleBordered

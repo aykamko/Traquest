@@ -13,7 +13,7 @@
 
 @interface CreateEventTableViewDataSource : NSObject <UITableViewDataSource>
 
-- (id)initWithEventModel:(CreateEventModel *)createEventModel;
+- (id)initWithEventModel:(CreateEventModel *)createEventModel existingEvent:(BOOL)existingEvent;
 
 @property (strong, nonatomic, readonly) CreateEventTimePickerViewController *timePickerViewController;
 @property (strong, nonatomic, readonly) CreateEventPrivacyViewController *privacyViewController;
