@@ -189,45 +189,43 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
             return;
         }
         
-        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
-                                            initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
-        
-        [self.editEventButton setTitle:nil forState:UIControlStateNormal];
-        [self.editEventButton addSubview:spinner];
-        
-        [self.editEventButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.editEventButton
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                        multiplier:1.0
-                                                                          constant:0.0]];
-        [self.editEventButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.editEventButton
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                        multiplier:1.0
-                                                                          constant:0.0]];
-        
-        [spinner startAnimating];
-        
         NSString *actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
         if ([actionTitle isEqualToString:@"Edit"]) {
             
             CreateEventController *createEventController = [[CreateEventController alloc]
                                                             initWithDetailViewController:self
                                                             eventDetails:_eventDetails];
             
-            
-            [spinner removeFromSuperview];
-            
             [self.navigationController
              pushViewController:createEventController.presentableViewController
              animated:YES];
             
         } else if ([actionTitle isEqualToString:@"Delete"]) {
+            
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
+                                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
+            
+            [self.editEventButton setTitle:nil forState:UIControlStateNormal];
+            [self.editEventButton addSubview:spinner];
+            
+            [self.editEventButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
+                                                                             attribute:NSLayoutAttributeCenterX
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:self.editEventButton
+                                                                             attribute:NSLayoutAttributeCenterX
+                                                                            multiplier:1.0
+                                                                              constant:0.0]];
+            [self.editEventButton addConstraint:[NSLayoutConstraint constraintWithItem:spinner
+                                                                             attribute:NSLayoutAttributeCenterY
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:self.editEventButton
+                                                                             attribute:NSLayoutAttributeCenterY
+                                                                            multiplier:1.0
+                                                                              constant:0.0]];
+            
+            [spinner startAnimating];
             
             [[ParseDataStore sharedStore] deleteEvent:_eventDetails[@"id"] completion:^{
                 
@@ -247,6 +245,7 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
                 }
                 
                 [[ParseDataStore sharedStore] fetchEventListDataForListKey:listKey completion:^(NSArray *eventsList) {
+                    [spinner stopAnimating];
                     [spinner removeFromSuperview];
                     [[EventsListController sharedListController] refreshTableViewForEventsListKey:listKey newEventsList:eventsList endRefreshForRefreshControl:nil];
                     [self.navigationController popToViewController:[[EventsListController sharedListController] presentableViewController] animated:YES];
@@ -538,8 +537,8 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                         initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [spinner setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
     [_scrollView addSubview:spinner];
+    self.spinner = spinner;
     [_viewsDictionary addEntriesFromDictionary:@{ @"_spinner":_spinner }];
     [_scrollView addConstraints:[NSLayoutConstraint
                                  constraintsWithVisualFormat:@"V:[_buttonHolder]-20-[_spinner]"
@@ -561,8 +560,6 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
 - (IBAction)editCurrentEvent:(id)sender
 {
     [sender setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]];
-    
-
     UIActionSheet *editStatusSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                                  delegate:self
                                                         cancelButtonTitle:@"Cancel"
@@ -572,7 +569,7 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
     
     if (self.spinner) {
         [self.spinner stopAnimating];
-        [self.spinner startAnimating];
+        [self.spinner removeFromSuperview];
     }
     
     [editStatusSheet showInView:[self view]];

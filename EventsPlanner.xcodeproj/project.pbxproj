@@ -87,9 +87,9 @@
 		7CCF145517BEC3A100D72B73 /* login-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2DAA017A09BC500834B6F /* login-button-small.png */; };
 		7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C418C7817A082030084330C /* Images.xcassets */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
+		7CDBB80F17C4124600A37F80 /* MarkerFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CDBB80E17C4124600A37F80 /* MarkerFinal@2x.png */; };
 		7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59717C2E5DE001583FA /* guest-location@2x.png */; };
 		7CE4E59B17C2E699001583FA /* GuestAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE4E59A17C2E699001583FA /* GuestAnnotationView.m */; };
-		7CE4E59D17C30031001583FA /* MarkerFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59C17C30031001583FA /* MarkerFinal@2x.png */; };
 		7CE4E59F17C3003E001583FA /* listFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59E17C3003E001583FA /* listFinal@2x.png */; };
 		7CE691E317B6E34700D3D8AB /* CreateEventTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */; };
 		7CE691E917B6EE2C00D3D8AB /* GraphicsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE691E817B6EE2C00D3D8AB /* GraphicsConstants.m */; };
@@ -101,8 +101,6 @@
 		90130EC317A31D450038BBFB /* EventsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90130EC017A31D450038BBFB /* EventsListController.m */; };
 		90235CC117C2ADB400A0B99A /* stickynote.png in Resources */ = {isa = PBXBuildFile; fileRef = 90235CC017C2ADB400A0B99A /* stickynote.png */; };
 		90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90235CC217C2B46700A0B99A /* greenLocation@2x.png */; };
-		9037C77B17C3D7A600F17C39 /* MarkerFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9037C77A17C3D7A600F17C39 /* MarkerFinal@2x.png */; };
-		9037C77F17C3D9A700F17C39 /* listFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9037C77E17C3D9A700F17C39 /* listFinal@2x.png */; };
 		90E9727217A1BA92000EC59B /* EventsTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E9727117A1BA92000EC59B /* EventsTableViewDataSource.m */; };
 /* End PBXBuildFile section */
 
@@ -208,6 +206,7 @@
 		7CCF244517AB6384009855B5 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		7CCF244717AB657C009855B5 /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCell.h; sourceTree = "<group>"; };
 		7CCF244817AB657C009855B5 /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCell.m; sourceTree = "<group>"; };
+		7CDBB80E17C4124600A37F80 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MarkerFinal@2x.png"; sourceTree = "<group>"; };
 		7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE05FCD17B33BDB004BF47C /* tracking-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button-normal@2x.png"; sourceTree = "<group>"; };
 		7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed.png"; sourceTree = "<group>"; };
@@ -217,7 +216,6 @@
 		7CE4E59717C2E5DE001583FA /* guest-location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guest-location@2x.png"; sourceTree = "<group>"; };
 		7CE4E59917C2E699001583FA /* GuestAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestAnnotationView.h; sourceTree = "<group>"; };
 		7CE4E59A17C2E699001583FA /* GuestAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestAnnotationView.m; sourceTree = "<group>"; };
-		7CE4E59C17C30031001583FA /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MarkerFinal@2x.png"; sourceTree = "<group>"; };
 		7CE4E59E17C3003E001583FA /* listFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "listFinal@2x.png"; sourceTree = "<group>"; };
 		7CE691E117B6E34700D3D8AB /* CreateEventTimePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateEventTimePickerViewController.h; sourceTree = "<group>"; };
 		7CE691E217B6E34700D3D8AB /* CreateEventTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateEventTimePickerViewController.m; sourceTree = "<group>"; };
@@ -239,9 +237,6 @@
 		90202D0117B5BE0C00C0CA66 /* FBIdAnnotationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIdAnnotationPoint.m; sourceTree = "<group>"; };
 		90235CC017C2ADB400A0B99A /* stickynote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stickynote.png; sourceTree = "<group>"; };
 		90235CC217C2B46700A0B99A /* greenLocation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greenLocation@2x.png"; sourceTree = "<group>"; };
-		9037C77A17C3D7A600F17C39 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "MarkerFinal@2x.png"; path = "EventsPlanner/MarkerFinal@2x.png"; sourceTree = "<group>"; };
-		9037C77C17C3D7AD00F17C39 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MarkerFinal@2x.png"; sourceTree = "<group>"; };
-		9037C77E17C3D9A700F17C39 /* listFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "listFinal@2x.png"; path = "Image Assets/listFinal@2x.png"; sourceTree = "<group>"; };
 		90B4DDA817BBF1B000E83799 /* cancel-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-normal@2x.png"; sourceTree = "<group>"; };
 		90B4DDAA17BBF1BB00E83799 /* cancel-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel-button-pressed@2x.png"; sourceTree = "<group>"; };
 		90B4DDAC17BC207D00E83799 /* silver-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "silver-button-normal.png"; sourceTree = "<group>"; };
@@ -305,8 +300,6 @@
 		7C418C5A17A082030084330C = {
 			isa = PBXGroup;
 			children = (
-				9037C77E17C3D9A700F17C39 /* listFinal@2x.png */,
-				9037C77A17C3D7A600F17C39 /* MarkerFinal@2x.png */,
 				7C418C6C17A082030084330C /* EventsPlanner */,
 				7C418C8517A082030084330C /* EventsPlannerTests */,
 				7C418C6517A082030084330C /* Frameworks */,
@@ -467,9 +460,8 @@
 		7CBBD70717AB859B00ED9DAB /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				9037C77C17C3D7AD00F17C39 /* MarkerFinal@2x.png */,
 				90235CC217C2B46700A0B99A /* greenLocation@2x.png */,
-				7CE4E59C17C30031001583FA /* MarkerFinal@2x.png */,
+				7CDBB80E17C4124600A37F80 /* MarkerFinal@2x.png */,
 				7CE4E59717C2E5DE001583FA /* guest-location@2x.png */,
 				90235CC017C2ADB400A0B99A /* stickynote.png */,
 				7CE4E59E17C3003E001583FA /* listFinal@2x.png */,
@@ -618,7 +610,6 @@
 				ORGANIZATIONNAME = FBU;
 				TargetAttributes = {
 					7C418C6217A082030084330C = {
-						DevelopmentTeam = 75E82M9UVH;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -653,7 +644,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9037C77F17C3D9A700F17C39 /* listFinal@2x.png in Resources */,
 				7CCF144017BEC3A100D72B73 /* hostIcon@2x.png in Resources */,
 				7CCF144117BEC3A100D72B73 /* Checkmark@2x.png in Resources */,
 				7CCF144217BEC3A100D72B73 /* Clock@2x.png in Resources */,
@@ -673,15 +663,14 @@
 				7CCF144E17BEC3A100D72B73 /* silver-button-pressed@2x.png in Resources */,
 				7CCF144F17BEC3A100D72B73 /* eventCoverPhoto.png in Resources */,
 				7CCF145017BEC3A100D72B73 /* login-button-small@2x.png in Resources */,
+				7CDBB80F17C4124600A37F80 /* MarkerFinal@2x.png in Resources */,
 				7CCF145117BEC3A100D72B73 /* Icon.png in Resources */,
 				7CCF145217BEC3A100D72B73 /* post-it-note.png in Resources */,
 				7CCF145317BEC3A100D72B73 /* login-button-small-pressed.png in Resources */,
 				7CCF145417BEC3A100D72B73 /* login-button-small-pressed@2x.png in Resources */,
 				7CCF145517BEC3A100D72B73 /* login-button-small.png in Resources */,
-				7CE4E59D17C30031001583FA /* MarkerFinal@2x.png in Resources */,
 				7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */,
 				7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */,
-				9037C77B17C3D7A600F17C39 /* MarkerFinal@2x.png in Resources */,
 				7698B93417AAE8BE00D351BF /* GoogleMaps.bundle in Resources */,
 				90235CC317C2B46700A0B99A /* greenLocation@2x.png in Resources */,
 			);
