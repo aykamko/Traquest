@@ -1121,6 +1121,7 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
 {
     [self.scrollView makeToastActivity];
     [[ParseDataStore sharedStore] setTrackingStatus:YES event:self.eventDetails[@"id"] completion:^{
+        self.tracking = YES;
         [[ParseDataStore sharedStore] pushNotificationsToGuestsOfEvent:self.eventDetails[@"id"] completion:^(NSArray *friendIdsArray) {
             [self.scrollView hideToastActivity];
             [self loadMapView:nil];

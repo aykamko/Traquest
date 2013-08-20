@@ -379,7 +379,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 //            [me saveInBackground];
 //        }];
 //    }
-    
 
 }
 
