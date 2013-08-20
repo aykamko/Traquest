@@ -992,8 +992,8 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     }];
 }
 
-- (void)loadMapView:(id)sender
-{
+- (void)loadMapView:(id)sender {
+
     if (!self.activeEventController) {
         self.activeEventController = [[ActiveEventController alloc] initWithEventId:self.eventDetails[@"id"]
                                                                       venueLocation:_venueLocation];
@@ -1055,7 +1055,14 @@ static NSInteger const kActionSheetCancelButtonIndex = 3;
     
     UIViewController *mapViewController = [[UIViewController alloc]init];
     mapViewController.view = plainMap;
-    [[self navigationController] pushViewController:mapViewController animated:YES];
+    if ([self isTracking])
+    {
+        //[[self navigationController]pushViewController:_activeTabBarController animated:YES];
+    }
+    else{
+        [[self navigationController] pushViewController:mapViewController animated:YES];
+
+    }
 }
 
 @end
