@@ -12,6 +12,7 @@
 #import "ParseDataStore.h"
 #import "Toast+UIView.h"
 #import "FBIdAnnotationPoint.h"
+#import "GuestAnnotationView.h"
 
 CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
 
@@ -170,6 +171,7 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     
     static NSString *allowedViewIdentifier = @"AllowedMapPin";
     static NSString *anonViewIdentifier = @"AnonMapPin";
+    static NSString *locationPinIdentifier = @"LocationPin";
     MKAnnotationView *annotationView;
     
     if ([annotation isMemberOfClass:[FBIdAnnotationPoint class]]) {
@@ -177,15 +179,15 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
         
         if (fbAnnotation.anonymous == NO) {
             
-            annotationView = (MKAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:allowedViewIdentifier];
+            annotationView = (GuestAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:allowedViewIdentifier];
             
             if (!annotationView) {
-                annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:allowedViewIdentifier];
+                annotationView = [[GuestAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:allowedViewIdentifier];
             } else {
                 annotationView.annotation = annotation;
             }
             
-            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
+//            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
             
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]
                                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -206,25 +208,25 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
             
         } else {
             
-            annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
+            annotationView = (GuestAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
             
             if (!annotationView) {
-                annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
+                annotationView = [[GuestAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
             } else {
                 annotationView.annotation = annotation;
             }
             
-            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
+//            annotationView.image = [UIImage imageNamed:@"guest-location.png"];
             annotationView.leftCalloutAccessoryView = nil;
             
         }
         
     } else {
         
-        annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:anonViewIdentifier];
+        annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:locationPinIdentifier];
         
         if (!annotationView) {
-            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:anonViewIdentifier];
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:locationPinIdentifier];
         } else {
             annotationView.annotation = annotation;
         }
