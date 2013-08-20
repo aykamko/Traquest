@@ -745,9 +745,11 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
         [self.startTrackingButton removeFromSuperview];
     }
     
-    self.viewMapLabel = [self createViewMapButton];
+    UILabel *viewMapLabel = [self createViewMapButton];
     
-    [self.scrollView addSubview:self.viewMapLabel];
+    [self.scrollView addSubview:viewMapLabel];
+    self.viewMapLabel = viewMapLabel;
+    
     [self.viewsDictionary addEntriesFromDictionary:@{ @"_viewMapLabel": self.viewMapLabel }];
     
     
@@ -783,8 +785,7 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
 {
     
     UILabel *viewMapLabel = [self createViewMapButton];
-   // [self.dimensionsDict addEntriesFromDictionary:@{@"viewMapLabelHeight":@30}];
-                                                    
+    
     [self.scrollView addSubview:viewMapLabel];
     self.viewMapLabel = viewMapLabel;
     [self.viewsDictionary addEntriesFromDictionary:@{ @"_viewMapLabel": self.viewMapLabel }];
@@ -888,7 +889,6 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
     viewMap.textColor = [UIColor colorWithRed:0 green:128/255.0f blue:0 alpha:1];
     viewMap.textAlignment = NSTextAlignmentCenter;
     return viewMap;
-
 }
 
 - (UIButton *)createButtonWithTitle:(NSString *)title
@@ -1024,28 +1024,10 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
 
 - (void)cancelTracking:(id)sender {
 
-    __block UIActivityIndicatorView *viewMapSpinner;
     if ([self.viewMapLabel superview]) {
-        viewMapSpinner = [[UIActivityIndicatorView alloc]
-                          initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [viewMapSpinner setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [self.viewMapLabel setText:nil];
-        [self.viewMapLabel addSubview:viewMapSpinner];
-        [self.viewMapLabel addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapLabel
-                                                                       attribute:NSLayoutAttributeCenterX
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:viewMapSpinner
-                                                                       attribute:NSLayoutAttributeCenterX
-                                                                      multiplier:1.0
-                                                                        constant:0.0]];
-        [self.viewMapLabel addConstraint:[NSLayoutConstraint constraintWithItem:self.viewMapLabel
-                                                                       attribute:NSLayoutAttributeCenterY
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:viewMapSpinner
-                                                                       attribute:NSLayoutAttributeCenterY
-                                                                      multiplier:1.0
-                                                                        constant:0.0]];
-        [viewMapSpinner startAnimating];
+        self.viewMapLabel.textColor = [UIColor lightTextColor];
+        self.viewMapLabel.text = @"Stopping tracking for guests...";
+        [self.viewMapLabel setNeedsDisplay];
     }
     
     __block UIActivityIndicatorView *stopTrackingSpinner;
@@ -1077,11 +1059,6 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
     [[ParseDataStore sharedStore] pushEventCancelledToGuestsOfEvent:self.eventDetails[@"id"] completion:^{
         [PFCloud callFunctionInBackground:@"deleteEventData" withParameters:@{ @"eventId": self.eventDetails[@"id"] } block:^(id object, NSError *error) {
             
-            if (viewMapSpinner) {
-                [viewMapSpinner stopAnimating];
-                [viewMapSpinner removeFromSuperview];
-            }
-            
             if (stopTrackingSpinner) {
                 [stopTrackingSpinner stopAnimating];
                 [stopTrackingSpinner removeFromSuperview];
@@ -1096,11 +1073,12 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
                 [alertView show];
                 
                 if (self.viewMapLabel) {
-                    [self.viewMapLabel setText:@"View Map"];
+                    [self.viewMapLabel setText:@"Event is active. Press map to view."];
                 }
                 if (self.stopTrackingButton) {
                     [self.stopTrackingButton setTitle:@"Stop Tracking" forState:UIControlStateNormal];
                 }
+                self.tracking = NO;
             } else {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
                                                                     message:@"Successfully ended tracking for event."
@@ -1113,8 +1091,6 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
             
         }];
     }];
-    self.tracking = NO;
-    //self.active = NO;
 }
 
 - (void)startTracking:(id)sender
