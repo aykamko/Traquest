@@ -553,7 +553,6 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
                                                          multiplier:1.0
                                                            constant:0.0]];
     [_spinner startAnimating];
-    
 }
 
 #pragma mark  Create New Event
@@ -1081,7 +1080,7 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
                 }
                 self.tracking = NO;
                 //TODO: may break demo
-                self.activeEventController = nil;
+//                self.activeEventController = nil;
             } else {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
                                                                     message:@"Successfully ended tracking for event."

@@ -255,6 +255,7 @@
     [maybeTableViewController setRefreshControl:maybeRefreshControl];
     self.maybeRefreshControl = maybeRefreshControl;
     
+    
     UITableViewController *notRepliedTableViewController = [[UITableViewController alloc]
                                                             initWithStyle:UITableViewStyleGrouped];
     [[notRepliedTableViewController tableView] setDelegate:self];
@@ -265,9 +266,9 @@
     
     UIRefreshControl *notRepliedRefreshControl = [[UIRefreshControl alloc] init];
     [notRepliedRefreshControl addTarget:self
-                                      action:@selector(refreshTableViewUsingRefreshControl:)
-                            forControlEvents:UIControlEventValueChanged];
-    [notRepliedTableViewController setRefreshControl:self.notRepliedRefreshControl];
+                                 action:@selector(refreshTableViewUsingRefreshControl:)
+                       forControlEvents:UIControlEventValueChanged];
+    [notRepliedTableViewController setRefreshControl:notRepliedRefreshControl];
     self.notRepliedRefreshControl = notRepliedRefreshControl;
     
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
@@ -279,10 +280,10 @@
     
     tabBarController.delegate = self;
     [tabBarController setViewControllers:@[tableActiveViewController,
-                                                hostTableViewController,
-                                                attendingTableViewController,
-                                                maybeTableViewController,
-                                                notRepliedTableViewController]];
+                                           hostTableViewController,
+                                           attendingTableViewController,
+                                           maybeTableViewController,
+                                           notRepliedTableViewController]];
     
     self.tableActiveViewController = tableActiveViewController;
     self.hostTableViewController = hostTableViewController;
