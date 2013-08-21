@@ -46,7 +46,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 @property (strong, nonatomic) NSMutableArray *userPastLocations;
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) NSMutableArray *allAttendingFriends;
-@property BOOL justStartedTracking;
 
 @property (copy, nonatomic) void (^locationCompletionBlock)(CLLocation *location);
 
@@ -68,7 +67,6 @@ NSString * const kDeclinedEventsKey = @"declined";
         [_locationManager setDistanceFilter:distance];
         [_locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
         _trackingCount = [[NSMutableDictionary alloc]init];
-        _justStartedTracking = NO;
         _isTracking = NO;
         
     }
@@ -195,9 +193,6 @@ NSString * const kDeclinedEventsKey = @"declined";
 {
     if (!([self isLoggedIn] && [self verifyIfTrackingAllowed])) {
         return;
-    }
-    if (!self.isTracking) {
-        self.justStartedTracking = YES;
     }
     self.isTracking = YES;
     [_locationManager startUpdatingLocation];

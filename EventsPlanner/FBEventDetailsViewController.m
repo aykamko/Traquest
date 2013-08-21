@@ -617,6 +617,8 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         self.venueLocation = coordinate;
         
+        PFGeoPoint *venueLocationGeoPoint = [PFGeoPoint geoPointWithLatitude:self.venueLocation.latitude longitude:self.venueLocation.longitude];
+        
         [self mapView:mapView updateMapZoomLocation:self.venueLocation];
         
         MKPointAnnotation *annot = [[MKPointAnnotation alloc]init];
@@ -638,6 +640,7 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
                 annot.coordinate = _venueLocation;
                 
                 [mapView addAnnotation:annot];
+                
             }
         }];
         

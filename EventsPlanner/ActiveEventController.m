@@ -87,7 +87,7 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
             NSString *key = [NSString stringWithFormat:@"%d",[user[facebookID] hash]];
             [anonUserDict setObject:user forKey:key];
         }
-        
+        [self.statsController updateStatistics];
         [self.mapController updateMarkersOnMapForAllowedUsers:allowedUserDict anonUsers:anonUserDict];
         
     }];

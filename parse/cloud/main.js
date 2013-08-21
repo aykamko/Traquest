@@ -25,15 +25,95 @@ Parse.Cloud.beforeSave('Tracking', function(request, response) {
 });
 
 Parse.Cloud.define('calculateStatistics', function(request, response){
+
 	var stats;
-	var users = new Array();
+  var venueGeoPoint = request.params.venuGeoPoint;
+  var venueLat = request.params.latitude;
+  var venueLon = request.params.longitude;
+  console.log(venueGeoPoint);
+
+  var distanceDictionary = {latitude1: venueLat, longitude1: venueLon, latitude2: 0.0, longitude2: 0.0};
+	var allowedUsers = new Array();
+
 	Parse.Cloud.run('getUsers', {eventId: request.params.eventId, permission:'allowed'}, {
 		success: function (allowed) {
-      users.concat(allowed);
+      allowedUsers = allowed;
+
       Parse.Cloud.run('getUsers', {eventId: request.params.eventId, permission:'anonymous'}, {
         success: function (anonymous) {
-          users.concat(anonymous);
-          stats.totalNumberOfUsers = users.length;
+          var totalUsers = allowedUsers.concat(anonymous);
+          var numberAllowingTracking = totalUsers.length;
+
+          var distancesFromLocation = new Array();
+          var velocities = new Array();
+
+          var sum = 0;
+          var arrived = 0;
+          var velocitySum = 0;
+          var departed = 0;
+
+          for (var i = 0; i < totalUsers.length; i++) {
+            console.log(totalUsers[i].toJSON());
+            var userStartPoint = (totalUsers[i].toJSON().locationData[0].location);
+            var userCurrentPoint = (totalUsers[i].toJSON().locationData[1].location);
+
+            var userStartTime = (totalUsers[i].toJSON().locationData[0]['time']);
+            var timeElapsedInMinutes = (request.params.currentTime - userStartTime)/60;
+
+            var userCurrentLat = userCurrentPoint.latitude;
+            var userCurrentLon = userCurrentPoint.longitude;
+
+            var userStartLat = userStartPoint.latitude;
+            var userStartLon = userStartPoint.longitude;
+
+            var distanceAtDeparture = findDistanceBetweenPoints(venueLat, venueLon, userStartLat, userStartLon);
+            var distanceFromLocation = findDistanceBetweenPoints(venueLat, venueLon, userCurrentLat, userCurrentLon);
+
+            var displacement = distanceAtDeparture - distanceFromLocation;
+
+            var velocity = displacement/timeElapsedInMinutes;
+            velocities.push(velocity);
+            velocitySum = velocitySum + velocity;
+
+            if (distanceFromLocation<0.5) {
+              arrived++;
+            }
+            else if (displacement>0.5) {
+              departed++;
+            }
+
+            distancesFromLocation.push(distanceFromLocation);
+            sum = sum+distanceFromLocation;
+          }
+
+          distancesFromLocation.sort();
+
+          if (distancesFromLocation.length>0) {
+            var averageDistance = sum/distancesFromLocation.length;
+            var averageVelocity = velocitySum/distancesFromLocation.length;
+            var medianDistance;
+
+            if (distancesFromLocation.length%2==1) {
+               medianDistance = distancesFromLocation[Math.floor(distancesFromLocation.length/2)];
+            } else{
+              medianDistance = (distancesFromLocation[Math.floor(distancesFromLocation.length/2)] + distancesFromLocation[Math.floor(distancesFromLocation.length/2-1)])/2;
+            }
+
+            var timeUntilMedianArrives = medianDistance/averageVelocity;
+            if (arrived>=numberAllowingTracking/2) {
+              timeUntilMedianArrives = 0;
+            }
+
+            stats = 
+            {"numberOfUsers": numberAllowingTracking, 
+            "averageDistance": averageDistance,
+            "medianDistance": medianDistance,
+            "estimatedArrival": timeUntilMedianArrives,
+            "averageVelocity" : averageVelocity,
+            "numberArrived" : arrived,
+            "numberDeparted" : departed};
+          }
+
           response.success(stats);
         },    
         error: function (error) {
@@ -41,6 +121,7 @@ Parse.Cloud.define('calculateStatistics', function(request, response){
           response.error('Error trying to find Anonymous Users');
         }
       });
+
     },
     error: function (error) {
       console.log(error);
@@ -48,16 +129,39 @@ Parse.Cloud.define('calculateStatistics', function(request, response){
     }
 	});
 	
-	/*var R = 6371; // km
-	var dLat = (lat2-lat1).toRad();
-	var dLon = (lon2-lon1).toRad();
-	var lat1 = lat1.toRad();
-	var lat2 = lat2.toRad();
+});
 
-	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-	        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-	var d = R * c;*/
+var toRad = function(numberInDegrees) {
+  return numberInDegrees * Math.PI / 180;
+}
+
+
+
+var findDistanceBetweenPoints = function (lat1, lon1, lat2, lon2) {
+
+  // if (typeof(Number.prototype.toRad) === "undefined") {
+  //   Number.prototype.toRad = function() {
+  //     return this * Math.PI / 180;
+  //   }
+  // }
+
+  var R = 3963; // km
+  var dLat = toRad(lat2-lat1);
+  var dLon = toRad(lon2-lon1);
+  var lat1 = toRad(lat1);
+  var lat2 = toRad(lat2);
+
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c;
+  return d;
+}
+
+Parse.Cloud.define('getDistance', function(request, response) {
+  // response.success(request.params.latitude2);
+  var dist = findDistanceBetweenPoints(request.params.latitude1, request.params.longitude1, request.params.latitude2, request.params.longitude2);
+  response.success(dist);
 });
 
 Parse.Cloud.define('deleteEventData', function(request, response) {
