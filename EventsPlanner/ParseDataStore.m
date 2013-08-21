@@ -21,7 +21,7 @@ static BOOL kIgnoresNewUser = YES;
 static BOOL kUsesBestLocationTracking = YES;
 
 
-double const kTrackedEventCheckInDistance = 0.08;
+double const kTrackedEventCheckInDistance = 0.02;
 
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
@@ -368,6 +368,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     CLLocation *location = [locations lastObject];
     
     PFGeoPoint *currentGeopoint = [PFGeoPoint geoPointWithLocation:location];
+    self.userCurrentLocation = currentGeopoint;
     for (PFObject *event in self.currentlyTrackedEvents) {
         PFGeoPoint *eventGeopoint = [event objectForKey:kParseEventVenueLocationKey];
         double distanceFromEvent = [currentGeopoint distanceInMilesTo:eventGeopoint];
@@ -400,14 +401,12 @@ NSString * const kDeclinedEventsKey = @"declined";
     
     CLLocationCoordinate2D coordinate = [location coordinate];
     _currentLocation = location;
-    self.userCurrentLocation = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-                                                      longitude:coordinate.longitude];
     
     [[PFUser currentUser] setObject:self.userCurrentLocation forKey:@"location"];
     NSArray *locationsArray = [[PFUser currentUser] objectForKey:kLocationData];
     
     NSNumber *time = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceReferenceDate]];
-    NSDictionary *locationObject = @{locationKey: self.userCurrentLocation,kTimeKey:time};
+    NSDictionary *locationObject = @{locationKey: self.userCurrentLocation, kTimeKey:time};
     
     if (!locationsArray || [locationsArray count] == 0) {
         locationsArray = @[locationObject, locationObject];

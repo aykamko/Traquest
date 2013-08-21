@@ -69,6 +69,11 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     venuePin.title = @"Event Location";
     [self.mapView addAnnotation:venuePin];
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     self.zoomToFit = YES;
 }
 

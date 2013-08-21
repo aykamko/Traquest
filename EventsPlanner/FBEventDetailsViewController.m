@@ -680,13 +680,14 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
                                  metrics:_dimensionsDict
                                  views:_viewsDictionary]];
     
-    if (self.isTracking) {
+    if (self.isTracking && self.hasReplied) {
         
         if (self.isHost) {
             [self addStopTrackingButtonAndViewMapButton];
         } else {
             [self addViewMapButtonAndSegmentedControlForTrackingSettings];
         }
+        
     } else if (self.isHost && ([self isActive] || kAllowTrackingForNonActiveEvents)) {
         
         [self addStartTrackingButton];
