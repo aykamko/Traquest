@@ -56,7 +56,11 @@ CGFloat const kCalloutViewProfilePicCornerRadius = 4.0;
     [super loadView];
     self.mapView = [[MKMapView alloc] initWithFrame:self.view.bounds];
     self.mapView.delegate = self;
-    self.mapView.showsUserLocation = YES;
+    if (isDemo) {
+        self.mapView.showsUserLocation = NO;
+    } else {
+        self.mapView.showsUserLocation = YES;
+    }
     [self.view addSubview:self.mapView];
     
     [self.mapView setMapType:MKMapTypeStandard];

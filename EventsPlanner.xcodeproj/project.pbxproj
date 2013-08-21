@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6065E46717AE1ADA003B947E /* ParseDataStore.m */; };
+		606DDD5B17C52A8F0089B116 /* DemoEventController.m in Sources */ = {isa = PBXBuildFile; fileRef = 606DDD5A17C52A8F0089B116 /* DemoEventController.m */; };
 		60AF6D4617B2C07100991386 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60AF6D4517B2C07100991386 /* StoreKit.framework */; };
 		60C8746617C01F09000C6926 /* ActiveEventController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C8746517C01F09000C6926 /* ActiveEventController.m */; };
 		60D520B717A1C967009CD642 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D520B617A1C967009CD642 /* MapKit.framework */; };
@@ -118,6 +119,8 @@
 		6065E46417ACA3C8003B947E /* eventCoverPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eventCoverPhoto.png; sourceTree = "<group>"; };
 		6065E46617AE1ADA003B947E /* ParseDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDataStore.h; sourceTree = "<group>"; };
 		6065E46717AE1ADA003B947E /* ParseDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDataStore.m; sourceTree = "<group>"; };
+		606DDD5917C52A8F0089B116 /* DemoEventController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoEventController.h; sourceTree = "<group>"; };
+		606DDD5A17C52A8F0089B116 /* DemoEventController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoEventController.m; sourceTree = "<group>"; };
 		60AF6D4517B2C07100991386 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		60C8746417C01F09000C6926 /* ActiveEventController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveEventController.h; sourceTree = "<group>"; };
 		60C8746517C01F09000C6926 /* ActiveEventController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveEventController.m; sourceTree = "<group>"; };
@@ -453,6 +456,8 @@
 				60C8746517C01F09000C6926 /* ActiveEventController.m */,
 				7CE4E59917C2E699001583FA /* GuestAnnotationView.h */,
 				7CE4E59A17C2E699001583FA /* GuestAnnotationView.m */,
+				606DDD5917C52A8F0089B116 /* DemoEventController.h */,
+				606DDD5A17C52A8F0089B116 /* DemoEventController.m */,
 			);
 			name = "Active Event View Stuff";
 			sourceTree = "<group>";
@@ -729,6 +734,7 @@
 				90130EC217A31D450038BBFB /* ActiveEventsStatsViewController.m in Sources */,
 				768ED85317AA08CB00A80271 /* ActiveEventMapViewController.m in Sources */,
 				7C78920C17A9E7B600610FB2 /* EventHeaderView.m in Sources */,
+				606DDD5B17C52A8F0089B116 /* DemoEventController.m in Sources */,
 				7C418C7717A082030084330C /* AppDelegate.m in Sources */,
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */,

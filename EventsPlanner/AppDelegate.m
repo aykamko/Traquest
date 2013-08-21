@@ -13,6 +13,7 @@
 #import "ParseDataStore.h"
 #import "EventsListController.h"
 #import "FBEventDetailsViewController.h"
+#import "DemoEventController.h"
 
 static const BOOL debugTracking = YES;
 
@@ -66,37 +67,48 @@ static const BOOL debugTracking = YES;
     self.navController = [[UINavigationController alloc] initWithRootViewController:self.loginViewController];
     self.window.rootViewController = self.navController;
     
-    if ([[ParseDataStore sharedStore] isLoggedIn]) {
-        
-        [[ParseDataStore sharedStore] fetchAllEventListDataWithCompletion:^(NSArray *activeHostEvents,
-                                                                            NSArray *activeGuestEvents,
-                                                                            NSArray *hostEvents,
-                                                                            NSArray *guestEvents,
-                                                                            NSArray *maybeAttendingEvent,
-                                                                            NSArray *noReplyEvents) {
+    if (!isDemo) {
+        if ([[ParseDataStore sharedStore] isLoggedIn]) {
             
-            self.loginViewController.navigationController.navigationBar.translucent = NO;
-            
-            _eventsListController = [[EventsListController alloc] initWithActiveHostEvents:activeHostEvents
-                                                                         activeGuestEvents:activeGuestEvents
-                                                                                hostEvents:hostEvents
-                                                                           attendingEvents:guestEvents
-                                                                          notRepliedEvents:noReplyEvents
-                                                                            maybeAttending:maybeAttendingEvent];
-            
-            [[self.eventsListController presentableViewController] navigationItem].hidesBackButton = YES;
-            
-            [self.navController pushViewController:[_eventsListController presentableViewController] animated:YES];
-            
-            
+            [[ParseDataStore sharedStore] fetchAllEventListDataWithCompletion:^(NSArray *activeHostEvents,
+                                                                                NSArray *activeGuestEvents,
+                                                                                NSArray *hostEvents,
+                                                                                NSArray *guestEvents,
+                                                                                NSArray *maybeAttendingEvent,
+                                                                                NSArray *noReplyEvents) {
+                
+                self.loginViewController.navigationController.navigationBar.translucent = NO;
+                
+                _eventsListController = [[EventsListController alloc] initWithActiveHostEvents:activeHostEvents
+                                                                             activeGuestEvents:activeGuestEvents
+                                                                                    hostEvents:hostEvents
+                                                                               attendingEvents:guestEvents
+                                                                              notRepliedEvents:noReplyEvents
+                                                                                maybeAttending:maybeAttendingEvent];
+                
+                [[self.eventsListController presentableViewController] navigationItem].hidesBackButton = YES;
+                
+                [self.navController pushViewController:[_eventsListController presentableViewController] animated:YES];
+                
+                
 
+                
+                [self.window makeKeyAndVisible];
+                
+            }];
             
-            [self.window makeKeyAndVisible];
-            
-        }];
-        
+        } else {
+           [self.window makeKeyAndVisible];
+        }
     } else {
-       [self.window makeKeyAndVisible];
+        
+        DemoEventController *demoController = [[DemoEventController alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:demoController.activeDemoController
+                                                 selector:@selector(startTimerForUpdates:)
+                                                     name:@"UINavigationControllerWillShowViewControllerNotification"
+                                                   object: self.navController];
+        [self.navController pushViewController:demoController.presentableViewController animated:NO];
+        [self.window makeKeyAndVisible];
     }
     
     return YES;

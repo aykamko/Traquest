@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import <Parse/PFUser.h>
 
+extern BOOL const isDemo;
 extern NSString * const allowed;
 extern NSString * const anonymous;
 extern NSString * const notAllowed;
@@ -19,6 +20,7 @@ extern NSString * const facebookID;
 extern NSString * const locationKey;
 
 extern NSString * const kTimeKey;
+extern NSString * const kLocationData;
 extern NSString * const kHostEventsKey;
 extern NSString * const kAttendingEventsKey;
 extern NSString * const kMaybeEventsKey;

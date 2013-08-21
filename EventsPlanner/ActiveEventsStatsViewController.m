@@ -202,7 +202,7 @@
     return cell;
     
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath   {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath   {
     return 100;
 }
 
@@ -212,7 +212,9 @@
                                               @"latitude": [NSNumber numberWithDouble:self.venueLocation.latitude],
                                               @"longitude": [NSNumber numberWithDouble:self.venueLocation.longitude]};
     
-    [PFCloud callFunctionInBackground:@"calculateStatistics" withParameters:cloudFunctionParameters block:^(id object, NSError *error) {
+    NSString *functionName = isDemo ? @"demoStatistics" : @"calculateStatistics";
+    
+    [PFCloud callFunctionInBackground:functionName withParameters:cloudFunctionParameters block:^(id object, NSError *error) {
         if (![object isEqual:[NSNull null]]) {
             NSMutableArray *tempStatistics = [[NSMutableArray alloc] init];
             

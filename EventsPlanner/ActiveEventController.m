@@ -76,20 +76,29 @@ static const NSInteger UpdateFrequencyInSeconds = 4.0;
 - (void)updateLocationData
 {
     [[ParseDataStore sharedStore] fetchUsersForEvent:self.eventId completion:^(NSArray *allowedUsers, NSArray *anonUsers) {
-        
-        NSMutableDictionary *allowedUserDict = [[NSMutableDictionary alloc] init];
-        for (PFUser *user in allowedUsers) {
-            [allowedUserDict setObject:user forKey:user[facebookID]];
+        if (!isDemo) {
+            
+            NSMutableDictionary *allowedUserDict = [[NSMutableDictionary alloc] init];
+            for (PFUser *user in allowedUsers) {
+                [allowedUserDict setObject:user forKey:user[facebookID]];
+            }
+            
+            NSMutableDictionary *anonUserDict = [[NSMutableDictionary alloc] init];
+            for (PFUser *user in anonUsers) {
+                NSString *key = [NSString stringWithFormat:@"%d",[user[facebookID] hash]];
+                [anonUserDict setObject:user forKey:key];
+            }
+            [self.statsController updateStatistics];
+            [self.mapController updateMarkersOnMapForAllowedUsers:allowedUserDict anonUsers:anonUserDict];
+            
+        } else {
+            NSMutableDictionary *objectsDict = [[NSMutableDictionary alloc] init];
+            for (PFObject *dummyObject in allowedUsers) {
+                [objectsDict setObject:dummyObject forKey:dummyObject[facebookID]];
+            }
+            [self.statsController updateStatistics];
+            [self.mapController updateMarkersOnMapForAllowedUsers:nil anonUsers:objectsDict];
         }
-        
-        NSMutableDictionary *anonUserDict = [[NSMutableDictionary alloc] init];
-        for (PFUser *user in anonUsers) {
-            NSString *key = [NSString stringWithFormat:@"%d",[user[facebookID] hash]];
-            [anonUserDict setObject:user forKey:key];
-        }
-        [self.statsController updateStatistics];
-        [self.mapController updateMarkersOnMapForAllowedUsers:allowedUserDict anonUsers:anonUserDict];
-        
     }];
 }
 

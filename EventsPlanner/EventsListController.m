@@ -12,6 +12,7 @@
 #import "EventHeaderView.h"
 #import "ParseDataStore.h"
 #import "CreateEventController.h"
+#import "DemoEventController.h"
 
 @interface EventsListController() <UITableViewDelegate, UITabBarControllerDelegate>
 
@@ -101,6 +102,7 @@
                                                                  style:UIBarButtonItemStyleBordered
                                                                  target:self
                                                                  action:@selector(logUserOut:)];
+        
 
         self.tabBarController.navigationItem.leftBarButtonItem = logoutButton;
   
@@ -419,6 +421,10 @@
         }];
         
     }
+}
+
+- (void)showDemoEvent {
+    
 }
 
 

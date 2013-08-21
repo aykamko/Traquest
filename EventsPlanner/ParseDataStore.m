@@ -18,6 +18,7 @@ static BOOL showsPastEvents = YES;
 static BOOL kCachingEnabled = NO;
 static BOOL kIgnoresNewUser = YES;
 
+BOOL const isDemo = YES;
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
 NSString * const notAllowed = @"notAllowed";
@@ -927,22 +928,33 @@ NSString * const kDeclinedEventsKey = @"declined";
     
     [eventQuery getFirstObjectInBackgroundWithBlock:^(PFObject *event, NSError *error) {
         
-        PFRelation *allowedRelation = [event relationforKey:allowed];
-        PFRelation *anonRelation = [event relationforKey:anonymous];
-        
-        PFQuery *allowedQuery =  [allowedRelation query];
-        [allowedQuery whereKey:facebookID notEqualTo:self.myId];
-        
-        PFQuery *anonQuery = [anonRelation query];
-        [anonQuery whereKey:facebookID notEqualTo:self.myId];
-        
-        [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
-            [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {
+        if (!isDemo) {
+            
+            PFRelation *allowedRelation = [event relationforKey:allowed];
+            PFRelation *anonRelation = [event relationforKey:anonymous];
+            
+            PFQuery *allowedQuery =  [allowedRelation query];
+            [allowedQuery whereKey:facebookID notEqualTo:self.myId];
+            
+            PFQuery *anonQuery = [anonRelation query];
+            [anonQuery whereKey:facebookID notEqualTo:self.myId];
+            
+            [allowedQuery findObjectsInBackgroundWithBlock:^(NSArray *allowedObjects, NSError *error) {
+                [anonQuery findObjectsInBackgroundWithBlock:^(NSArray *anonObjects, NSError *error) {
+                    if (completionBlock) {
+                        completionBlock(allowedObjects, anonObjects);
+                    }
+                }];
+            }];
+        } else {
+            PFRelation *dummyRelation = [event relationforKey:@"DummyRelation"];
+            PFQuery *dummyQuery = [dummyRelation query];
+            [dummyQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 if (completionBlock) {
-                    completionBlock(allowedObjects, anonObjects);
+                    completionBlock(objects, nil);
                 }
             }];
-        }];
+        }
     }];
 }
 

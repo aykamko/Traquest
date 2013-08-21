@@ -109,7 +109,7 @@ Parse.Cloud.define('calculateStatistics', function(request, response){
             "averageDistance": averageDistance,
             "medianDistance": medianDistance,
             "estimatedArrival": timeUntilMedianArrives,
-            "averageVelocity" : averageVelocity,
+            "averageVelocity" : averageVelocity*60,
             "numberArrived" : arrived,
             "numberDeparted" : departed};
           }
@@ -129,6 +129,105 @@ Parse.Cloud.define('calculateStatistics', function(request, response){
     }
 	});
 	
+});
+
+Parse.Cloud.define('demoStatistics', function(request, response){
+
+  var stats;
+  var venueGeoPoint = request.params.venuGeoPoint;
+  var venueLat = request.params.latitude;
+  var venueLon = request.params.longitude;
+  console.log(venueGeoPoint);
+
+  var distanceDictionary = {latitude1: venueLat, longitude1: venueLon, latitude2: 0.0, longitude2: 0.0};
+  var allowedUsers = new Array();
+
+
+  Parse.Cloud.run('getUsers', {eventId: request.params.eventId, permission:'DummyRelation'}, {
+    success: function (anonymous) {
+      console.log(anonymous);
+      var totalUsers = allowedUsers.concat(anonymous);
+      var numberAllowingTracking = totalUsers.length;
+
+      var distancesFromLocation = new Array();
+      var velocities = new Array();
+
+      var sum = 0;
+      var arrived = 0;
+      var velocitySum = 0;
+      var departed = 0;
+
+      for (var i = 0; i < totalUsers.length; i++) {
+        console.log(totalUsers[i].toJSON());
+        var userStartPoint = (totalUsers[i].toJSON().locationData[0].location);
+        var userCurrentPoint = (totalUsers[i].toJSON().locationData[1].location);
+
+        var userStartTime = (totalUsers[i].toJSON().locationData[0]['time']);
+        var timeElapsedInMinutes = (request.params.currentTime - userStartTime)/60;
+
+        var userCurrentLat = userCurrentPoint.latitude;
+        var userCurrentLon = userCurrentPoint.longitude;
+
+        var userStartLat = userStartPoint.latitude;
+        var userStartLon = userStartPoint.longitude;
+
+        var distanceAtDeparture = findDistanceBetweenPoints(venueLat, venueLon, userStartLat, userStartLon);
+        var distanceFromLocation = findDistanceBetweenPoints(venueLat, venueLon, userCurrentLat, userCurrentLon);
+
+        var displacement = distanceAtDeparture - distanceFromLocation;
+        var velocity = displacement/timeElapsedInMinutes;
+        velocities.push(velocity);
+        velocitySum = velocitySum + velocity;
+
+        if (distanceFromLocation<0.5) {
+          arrived++;
+        }
+        else if (displacement>0.5) {
+          departed++;
+        }
+
+        distancesFromLocation.push(distanceFromLocation);
+        sum = sum+distanceFromLocation;
+      }
+
+      distancesFromLocation.sort();
+
+      if (distancesFromLocation.length>0) {
+        var averageDistance = sum/distancesFromLocation.length;
+        var averageVelocity = velocitySum/distancesFromLocation.length;
+        var medianDistance;
+
+        if (distancesFromLocation.length%2==1) {
+           medianDistance = distancesFromLocation[Math.floor(distancesFromLocation.length/2)];
+        } else{
+          medianDistance = (distancesFromLocation[Math.floor(distancesFromLocation.length/2)] + distancesFromLocation[Math.floor(distancesFromLocation.length/2-1)])/2;
+        }
+
+        var timeUntilMedianArrives = medianDistance/averageVelocity;
+        if (arrived>=numberAllowingTracking/2) {
+          timeUntilMedianArrives = 0;
+        }
+
+        // comment
+
+        stats = 
+        {"numberOfUsers": numberAllowingTracking, 
+        "averageDistance": averageDistance,
+        "medianDistance": medianDistance,
+        "estimatedArrival": timeUntilMedianArrives,
+        "averageVelocity" : averageVelocity*60,
+        "numberArrived" : arrived,
+        "numberDeparted" : departed};
+      }
+
+      response.success(stats);
+    },    
+    error: function (error) {
+      console.log(error);
+      response.error('Error trying to find Anonymous Users');
+    }
+  });
+
 });
 
 var toRad = function(numberInDegrees) {
@@ -191,10 +290,12 @@ Parse.Cloud.define('getUsers', function(request,response){
 	eventQuery.equalTo("eventId", request.params.eventId);
 	eventQuery.first({
 	    success: function(fbEvent) {
+        console.log(fbEvent);
 	      var relation = fbEvent.relation(request.params.permission);
 	      relation.query().find().then(
 			function (resultList) {
-			response.success(resultList);
+        console.log(resultList);
+			 response.success(resultList);
 			},
 			function (badResult) {
 			      response.error("Error retreiving objects in allowed relation!");
