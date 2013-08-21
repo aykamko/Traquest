@@ -11,17 +11,25 @@
 #import "FBGraphObject+FixEventCoverPhoto.h"
 #import "EventsListController.h"
 #import "NSDate+ExtraStuff.h"
+#import "CreateEventModel.h"
 
 #pragma mark Parse String Keys
 
 static BOOL showsPastEvents = YES;
 static BOOL kCachingEnabled = NO;
 static BOOL kIgnoresNewUser = YES;
+static BOOL kUsesBestLocationTracking = YES;
+
+
+double const kTrackedEventCheckInDistance = 0.08;
 
 NSString * const allowed = @"allowed";
 NSString * const anonymous = @"anonymous";
 NSString * const notAllowed = @"notAllowed";
 
+NSString * const kParseEventVenueLocationKey = @"venueLocation";
+NSString * const kParseEventLocationNameKey = @"locationName";
+NSString * const kParseEventLocationFbIdKey = @"locationFbId";
 NSString * const kParseUserNameKey = @"name";
 NSString * const locationKey = @"location";
 NSString * const facebookID = @"fbID";
@@ -63,9 +71,16 @@ NSString * const kDeclinedEventsKey = @"declined";
         _endDate = [[NSDate alloc] init];
         _locationManager = [[CLLocationManager alloc] init];
         [_locationManager setDelegate:self];
-        CLLocationDistance distance = 50.0;
-        [_locationManager setDistanceFilter:distance];
-        [_locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
+        
+        if (kUsesBestLocationTracking == NO) {
+            CLLocationDistance distance = 50.0;
+            [_locationManager setDistanceFilter:distance];
+            [_locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
+        } else {
+            [self.locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
+        }
+        
+        self.currentlyTrackedEvents = [[NSMutableArray alloc] init];
         _trackingCount = [[NSMutableDictionary alloc]init];
         _isTracking = NO;
         
@@ -102,7 +117,7 @@ NSString * const kDeclinedEventsKey = @"declined";
 - (void)logInWithCompletion:(void (^)())completionBlock
 {
     // Set permissions required from the facebook user account
-    NSArray *permissionsArray = @[@"user_events", @"friends_events", @"create_event", @"rsvp_event"];
+    NSArray *permissionsArray = @[@"user_events", @"friends_events", @"create_event", @"rsvp_event", @"publish_stream"];
     
     // Login PFUser using facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
@@ -194,11 +209,13 @@ NSString * const kDeclinedEventsKey = @"declined";
     if (!([self isLoggedIn] && [self verifyIfTrackingAllowed])) {
         return;
     }
+    
     self.isTracking = YES;
     [_locationManager startUpdatingLocation];
 }
 
 - (BOOL)verifyIfTrackingAllowed {
+    
     PFQuery *allowedQuery = [PFQuery queryWithClassName:@"Event"];
     PFQuery *anonymousQuery = [PFQuery queryWithClassName:@"Event"];
     
@@ -208,10 +225,10 @@ NSString * const kDeclinedEventsKey = @"declined";
     PFQuery *combinedQuery = [PFQuery orQueryWithSubqueries:@[allowedQuery, anonymousQuery]];
     
     NSArray *results = [combinedQuery findObjects];
-    if (!results || [results count]==0) {
-        [self stopTrackingMyLocation];
+    if (!results || [results count] == 0) {
         return NO;
     }
+    
     return YES;
 }
 
@@ -220,6 +237,9 @@ NSString * const kDeclinedEventsKey = @"declined";
     self.isTracking = NO;
     [[PFUser currentUser] setObject:[NSArray array] forKey:kLocationData];
     [[PFUser currentUser] saveInBackground];
+    if ([self verifyIfTrackingAllowed] == NO) {
+        self.currentlyTrackedEvents = [[NSMutableArray alloc] init];
+    }
     [self.locationManager stopUpdatingLocation];
 }
 
@@ -236,20 +256,40 @@ NSString * const kDeclinedEventsKey = @"declined";
         [allowedRelation removeObject:[PFUser currentUser]];
         [anonRelation removeObject:[PFUser currentUser]];
         
+        void (^eventSaveCompletion)(BOOL, NSError *);
+        
         if ([identity isEqualToString:allowed] || [identity isEqualToString:anonymous]) {
+            
             PFRelation *newRelation = [event relationforKey:identity];
             [newRelation addObject:[PFUser currentUser]];
+            
+            if ([event objectForKey:kParseEventVenueLocationKey] &&
+                [event objectForKey:kParseEventLocationFbIdKey] &&
+                [event objectForKey:kParseEventLocationNameKey]) {
+                
+                [self.currentlyTrackedEvents addObject:event];
+                
+            }
+            
+            eventSaveCompletion = ^(BOOL succeeded, NSError *error) {
+                [self startTrackingMyLocationIfAllowed];
+            };
+            
+        } else {
+            
+            if ([self.currentlyTrackedEvents containsObject:event]) {
+                [self.currentlyTrackedEvents removeObject:event];
+            }
+            eventSaveCompletion = nil;
+            
         }
         
-        [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            [self startTrackingMyLocationIfAllowed];
-        }];
-        
-        
+        [event saveInBackgroundWithBlock:eventSaveCompletion];
         
         if (completionBlock) {
             completionBlock();
         }
+        
     }];
 }
 
@@ -327,6 +367,32 @@ NSString * const kDeclinedEventsKey = @"declined";
 {
     CLLocation *location = [locations lastObject];
     
+    PFGeoPoint *currentGeopoint = [PFGeoPoint geoPointWithLocation:location];
+    for (PFObject *event in self.currentlyTrackedEvents) {
+        PFGeoPoint *eventGeopoint = [event objectForKey:kParseEventVenueLocationKey];
+        double distanceFromEvent = [currentGeopoint distanceInMilesTo:eventGeopoint];
+        NSLog(@"%f", distanceFromEvent);
+        if (distanceFromEvent < kTrackedEventCheckInDistance) {
+            
+            UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+            localNotification.fireDate = [NSDate date];
+            localNotification.timeZone = [NSTimeZone defaultTimeZone];
+            
+            NSString *alertViewText = [NSString stringWithFormat:@"It seems like you've arrived at your location at %@. "
+                                       @"Would you like to check in?", [event objectForKey:kParseEventLocationNameKey]];
+            localNotification.alertBody = alertViewText;
+            localNotification.alertAction = @"Respond";
+            
+            localNotification.soundName = UILocalNotificationDefaultSoundName;
+            
+            localNotification.userInfo = @{ kParseEventLocationNameKey:event[kParseEventLocationNameKey],
+                                            kParseEventLocationFbIdKey:event[kParseEventLocationFbIdKey] };
+            
+            [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+            [self.currentlyTrackedEvents removeObject:event];
+        }
+    }
+    
     if (self.locationCompletionBlock) {
         [self.locationManager stopUpdatingLocation];
         self.locationCompletionBlock(location);
@@ -335,22 +401,22 @@ NSString * const kDeclinedEventsKey = @"declined";
     CLLocationCoordinate2D coordinate = [location coordinate];
     _currentLocation = location;
     self.userCurrentLocation = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-                                                  longitude:coordinate.longitude];
+                                                      longitude:coordinate.longitude];
     
     [[PFUser currentUser] setObject:self.userCurrentLocation forKey:@"location"];
     NSArray *locationsArray = [[PFUser currentUser] objectForKey:kLocationData];
     
-    NSNumber *time = [NSNumber numberWithDouble: [[NSDate date] timeIntervalSinceReferenceDate]];
+    NSNumber *time = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceReferenceDate]];
     NSDictionary *locationObject = @{locationKey: self.userCurrentLocation,kTimeKey:time};
     
-    if (!locationsArray || [locationsArray count]==0) {
+    if (!locationsArray || [locationsArray count] == 0) {
         locationsArray = @[locationObject, locationObject];
     } else {
         locationsArray = @[[locationsArray firstObject], locationObject];
     }
     
     [[PFUser currentUser] setObject:locationsArray forKey:kLocationData];
-    [[PFUser currentUser] save];
+    [[PFUser currentUser] saveInBackground];
 
 //    if (_justStartedTracking) {
 //        _justStartedTracking = NO;
@@ -572,7 +638,7 @@ NSString * const kDeclinedEventsKey = @"declined";
     
     FBRequest *request = [FBRequest requestForGraphPath:
                           @"me?fields=events.limit(1000).fields(id,name,admins.fields(id,name),"
-                          @"cover,rsvp_status,start_time),id"];
+                          @"cover,rsvp_status,start_time,venue,location),id"];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
             
@@ -630,25 +696,38 @@ NSString * const kDeclinedEventsKey = @"declined";
                     }
                 }
                 
-                __block PFObject *thisEvent;
+                __block PFObject *eventFromParse;
                 NSString *eventId = event[@"id"];
+                PFGeoPoint *eventLocation = [PFGeoPoint geoPointWithLatitude:[event[@"venue"][@"latitude"] doubleValue]
+                                                                   longitude:[event[@"venue"][@"longitude"] doubleValue]];
+                NSString *locationName = event[@"location"];
+                NSString *locationId = event[@"venue"][@"id"];
+                
                 PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
                 [eventQuery whereKey:@"eventId" equalTo:eventId];
                 
                 [eventQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                     
-                    if ([objects count]==0) {
-                        thisEvent = [PFObject objectWithClassName:@"Event"];
-                        [thisEvent setObject:eventId forKey:@"eventId"];
+                    if ([objects count] == 0) {
+                        eventFromParse = [PFObject objectWithClassName:@"Event"];
+                        [eventFromParse setObject:eventId forKey:@"eventId"];
                     } else {
-                        thisEvent = [objects objectAtIndex:0];
+                        eventFromParse = [objects objectAtIndex:0];
                     }
-                    if (![event[@"startDate"] isEqual: [NSNull null]]) {
-                        [thisEvent setObject:event[@"startDate"] forKey:@"startDate"];
-                        [thisEvent setObject:event[@"endDate"] forKey:@"endDate"];
+                    
+                    if (locationName && locationId && eventLocation) {
+                        [eventFromParse setObject:locationName forKey:kParseEventLocationNameKey];
+                        [eventFromParse setObject:locationId forKey:kParseEventLocationFbIdKey];
+                        [eventFromParse setObject:eventLocation forKey:kParseEventVenueLocationKey];
                     }
-
-                    [thisEvent saveInBackground];
+                    
+                    if (![event[@"startDate"] isEqual:[NSNull null]]) {
+                        [eventFromParse setObject:event[@"startDate"] forKey:@"startDate"];
+                        [eventFromParse setObject:event[@"endDate"] forKey:@"endDate"];
+                    }
+                    
+                    [eventFromParse saveInBackground];
+                    
                 }];
                                 
                 if (!active||showsPastEvents) {
@@ -686,7 +765,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             FBRequest *noReplyRequest = [FBRequest requestForGraphPath:
                                          @"me?fields=events.limit(1000).type(not_replied).fields(id,name,"
-                                         @"cover,rsvp_status,start_time)"];
+                                         @"cover,rsvp_status,start_time,venue)"];
             [noReplyRequest startWithCompletionHandler:^(FBRequestConnection *connection,
                                                          id result,
                                                          NSError *error){
@@ -902,6 +981,18 @@ NSString * const kDeclinedEventsKey = @"declined";
     NSString *graphPath = [NSString stringWithFormat: @"%@?fields=picture.width(80).height(80)", fbId];
     [FBRequestConnection startWithGraphPath:graphPath completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         
+        if (error) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            
+            [alertView show];
+            return;
+        }
+        
         NSString *urlString = result[@"picture"][@"data"][@"url"];
         NSURL *picURL = [NSURL URLWithString:urlString];
         NSData *picData = [NSData dataWithContentsOfURL:picURL];
@@ -916,6 +1007,30 @@ NSString * const kDeclinedEventsKey = @"declined";
         
     }];
 
+}
+
+- (void)postCheckInToEvent:(NSDictionary *)checkInParams completion:(void (^)())completionBlock
+{
+    NSString *graphPath = [NSString stringWithFormat:@"%@/feed", self.myId];
+    FBRequest *postRequest = [FBRequest requestWithGraphPath:graphPath parameters:checkInParams HTTPMethod:@"POST"];
+    [postRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (error) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            
+            [alertView show];
+            
+        } else {
+            
+            if (completionBlock)
+                completionBlock();
+            
+        }
+    }];
 }
 
 #pragma mark Parse Request
@@ -945,55 +1060,6 @@ NSString * const kDeclinedEventsKey = @"declined";
         }];
     }];
 }
-
-//- (void)fetchGeopointsForIds:(NSArray *)guestIds
-//                     eventId:(NSString *)eventId
-//                  completion:(void (^)(NSDictionary *allowedLocations, NSDictionary *anonLocations))completionBlock
-//{
-//    NSString *eventIdKey = [NSString stringWithFormat:@"E%@",eventId];
-//    PFQuery *trackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
-//    [trackingQuery whereKey:facebookID containedIn:guestIds];
-//    [trackingQuery whereKey:facebookID notEqualTo:self.myId];
-//    [trackingQuery whereKey:eventIdKey equalTo:allowed];
-//    
-//    PFQuery *userAllowedQuery = [PFUser query];
-//    [userAllowedQuery whereKey:facebookID matchesKey:facebookID inQuery:trackingQuery];
-//    
-//    PFQuery *secondTrackingQuery = [PFQuery queryWithClassName:@"TrackingObject"];
-//    [secondTrackingQuery whereKey:facebookID containedIn:guestIds];
-//    [secondTrackingQuery whereKey:eventIdKey equalTo:anonymous];
-//    
-//    PFQuery *userAnonQuery = [PFUser query];
-//    [userAnonQuery whereKey:facebookID matchesKey:facebookID inQuery:secondTrackingQuery];
-//    
-//    [userAllowedQuery findObjectsInBackgroundWithBlock:^(NSArray *userAllowedObjects, NSError *error) {
-//        
-//        __block NSMutableDictionary *allowedLocations = [[NSMutableDictionary alloc] init];
-//        for (PFUser *friend in userAllowedObjects) {
-//            
-//            PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
-//            NSString *fbId = [friend objectForKey:facebookID];
-//            [allowedLocations setObject:geoPoint forKey:fbId];
-//            
-//        }
-//        
-//        [userAnonQuery findObjectsInBackgroundWithBlock:^(NSArray *userAnonObjects, NSError *error) {
-//
-//            NSMutableDictionary *anonLocations = [[NSMutableDictionary alloc] init];
-//            
-//            for (PFUser *friend in userAnonObjects) {
-//                PFGeoPoint *geoPoint = [friend objectForKey:locationKey];
-//                NSString *fbIdHash = [NSString stringWithFormat:@"%d", [[friend objectForKey:facebookID] hash]];
-//                [anonLocations setObject:geoPoint forKey:fbIdHash];
-//            }
-//            
-//            [_trackingCount setObject:[NSNumber numberWithInt:allowedLocations.count + anonLocations.count] forKey:eventId];
-//            
-//            completionBlock([[NSDictionary alloc] initWithDictionary:allowedLocations],
-//                            [[NSDictionary alloc] initWithDictionary:anonLocations]);
-//        }];
-//    }];
-//}
 
 #pragma mark Edit Event Details
 - (void)inviteFriendsToEvent:(NSString *)eventId withFriends:(NSArray *)friendIdArray completion:(void (^)())completionBlock
@@ -1092,7 +1158,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             
         } else {
             
-            PFObject *newEvent = [PFObject objectWithClassName:@"Event"];
+            __block PFObject *newEvent = [PFObject objectWithClassName:@"Event"];
             [newEvent setObject:result[@"id"] forKey:@"eventId"];
             
             if (eventParameters[@"start_time"]) {
@@ -1110,7 +1176,23 @@ NSString * const kDeclinedEventsKey = @"declined";
                 [newEvent setObject:[NSNull null] forKey:@"endDate"];
             }
             
-            [newEvent saveInBackground];
+            if (eventParameters[kLocationEventParameterKey] && eventParameters[kLocationIdEventParameterKey]) {
+                
+                [newEvent setObject:eventParameters[kLocationEventParameterKey] forKey:kParseEventLocationNameKey];
+                [newEvent setObject:eventParameters[kLocationIdEventParameterKey] forKey:kParseEventLocationFbIdKey];
+                
+                NSString *venueGraphPath = [NSString stringWithFormat:@"%@?fields=venue", result[@"id"]];
+                FBRequest *venueRequest = [FBRequest requestForGraphPath:venueGraphPath];
+                [venueRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                    PFGeoPoint *venueLocation = [PFGeoPoint geoPointWithLatitude:[result[@"venue"][@"latitude"] doubleValue]
+                                                                       longitude:[result[@"venue"][@"longitude"] doubleValue]];
+                    [newEvent setObject:venueLocation forKey:kParseEventVenueLocationKey];
+                    [newEvent saveInBackground];
+                }];
+                
+            } else {
+                [newEvent saveInBackground];
+            }
             
             if (completionBlock) {
                 completionBlock((NSString *)result[@"id"]);
@@ -1299,7 +1381,7 @@ NSString * const kDeclinedEventsKey = @"declined";
             
             PFPush *stopTrackingPush = [[PFPush alloc] init];
             [stopTrackingPush setQuery:installationQuery];
-            [stopTrackingPush setData:@{ @"stopTracking": [NSNull null] }];
+            [stopTrackingPush setData:@{ @"stopTracking": [NSNull null] , @"eventId":eventId }];
             
             [stopTrackingPush sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 

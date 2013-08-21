@@ -14,6 +14,9 @@ extern NSString * const allowed;
 extern NSString * const anonymous;
 extern NSString * const notAllowed;
 
+extern NSString * const kParseEventVenueLocationKey;
+extern NSString * const kParseEventLocationNameKey;
+extern NSString * const kParseEventLocationFbIdKey;
 extern NSString * const kParseUserNameKey;
 extern NSString * const facebookID;
 extern NSString * const locationKey;
@@ -32,6 +35,8 @@ extern NSString * const kDeclinedEventsKey;
 @property BOOL isTracking;
 @property (strong, nonatomic) NSString *myId;
 @property (readonly, nonatomic, strong) NSMutableDictionary *trackingCount;
+
+@property (nonatomic, strong) NSMutableArray *currentlyTrackedEvents;
 
 + (ParseDataStore *)sharedStore;
 
@@ -73,6 +78,8 @@ extern NSString * const kDeclinedEventsKey;
                       newStatus:(NSString *)status
                      completion:(void (^)())completionBlock;
 
+- (void)postCheckInToEvent:(NSDictionary *)checkInParams completion:(void (^)())completionBlock;
+
 - (void)pushNotificationsToGuestsOfEvent:(NSString *)eventId completion:(void (^)(NSArray *friendIdsArray))completionBlock;
 - (void)pushEventCancelledToGuestsOfEvent:(NSString *)eventId completion:(void (^)())completionBlock;
 
@@ -83,6 +90,5 @@ extern NSString * const kDeclinedEventsKey;
                      completion:(void (^)())completionBlock;
 
 - (void)deleteEvent:(NSString *)eventId completion:(void (^)())completionBlock;
-;
 
 @end

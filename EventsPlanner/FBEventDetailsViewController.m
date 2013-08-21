@@ -1080,6 +1080,8 @@ static NSInteger const kEditEventCancelButtonIndex = 2;
                     [self.stopTrackingButton setTitle:@"Stop Tracking" forState:UIControlStateNormal];
                 }
                 self.tracking = NO;
+                //TODO: may break demo
+                self.activeEventController = nil;
             } else {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
                                                                     message:@"Successfully ended tracking for event."

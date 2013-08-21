@@ -88,6 +88,7 @@
 		7CCF145717BEC3A100D72B73 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C418C7817A082030084330C /* Images.xcassets */; };
 		7CCF244917AB657C009855B5 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF244817AB657C009855B5 /* EventCell.m */; };
 		7CDBB80F17C4124600A37F80 /* MarkerFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CDBB80E17C4124600A37F80 /* MarkerFinal@2x.png */; };
+		7CDBB81417C4481A00A37F80 /* CheckInTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CDBB81217C4481A00A37F80 /* CheckInTableView.m */; };
 		7CE4E59817C2E5DE001583FA /* guest-location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59717C2E5DE001583FA /* guest-location@2x.png */; };
 		7CE4E59B17C2E699001583FA /* GuestAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE4E59A17C2E699001583FA /* GuestAnnotationView.m */; };
 		7CE4E59F17C3003E001583FA /* listFinal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CE4E59E17C3003E001583FA /* listFinal@2x.png */; };
@@ -207,6 +208,8 @@
 		7CCF244717AB657C009855B5 /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCell.h; sourceTree = "<group>"; };
 		7CCF244817AB657C009855B5 /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCell.m; sourceTree = "<group>"; };
 		7CDBB80E17C4124600A37F80 /* MarkerFinal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MarkerFinal@2x.png"; sourceTree = "<group>"; };
+		7CDBB81117C4481A00A37F80 /* CheckInTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckInTableView.h; sourceTree = "<group>"; };
+		7CDBB81217C4481A00A37F80 /* CheckInTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckInTableView.m; sourceTree = "<group>"; };
 		7CE05FCC17B33BDB004BF47C /* tracking-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button-pressed@2x.png"; sourceTree = "<group>"; };
 		7CE05FCD17B33BDB004BF47C /* tracking-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking-button-normal@2x.png"; sourceTree = "<group>"; };
 		7CE2DA9E17A09BC500834B6F /* login-button-small-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login-button-small-pressed.png"; sourceTree = "<group>"; };
@@ -357,6 +360,7 @@
 		7C418C6C17A082030084330C /* EventsPlanner */ = {
 			isa = PBXGroup;
 			children = (
+				7CDBB81017C447BF00A37F80 /* Check In View */,
 				7CE691E617B6EE0C00D3D8AB /* Constants */,
 				7CBBD71017AB987B00ED9DAB /* Categories */,
 				7CBBD70917AB860F00ED9DAB /* App Delegate */,
@@ -552,6 +556,15 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		7CDBB81017C447BF00A37F80 /* Check In View */ = {
+			isa = PBXGroup;
+			children = (
+				7CDBB81117C4481A00A37F80 /* CheckInTableView.h */,
+				7CDBB81217C4481A00A37F80 /* CheckInTableView.m */,
+			);
+			name = "Check In View";
+			sourceTree = "<group>";
+		};
 		7CE691E617B6EE0C00D3D8AB /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -733,6 +746,7 @@
 				90130EC317A31D450038BBFB /* EventsListController.m in Sources */,
 				6065E46817AE1ADA003B947E /* ParseDataStore.m in Sources */,
 				7CA1429117B6D79A00C8D02A /* CreateEventController.m in Sources */,
+				7CDBB81417C4481A00A37F80 /* CheckInTableView.m in Sources */,
 				7CE691F117B82BD300D3D8AB /* CreateEventFriendPickerViewController.m in Sources */,
 				7C6F2C0B17B45AD2004DE35A /* FBEventDetailsTableDelegate.m in Sources */,
 				7C2CFFCB17B9C8F4003A2C8F /* CreateEventModel.m in Sources */,
@@ -863,7 +877,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ashwin Murthy (LZ7K9T2379)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -886,7 +900,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ashwin Murthy (LZ7K9T2379)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
