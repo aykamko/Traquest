@@ -418,27 +418,6 @@ NSString * const kDeclinedEventsKey = @"declined";
     [[PFUser currentUser] setObject:locationsArray forKey:kLocationData];
     [[PFUser currentUser] saveInBackground];
 
-//    if (_justStartedTracking) {
-//        _justStartedTracking = NO;
-//        PFQuery *selfQuery = [PFUser query];
-//        [selfQuery whereKey:facebookID equalTo:self.myId];
-//        [selfQuery findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
-//            PFUser *me = [users firstObject];\
-//        }];
-//    } else {
-//        PFQuery *selfQuery = [PFUser query];
-//        [selfQuery whereKey:facebookID equalTo:self.myId];
-//        [selfQuery findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
-//            PFUser *me = [users firstObject];
-//            NSNumber *time = [NSNumber numberWithDouble: [[NSDate date] timeIntervalSince1970]];
-//            NSDictionary *locationObject = @{locationKey: self.userCurrentLocation,kTimeKey:time};
-//            NSArray *previousLocationArray = [me objectForKey:kLocationData];
-//            NSArray *locationsArray = @[[previousLocationArray firstObject], locationObject];
-//            [me setObject:locationsArray forKey:kLocationData];
-//            [me saveInBackground];
-//        }];
-//    }
-
 }
 
 
@@ -1250,6 +1229,7 @@ NSString * const kDeclinedEventsKey = @"declined";
                           completionHandler:
      ^(FBRequestConnection *connection, id result, NSError *error) {
          if (error) {
+             
              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]])
              {
                  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb://profile/%@",eventId]]];
@@ -1260,8 +1240,16 @@ NSString * const kDeclinedEventsKey = @"declined";
                                                        cancelButtonTitle:@"OK"
                                                        otherButtonTitles:nil];
              [alertView show];
+             
          } else {
-             NSLog(@"Deleted!");
+             
+             PFQuery *eventQuery = [PFQuery queryWithClassName:@"Event"];
+             [eventQuery whereKey:@"eventId" equalTo:eventId];
+             
+             [eventQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                 [object deleteInBackground];
+             }];
+             
              if (completionBlock)
              {
                  completionBlock();
